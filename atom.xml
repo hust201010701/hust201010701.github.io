@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2016-11-03T13:50:20.400Z</updated>
+  <updated>2016-11-03T13:52:40.974Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://yoursite.com/2016/11/03/2016-11-3_Python%E5%AE%9E%E6%88%98_%E5%8D%9A%E5%AE%A2%E5%A4%87%E4%BB%BD%E5%8F%8A%E6%A0%BC%E5%BC%8F%E8%BD%AC%E6%8D%A2/"/>
     <id>http://yoursite.com/2016/11/03/2016-11-3_Python实战_博客备份及格式转换/</id>
     <published>2016-11-02T16:00:00.000Z</published>
-    <updated>2016-11-03T13:50:20.400Z</updated>
+    <updated>2016-11-03T13:52:40.974Z</updated>
     
     <content type="html"><![CDATA[<h2 id="1-为什么要备份博客文章？"><a href="#1-为什么要备份博客文章？" class="headerlink" title="1. 为什么要备份博客文章？"></a>1. 为什么要备份博客文章？</h2><p>备份博客文章原因有很多，其中很重要的一点就是担心服务器数据丢失。我购买的是主机公园的香港主机，当时图便宜，也图方便（不需要备案），因此购买此主机，购买之后发现使用很是不方便：</p>
 <ol>
