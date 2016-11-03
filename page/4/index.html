@@ -915,6 +915,91 @@ content/uploads/2016/03/747930297326087951-576x1024.jpg" alt="747930297326087951
 
 
   
+    <article id="post-2016-03-16_NavigationView 设置头像  headlayout" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/03/16/2016-03-16_NavigationView 设置头像  headlayout/">NavigationView 设置头像  headlayout</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>这是android Meterial Design中的NavigationView ，这个配合DrawLayout 可以实现侧滑菜单的功能。</p>
+<p><img src="https://segmentfault.com/img/bVqWdx" alt=""></p>
+<p>之所以使用这个控件是因为他可以很方便的对菜单进行分类，很清晰。</p>
+<p>本来我想加入一个自己的head<br>部分，但是尝试了好久之后，发现NavigationView上面始终有个嘿嘿的部分，这个部分的高度应该正好等于状态栏的高度，后来我在网上查资料无意发现，原来google<br>早就帮我想好了，有一个属性，headlayout。 代码如下：</p>
+<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;android.support.v4.widget.DrawerLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+    xmlns:app=&quot;http://schemas.android.com/apk/res-auto&quot;
+    xmlns:tools=&quot;http://schemas.android.com/tools&quot;
+    android:id=&quot;@+id/drawer_layout&quot;
+    android:layout_width=&quot;match_parent&quot; android:layout_height=&quot;match_parent&quot;
+    tools:openDrawer=&quot;start&quot;
+    &gt;
+
+    &lt;include
+        layout=&quot;@layout/app_bar_main&quot;
+        android:layout_width=&quot;match_parent&quot;
+        android:layout_height=&quot;match_parent&quot; /&gt;
+
+    &lt;android.support.design.widget.NavigationView
+        android:id=&quot;@+id/nav_view&quot;
+        android:layout_width=&quot;240dp&quot;
+        android:layout_height=&quot;match_parent&quot;
+        android:layout_gravity=&quot;start&quot;
+        app:headerLayout=&quot;@layout/drawerlayout_me&quot;
+        app:menu=&quot;@menu/activity_main_drawer&quot;
+        /&gt;
+
+&lt;/android.support.v4.widget.DrawerLayout&gt;
+</code></pre><p>效果如下：</p>
+<p><img src="/wp-content/uploads/2016/03/20160315081239_12074.png" alt=""></p>
+<p>哈哈，这也是我的第一篇博客啦。呜啦啦。</p>
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2016/03/16/2016-03-16_NavigationView 设置头像  headlayout/" class="archive-article-date">
+  	<time datetime="2016-03-15T16:00:00.000Z" itemprop="datePublished"><i class="icon-clock"></i>2016-03-16</time>
+</a>
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags"></i>
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/android/">android</a></li></ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+	<i class="icon-price-tags"></i>
+	<a class="article-category-link" href="/categories/android/">android</a>
+	</div>
+
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+
+
+  
     <article id="post-2016-03-16_使用jitpack.io 依赖github第三方库" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -963,136 +1048,6 @@ content/uploads/2016/03/QQ截图20160316163325-1-300x210.jpg" alt="QQ截图20160
     <div class="article-info article-info-index">
       
       <a href="/2016/03/16/2016-03-16_使用jitpack.io 依赖github第三方库/" class="archive-article-date">
-  	<time datetime="2016-03-15T16:00:00.000Z" itemprop="datePublished"><i class="icon-clock"></i>2016-03-16</time>
-</a>
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags"></i>
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/android/">android</a></li></ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-	<i class="icon-price-tags"></i>
-	<a class="article-category-link" href="/categories/android/">android</a>
-	</div>
-
-
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-2016-03-16_SwipeRefreshLayout  android 官方下拉刷新控件使用" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/03/16/2016-03-16_SwipeRefreshLayout  android 官方下拉刷新控件使用/">SwipeRefreshLayout  android 官方下拉刷新控件使用</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>下拉列表刷新使用非常多。记录下使用SwipeRefreshLayout 控件。 首先在布局中定义SwipeRefreshLayout ，这个layout<br>可以包含一个ListView 。当ListView 下拉刷新的时候，实际上会触发SwipeRefreshLayout的 OnRefreshListener<br>方法。 布局代码如下：</p>
-<pre><code>&lt;android.support.v4.widget.SwipeRefreshLayout
-    xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
-    android:id=&quot;@+id/swiperefresh&quot;
-    android:layout_width=&quot;match_parent&quot;
-    android:layout_height=&quot;match_parent&quot;&gt;
-
-    &lt;ListView
-        android:id=&quot;@android:id/list&quot;
-        android:layout_width=&quot;match_parent&quot;
-        android:layout_height=&quot;match_parent&quot; /&gt;
-
-&lt;/android.support.v4.widget.SwipeRefreshLayout&gt;
-</code></pre><p>在java代码中，先找到这个控件。  </p>
-<pre><code>mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swiperefresh);
-
-       // BEGIN_INCLUDE (change_colors)
-       // Set the color scheme of the SwipeRefreshLayout by providing 4 color resource ids
-       mSwipeRefreshLayout.setColorScheme(
-               R.color.swipe_color_1, R.color.swipe_color_2,
-               R.color.swipe_color_3, R.color.swipe_color_4);
-       // END_INCLUDE (change_colors)
-</code></pre><p>然后添加监听</p>
-<pre><code>private void initiateRefresh() {
-        Log.i(LOG_TAG, &quot;initiateRefresh&quot;);
-
-        /**
-         * Execute the background task, which uses {@link android.os.AsyncTask} to load the data.
-         */
-        new DummyBackgroundTask().execute();
-    }
-
- private class DummyBackgroundTask extends AsyncTask&lt;Void, Void, List&lt;String&gt;&gt; {
-
-        static final int TASK_DURATION = 3 * 1000; // 3 seconds
-
-        @Override
-        protected List&lt;String&gt; doInBackground(Void... params) {
-            // Sleep for a small amount of time to simulate a background-task
-            try {
-                Thread.sleep(TASK_DURATION);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            // Return a new random list of cheeses
-            return Cheeses.randomList(LIST_ITEM_COUNT);
-        }
-
-        @Override
-        protected void onPostExecute(List&lt;String&gt; result) {
-            super.onPostExecute(result);
-
-            // Tell the Fragment that the refresh has completed
-            onRefreshComplete(result);
-        }
-
-    }
-
- private void onRefreshComplete(List&lt;String&gt; result) {
-        Log.i(LOG_TAG, &quot;onRefreshComplete&quot;);
-
-        // Remove all items from the ListAdapter, and then replace them with the new items
-        mListAdapter.clear();
-        for (String cheese : result) {
-            mListAdapter.add(cheese);
-        }
-
-        // Stop the refreshing indicator
-        mSwipeRefreshLayout.setRefreshing(false);
-    }
-</code></pre><p>其中有一句代码：</p>
-<pre><code>mSwipeRefreshLayout.setRefreshing(false);
-</code></pre><p>这个就是控制SwipeRefreshLayout这个布局前面的加载进度条的显示与否的。</p>
-<p><img src="http://www.orzangleli.com/wp-
-content/uploads/2016/03/QQ图片20160316130436-169x300.png" alt="QQ图片20160316130436"></p>
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      <a href="/2016/03/16/2016-03-16_SwipeRefreshLayout  android 官方下拉刷新控件使用/" class="archive-article-date">
   	<time datetime="2016-03-15T16:00:00.000Z" itemprop="datePublished"><i class="icon-clock"></i>2016-03-16</time>
 </a>
       
