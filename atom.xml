@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2016-11-03T11:19:56.296Z</updated>
+  <updated>2016-11-03T13:23:47.517Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -20,10 +20,11 @@
     <link href="http://yoursite.com/2016/11/03/2016-11-3_Python%E5%AE%9E%E6%88%98_%E5%8D%9A%E5%AE%A2%E5%A4%87%E4%BB%BD%E5%8F%8A%E6%A0%BC%E5%BC%8F%E8%BD%AC%E6%8D%A2/"/>
     <id>http://yoursite.com/2016/11/03/2016-11-3_Python实战_博客备份及格式转换/</id>
     <published>2016-11-03T12:15:06.663Z</published>
-    <updated>2016-11-03T11:19:56.296Z</updated>
+    <updated>2016-11-03T13:23:47.517Z</updated>
     
     <content type="html"><![CDATA[<p>#Python 实用技巧————博客文档备份及格式转化</p>
-<p>##1. 为什么要备份博客文章？<br>备份博客文章原因有很多，其中很重要的一点就是担心服务器数据丢失。我购买的是主机公园的香港主机，当时图便宜，也图方便（不需要备案），因此购买此主机，购买之后发现使用很是不方便：</p>
+<p>##1. 为什么要备份博客文章？ </p>
+<p>备份博客文章原因有很多，其中很重要的一点就是担心服务器数据丢失。我购买的是主机公园的香港主机，当时图便宜，也图方便（不需要备案），因此购买此主机，购买之后发现使用很是不方便：</p>
 <ol>
 <li><p>一方面速度很慢，打开主页都需要几秒钟，而且有时候我的浏览器已经有缓存了，打开还是很慢；</p>
 </li>
@@ -168,34 +169,8 @@ blog.saveBlog()
     <summary type="html">
     
       &lt;p&gt;#Python 实用技巧————博客文档备份及格式转化&lt;/p&gt;
-&lt;p&gt;##1. 为什么要备份博客文章？&lt;br&gt;备份博客文章原因有很多，其中很重要的一点就是担心服务器数据丢失。我购买的是主机公园的香港主机，当时图便宜，也图方便（不需要备案），因此购买此主机，购买之后发现使用很
-    
-    </summary>
-    
-    
-  </entry>
-  
-  <entry>
-    <title>Hello World</title>
-    <link href="http://yoursite.com/2016/11/02/hello-world/"/>
-    <id>http://yoursite.com/2016/11/02/hello-world/</id>
-    <published>2016-11-02T15:41:05.220Z</published>
-    <updated>2016-11-02T15:41:05.220Z</updated>
-    
-    <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo new <span class="string">"My New Post"</span></div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo server</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo generate</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo deploy</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;Welcome to &lt;a href=&quot;https://hexo.io/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Hexo&lt;/a&gt;! This is your very first post. Check &lt;a href=&quot;https://hexo.
+&lt;p&gt;##1. 为什么要备份博客文章？ &lt;/p&gt;
+&lt;p&gt;备份博客文章原因有很多，其中很重要的一点就是担心服务器数据丢失。我购买的是主机公园的香港主机，当时图便宜，也图方便（不需要备案），因此购买此主机，购买之后
     
     </summary>
     
@@ -1985,6 +1960,63 @@ one手柄键位图2&quot;&gt;
     
     
       <category term="unity3D" scheme="http://yoursite.com/tags/unity3D/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>如何让NavigationView不遮挡ToolBar呢</title>
+    <link href="http://yoursite.com/2016/07/01/2016-07-01_%E5%A6%82%E4%BD%95%E8%AE%A9NavigationView%E4%B8%8D%E9%81%AE%E6%8C%A1ToolBar%E5%91%A2/"/>
+    <id>http://yoursite.com/2016/07/01/2016-07-01_如何让NavigationView不遮挡ToolBar呢/</id>
+    <published>2016-06-30T16:00:00.000Z</published>
+    <updated>2016-11-03T11:19:51.049Z</updated>
+    
+    <content type="html"><![CDATA[<p>如何让NavigationView不遮挡ToolBar呢？改变toolbar和DrawerLayout的嵌套关系，把他们放在Linearlayout中就行。</p>
+<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;LinearLayout
+    xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+    xmlns:app=&quot;http://schemas.android.com/apk/res-auto&quot;
+    android:layout_width=&quot;match_parent&quot;
+    android:layout_height=&quot;match_parent&quot;
+    android:orientation=&quot;vertical&quot;&gt;
+
+    &lt;include layout=&quot;@layout/toolbar_actionbar&quot;/&gt;
+
+    &lt;android.support.v4.widget.DrawerLayout
+        android:id=&quot;@+id/drawer_layout&quot;
+        android:layout_width=&quot;match_parent&quot;
+        android:layout_height=&quot;match_parent&quot;&gt;
+
+        &lt;!-- Content --&gt;
+        &lt;FrameLayout
+            android:id=&quot;@+id/content_layout&quot;
+            android:layout_width=&quot;match_parent&quot;
+            android:layout_height=&quot;match_parent&quot;/&gt;
+
+        &lt;!-- Drawer --&gt;
+        &lt;android.support.design.widget.NavigationView
+            android:id=&quot;@+id/navigation&quot;
+            android:layout_width=&quot;240dp&quot;
+            android:layout_height=&quot;match_parent&quot;
+            android:layout_gravity=&quot;start&quot;
+            app:menu=&quot;@menu/activity_main_drawer&quot;/&gt;
+    &lt;/android.support.v4.widget.DrawerLayout&gt;
+&lt;/LinearLayout&gt;
+</code></pre><p><img src="http://upload-
+images.jianshu.io/upload_images/111373-c8e1f1f48f908f5f.png?imageMogr2/auto-
+orient/strip%7CimageView2/2/w/1240" alt=""></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;如何让NavigationView不遮挡ToolBar呢？改变toolbar和DrawerLayout的嵌套关系，把他们放在Linearlayout中就行。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;?xml version=&amp;quot;1.0&amp;quot; encoding=&amp;
+    
+    </summary>
+    
+      <category term="android" scheme="http://yoursite.com/categories/android/"/>
+    
+    
+      <category term="android" scheme="http://yoursite.com/tags/android/"/>
     
   </entry>
   
