@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2016-11-02T16:50:15.543Z</updated>
+  <updated>2016-11-03T11:19:56.296Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -16,24 +16,159 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>article2</title>
-    <link href="http://yoursite.com/2016/11/03/article2/"/>
-    <id>http://yoursite.com/2016/11/03/article2/</id>
-    <published>2016-11-02T16:47:21.000Z</published>
-    <updated>2016-11-02T16:50:15.543Z</updated>
+    <title></title>
+    <link href="http://yoursite.com/2016/11/03/2016-11-3_Python%E5%AE%9E%E6%88%98_%E5%8D%9A%E5%AE%A2%E5%A4%87%E4%BB%BD%E5%8F%8A%E6%A0%BC%E5%BC%8F%E8%BD%AC%E6%8D%A2/"/>
+    <id>http://yoursite.com/2016/11/03/2016-11-3_Python实战_博客备份及格式转换/</id>
+    <published>2016-11-03T12:15:06.663Z</published>
+    <updated>2016-11-03T11:19:56.296Z</updated>
     
-    <content type="html"><![CDATA[<p>#这是一个测试</p>
-<p>##测试内容标题</p>
-<p>测试内容</p>
-<p><img src="http://lxctest.qiniudn.com/2016-11-03_00:07:50_QQ截图20161026123244.jpg?imageView2/0/w/600" alt=""></p>
+    <content type="html"><![CDATA[<p>#Python 实用技巧————博客文档备份及格式转化</p>
+<p>##1. 为什么要备份博客文章？<br>备份博客文章原因有很多，其中很重要的一点就是担心服务器数据丢失。我购买的是主机公园的香港主机，当时图便宜，也图方便（不需要备案），因此购买此主机，购买之后发现使用很是不方便：</p>
+<ol>
+<li><p>一方面速度很慢，打开主页都需要几秒钟，而且有时候我的浏览器已经有缓存了，打开还是很慢；</p>
+</li>
+<li><p>二是服务器时不时的挂掉，服务商还做过几次空间迁移。</p>
+</li>
+</ol>
+<p>正因为这些原因，让用户体验很差，网友们通过搜索引擎搜索到之后，打开网站等待时间过长，一般来说就会直接关闭网页了。另一方面，空间中的文章也处于一种不安全的状态，随时可能找不到备份文件。</p>
+<p>##2. 为什么要放弃wordpress？</p>
+<p>之前建博客的重点是有一个可以保存自己文章的位置，可以随时记录，随时查阅，但是作为一个极简主义者，实在受不了wp的臃肿设计，而且使用几个插件之后网页巨卡无比，让人无法接受。</p>
+<p>在知乎和google上搜索“个人编程博客框架”时，很多推荐了Hexo，这是一个基于Node.js的博客框架，非常好用，对于日常博客类网站十分适合。</p>
+<p>##3.Hexo的安装和配置教程</p>
+<p>参见这位大神的教程： <a href="http://blog.niices.com/Hexo-Blog-Github-Page-Coding-Page-Domain/" target="_blank" rel="external">niices</a></p>
+<p>##4.博客备份原理及步骤</p>
+<p>下面进入正题。</p>
+<p>###4.1 博客备份原理</p>
+<p>首先需要知道wp站点有大量的css和js，是动态网站，无法使用urllib直接获取网站源码。<br>这里使用selenium 中的webdriver 配合phantomjs.exe ，这是一个真实的浏览器访问网站，所以不需要添加任何UA标识等。<br>在wp的首页，使用浏览器访问主页，按F12或者右键审查元素，查看文章标题的class.(不同的主题可能略微有些不同)</p>
+<p><img src="http://7xrrni.com1.z0.glb.clouddn.com/2016-11-03_14:24:52_1.jpg?imageView2/0/w/800" alt=""></p>
+<p>可以知道文章的标题由 <code>&lt;h2 class=&quot;entry-title&quot;&gt;</code> 包含，再使用selenium获取网页源码之后，使用BeautifulSoup可以定位到这个标签：</p>
+<pre><code>titles =soup.findAll(class_=&quot;entry-title&quot;)
+</code></pre><p>因为主页中有很多文章，所以有很多类似的标题，我们需要将所有的都获取到。</p>
+<pre><code>for title in titles:
+        address = title.find(&quot;a&quot;)[&quot;href&quot;]
+        self.articles.add(address)
+</code></pre><p><code>self.articles</code> 是一个set集合。用于保存所有文章的url,通过上面的代码可以将每篇文章中的代码保存到<code>self.articles</code>中    </p>
+<p>这是获取主页的第一页的所有文章，还有第2页等。所以定义一个函数，根据页码获取文章地址：</p>
+<pre><code>def getArticlesByPageIndex(self,pageIndex):
+    self.browser.get(&quot;http://www.orzangleli.com/page/%d/&quot;%pageIndex)
+    time.sleep(6)
+    soup = BeautifulSoup(self.browser.page_source,&quot;html5lib&quot;)
+    titles =soup.findAll(class_=&quot;entry-title&quot;)
+    for title in titles:
+        address = title.find(&quot;a&quot;)[&quot;href&quot;]
+        self.articles.add(address)
+        print(address)
+</code></pre><p>通过一个for循环完成所有页面的文章url添加，之所以是<code>i+1</code>,是因为range(3)表示{0，1，2}：</p>
+<pre><code>def getAllArticles(self):
+        for i in range(self.pages):
+            self.getArticlesByPageIndex(i+1)
+</code></pre><p>这样，所有文章的url都存在<code>self.articles</code>中了，在浏览器中访问一个文章，观察文章的中信息，同样通过bs4可以获取文章的标题，发表时间，分类目录，hexo中的md文档还需要指明tag，这里我用分类代替，而分类使用之前分类的第一个分类代替，这些信息还要以特定格式保存在md中，下面代码负责返回一个md文档中head：</p>
+<pre><code>def mdheader(self,title,date,tags,category):
+        head = &quot;&quot;&quot;---
+title: %s
+date: %s
+tags:
+%scategories: %s
+---&quot;&quot;&quot;%(title,date,tags,category)
+        return head
+</code></pre><p>获取到文章的正文内容后，使用html2text将html语言转为markdown语言。html2text的文档在：<a href="https://pypi.python.org/pypi/html2text/2016.9.19" target="_blank" rel="external">html2text</a>，将head和html2text转化的内容连接，组成完整的md文档。</p>
+<p>入口函数为：</p>
+<pre><code>def saveBlog(self):
+        self.getAllArticles()
+        for url in self.articles:
+            self.save2md(url)
+</code></pre><p>在最外层使用下面代码初始化类：<br>    browser = webdriver.PhantomJS(executable_path =”phantomjs.exe”)<br>    blog = Blog(browser,5)<br>    blog.saveBlog()</p>
+<p>完整代码：</p>
+<pre><code>import requests
+from selenium import webdriver
+import time
+import html2text
+from bs4 import BeautifulSoup
+
+
+class Blog():
+    def __init__(self,browser,pages):
+        self.browser = browser
+        self.pages = pages
+        self.articles = set()
+
+    def getArticlesByPageIndex(self,pageIndex):
+        self.browser.get(&quot;http://www.orzangleli.com/page/%d/&quot;%pageIndex)
+        time.sleep(6)
+        soup = BeautifulSoup(self.browser.page_source,&quot;html5lib&quot;)
+        #print(self.browser.page_source)
+        titles =soup.findAll(class_=&quot;entry-title&quot;)
+        for title in titles:
+            address = title.find(&quot;a&quot;)[&quot;href&quot;]
+            self.articles.add(address)
+            print(address)
+
+    def getAllArticles(self):
+        for i in range(self.pages):
+            self.getArticlesByPageIndex(i+1)
+
+    def save2md(self,page_address):
+        self.browser.get(page_address)
+        time.sleep(6)
+        #需要事先在wp后台关闭禁用掉代码高亮显示插件
+
+        soup = BeautifulSoup(self.browser.page_source,&quot;html5lib&quot;)
+        title = soup.find(class_=&quot;entry-title&quot;).text
+        date = soup.find(class_=&quot;updated&quot;)[&quot;datetime&quot;].split(&quot;T&quot;)[0]
+        content = soup.find(class_=&quot;entry-content&quot;)
+        #获取标签
+        categorys = soup.findAll(&quot;a&quot;,{&quot;rel&quot;:&quot;category tag&quot;})
+        tags = &quot;&quot;
+        for category in categorys:
+            if category.text.startswith(&quot;未分类&quot;):
+                break
+            tags = &quot;%s- %s\n&quot;%(tags,category.text)
+
+        head = self.mdheader(title,date,tags,categorys[0].text)        
+        #print(content)
+
+        mdcontent = html2text.html2text(str(content))
+        #给md文档加上头
+        mdcontent = &quot;%s\n%s&quot;%(head,mdcontent)
+        #删除作者署名信息
+        mdcontent = mdcontent.split(&quot;![](http://2.gravatar.com/avatar/e9a1c2c77d47ac4dcfeb1fa2fc1c936a?s=42&amp;d=mm&amp;r=g)&quot;)[0]
+
+        with open(&quot;%s_%s.md&quot;%(date,title),&quot;w+&quot;,encoding=&quot;utf-8&quot;) as file:
+            file.write(mdcontent)
+            file.close()
+
+    def saveBlog(self):
+        self.getAllArticles()
+        for url in self.articles:
+            self.save2md(url)
+
+
+    def mdheader(self,title,date,tags,category):
+        head = &quot;&quot;&quot;---
+title: %s
+date: %s
+tags:
+%scategories: %s
+---&quot;&quot;&quot;%(title,date,tags,category)
+        return head
+
+
+browser = webdriver.PhantomJS(executable_path =&quot;phantomjs.exe&quot;)
+blog = Blog(browser,5)
+blog.saveBlog()
+</code></pre><p>附上，我将博客上所有文章保存下来的截图，幸福感满满~，待会可以使用hexo提交到hust201010701.github.io上：</p>
+<p><img src="http://7xrrni.com1.z0.glb.clouddn.com/2016-11-03_15:10:25_3.jpg?imageView2/0/w/1000" alt=""></p>
+<p>源码地址：<a href="https://github.com/hust201010701/WpBlogToMarkdownFile.git" target="_blank" rel="external">WpBlogToMarkdownFile.git</a></p>
+<p>##5. 为什么Python这么强大？</p>
+<p>从上面的完整代码就可以看出，python代码使用了77行，实现了整个需求，真的是：<strong>人生苦短，我用python.</strong> </p>
+<p>Pyhton的强大的内置库和第三方库，让轮子不再重复制造，完成一个网页源码的数据获取只需要两三行代码，请问除了python还有谁？</p>
+<p>学习代码这么长时间，之间一直使用C++,java,android,C#，没有哪种语言能够真真切切地解决生活中的麻烦事，直到遇到了python，庆幸~</p>
 ]]></content>
     
     <summary type="html">
     
-      &lt;p&gt;#这是一个测试&lt;/p&gt;
-&lt;p&gt;##测试内容标题&lt;/p&gt;
-&lt;p&gt;测试内容&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://lxctest.qiniudn.com/2016-11-03_00:07:50_QQ截图20161026123244.jpg?imageView2/0/w
+      &lt;p&gt;#Python 实用技巧————博客文档备份及格式转化&lt;/p&gt;
+&lt;p&gt;##1. 为什么要备份博客文章？&lt;br&gt;备份博客文章原因有很多，其中很重要的一点就是担心服务器数据丢失。我购买的是主机公园的香港主机，当时图便宜，也图方便（不需要备案），因此购买此主机，购买之后发现使用很
     
     </summary>
     
@@ -64,6 +199,1792 @@
     
     </summary>
     
+    
+  </entry>
+  
+  <entry>
+    <title>Windows 平台下的整站抓取工具  WinHTTrack Website Copier 使用</title>
+    <link href="http://yoursite.com/2016/10/30/2016-10-30_Windows%20%E5%B9%B3%E5%8F%B0%E4%B8%8B%E7%9A%84%E6%95%B4%E7%AB%99%E6%8A%93%E5%8F%96%E5%B7%A5%E5%85%B7%20%20WinHTTrack%20Website%20Copier%20%E4%BD%BF%E7%94%A8/"/>
+    <id>http://yoursite.com/2016/10/30/2016-10-30_Windows 平台下的整站抓取工具  WinHTTrack Website Copier 使用/</id>
+    <published>2016-10-29T16:00:00.000Z</published>
+    <updated>2016-11-03T11:19:55.162Z</updated>
+    
+    <content type="html"><![CDATA[<p>昨天晚上本来想看android文档，使用之前好久没用的Lantern，发现已经不能打开墙外网站了，于是就想着android官方文档很重要，而且可能随时会看，就想着自己做一个镜像网站。</p>
+<p>本来想的是使用Python爬虫，将developer.android.com上的所有guide网站目录下的网站爬取下来，然后在解析html内容，将所有的链接地址指向本地的相对地址，然后再下载html中的图片，flash,js,css等文件。</p>
+<p>但是当我爬取下来一个首页的html之后，发现图片可能还比较好分辨，css感觉规则很不明显，会有这种css格式出现：</p>
+<p>&lt;link rel=”stylesheet”<br>href=”//fonts.googleapis.com/css?family=Roboto+Condensed”&gt;</p>
+<p>一时间，感觉做一个python版的整站爬取工作，需要处理的细节还是很多，而我明天可能要回无锡，所以时间并不多，就在搜索引擎上找到一款软件：WinHTTracker.</p>
+<p>下载地址：<a href="http://www.httrack.com/page/2/" target="_blank" rel="external">http://www.httrack.com/page/2/</a> 网站做的挺简陋的。。。</p>
+<p>下载下来安装即可，进入软件可以设置语言，我选择的简体中文。</p>
+<p>首先需要设置工程名字，比如我的：AndroidOfficalDocument,下面的那个叫做工程目录可以不填，总文件保存位置选择一个空间较大的目录(因为不知道待爬取的网站的源码有多少空间，所以大点总比小的好)。</p>
+<p>然后就是等待镜像过程了~</p>
+<p><img src="http://lxctest.qiniudn.com/2016-10-30_11:41:10_QQ截图20161030114047.jpg?imageView2/0/w/900" alt=""></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;昨天晚上本来想看android文档，使用之前好久没用的Lantern，发现已经不能打开墙外网站了，于是就想着android官方文档很重要，而且可能随时会看，就想着自己做一个镜像网站。&lt;/p&gt;
+&lt;p&gt;本来想的是使用Python爬虫，将developer.android.com
+    
+    </summary>
+    
+      <category term="未分类" scheme="http://yoursite.com/categories/%E6%9C%AA%E5%88%86%E7%B1%BB/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>Python3 实现淘女郎照片爬虫 （完整版教程）</title>
+    <link href="http://yoursite.com/2016/10/28/2016-10-28_Python3%20%E5%AE%9E%E7%8E%B0%E6%B7%98%E5%A5%B3%E9%83%8E%E7%85%A7%E7%89%87%E7%88%AC%E8%99%AB%20%EF%BC%88%E5%AE%8C%E6%95%B4%E7%89%88%E6%95%99%E7%A8%8B%EF%BC%89/"/>
+    <id>http://yoursite.com/2016/10/28/2016-10-28_Python3 实现淘女郎照片爬虫 （完整版教程）/</id>
+    <published>2016-10-27T16:00:00.000Z</published>
+    <updated>2016-11-03T11:19:54.879Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="Python3-实现淘女郎照片爬虫-（完整版教程）"><a href="#Python3-实现淘女郎照片爬虫-（完整版教程）" class="headerlink" title="Python3 实现淘女郎照片爬虫 （完整版教程）"></a>Python3 实现淘女郎照片爬虫 （完整版教程）</h1><hr>
+<h2 id="一-项目介绍"><a href="#一-项目介绍" class="headerlink" title="一. 项目介绍"></a>一. 项目介绍</h2><p>本项目通过Python 3实现一个爬取淘女郎网页上的美女的头像和详细介绍帖子中的所有图片并下载到本地来。</p>
+<p><strong>Todo:</strong><br>1. 将图片自动上传到七牛等云存储空间中<br>2. 将图片的信息添加到在线数据库中</p>
+<h2 id="二-知识点"><a href="#二-知识点" class="headerlink" title="二. 知识点"></a>二. 知识点</h2><ol>
+<li>使用Python 3编程</li>
+<li>使用BeautifulSoup解析html网页</li>
+<li>使用Selenium抓取动态网页</li>
+<li>下载文件的几种方式</li>
+<li>正则表达式的使用</li>
+</ol>
+<h2 id="三-项目效果"><a href="#三-项目效果" class="headerlink" title="三. 项目效果"></a>三. 项目效果</h2><p>这是我们要爬取的目标页面：</p>
+<p>淘女郎：<a href="https://mm.taobao.com/search_tstar_model.htm" target="_blank" rel="external">https://mm.taobao.com/search_tstar_model.htm</a></p>
+<p><strong>目标页面</strong></p>
+<p><img src="http://lxctest.qiniudn.com/2016-10-28_17:45:12_111111.jpg?imageView2/0/w/600" alt=""><br><strong>爬取后的本地目录</strong><br><img src="https://dn-anything-about-doc.qbox.me/document-
+uid30174labid1970timestamp1470190197607.png/wm" alt="此处输入图片的描述"><br><strong>每个目录中的图片</strong></p>
+<p><img src="https://dn-anything-about-doc.qbox.me/document-
+uid30174labid1970timestamp1470190356134.png/wm" alt="此处输入图片的描述"></p>
+<h2 id="四-项目实战"><a href="#四-项目实战" class="headerlink" title="四. 项目实战"></a>四. 项目实战</h2><h1 id="4-1-安装需要使用的库"><a href="#4-1-安装需要使用的库" class="headerlink" title="4.1 安装需要使用的库"></a>4.1 安装需要使用的库</h1><p>以下是本项目需要使用到的库文件：</p>
+<pre><code>from bs4 import BeautifulSoup
+import urllib
+from selenium import webdriver
+import time
+import os
+import re
+import requests
+</code></pre><p>需要安装的几个库是bs4，selenium,requests.安装方式是使用pip，分别运行下面的命令：</p>
+<pre><code>pip install BeautifulSoup4
+pip install selenium
+pip install requests
+pip install html5lib
+</code></pre><p>Selenium<br>是一个强大的网络数据采集工具，最初是为网站自动化测试而开发的。近几年，他还被广泛用于获取精确的网站快照，因为他们可以直接运行在浏览器上。Selenium<br>可以让浏览器自动加载页面，获取需要的数据，甚至页面截屏，或者判断网站上某些动作上是否发生。</p>
+<p>Selenium 自己不带浏览器，它需要与第三方浏览器结合在一起使用。我们使用的是PhantomJS浏览器，这是一个无头的浏览器，PhantomJS<br>会把网站加载到内存并执行页面上的 JavaScript，但是不会向用户展示网页的图形化界面，可以用来处理 cookie、JavaScript 及<br>header 信息，以及任何你需要浏览器协助完成的事情。</p>
+<p>可以去链接下载，也可以自行搜索下载：</p>
+<p>链接：<a href="http://pan.baidu.com/s/1eSLrpzs" target="_blank" rel="external">http://pan.baidu.com/s/1eSLrpzs</a> 密码：vsq9</p>
+<h1 id="4-2-项目目标"><a href="#4-2-项目目标" class="headerlink" title="4.2 项目目标"></a>4.2 项目目标</h1><ol>
+<li>抓取淘女郎页面中美女的封面，昵称和城市</li>
+<li>抓取个人主页中图片</li>
+<li>将每个美女的图片以文件夹的形式存储在文件夹中</li>
+</ol>
+<h1 id="4-3-可行性分析"><a href="#4-3-可行性分析" class="headerlink" title="4.3 可行性分析"></a>4.3 可行性分析</h1><p>淘女郎首页上的源码信息是公开的，本次实验仅仅是用来技术实践，并不带盈利性目的，也不将图片用于其他商业环境，并不会产生商业上的产权纠纷，所以这个项目是可行的。</p>
+<h1 id="4-4-流程说明"><a href="#4-4-流程说明" class="headerlink" title="4.4 流程说明"></a>4.4 流程说明</h1><p>通过 Selenium Webdriver 获得目标页面源码，之后通过 BeautifulSoup<br>解析概源码，通过正则表达式提取出模特名字、所在城市、身高、体重，个人主页、封面图片地址等信息，根据模特名字和城市建立文件夹。</p>
+<p>再次通过 Selenium Webdriver 获得模特个人主页的页面源码，之后通过 BeautifulSoup<br>解析源码，通过正则获得页面艺术照的URL地址信息。</p>
+<p>最后通过 urllib 内置库，打开图片地址，通过二进制读写的方式获得模特艺术照，并将艺术照存在相应文件夹里面。</p>
+<h1 id="4-5-网页源码分析"><a href="#4-5-网页源码分析" class="headerlink" title="4.5 网页源码分析"></a>4.5 网页源码分析</h1><p><img src="http://i.imgur.com/gtNM6Un.jpg" alt=""></p>
+<p>图中的1,2,3,4分别代表该MM的个人介绍主页地址，封面图片地址，名字和城市，身高体重。第四个我们不使用，只需要获取前三个信息即可。进入个人主页，我们继续类似前面的审查元素，可以看到</p>
+<pre><code>&lt;img style=&quot;width: 630.0px;float: none;margin: 10.0px;height: 945.0px;&quot; width=&quot;630&quot; height=&quot;945&quot; src=&quot;//img.alicdn.com/imgextra/i2/927018118/TB1vpJVNVXXXXXzaXXXXXXXXXXX_!!0-tstar.jpg&quot;&gt;
+</code></pre><p>里面的图片的标签都是img，而且图片的网址前面是一样的，因此可以使用正则表达式来匹配图片地址：</p>
+<pre><code>^\/\/img\.alicdn\.com\/imgextra\/.*\.jpg$
+</code></pre><p>这样可以过滤掉其他图片。</p>
+<h1 id="4-6-程序实战"><a href="#4-6-程序实战" class="headerlink" title="4.6 程序实战"></a>4.6 程序实战</h1><p>首先导入要使用的库</p>
+<pre><code>from bs4 import BeautifulSoup
+import urllib
+from selenium import webdriver
+import time
+import os
+import re
+import requests
+</code></pre><p>建一个类，叫做Taonvlang,里面有几个函数：</p>
+<p>get_detail_imgs(self,detail_url,dir_name): 根据detail_url获取个人主页图片，并存到目录dir_name中</p>
+<p>get_all_data(self): 获取主页的所有的美女封面和个人主页</p>
+<p><strong>init</strong>(self,driver,homePage,outputDir): 初始化函数，初始化类中变量</p>
+<p>具体查看代码</p>
+<pre><code>from bs4 import BeautifulSoup
+import urllib
+from selenium import webdriver
+import time
+import os
+import re
+import requests
+
+class Taolvlang(object):
+    def __init__(self,driver,homePage,outputDir):
+        self.driver = driver
+        self.homePage = homePage
+        self.outputDir = outputDir
+
+    def get_detail_imgs(self,detail_url,dir_name):
+        num = 0    #计数器，用于统计页面上的图片，作为图片名字
+        self.driver.get(detail_url)  #访问个人主页
+        js=&quot;var q=document.documentElement.scrollTop=10000&quot;
+        self.driver.execute_script(js)    #执行JS脚本，这个脚本主要是滚动页面到最下面，
+        #因为有些网页是动态加载的，用户滑动到哪里加载到哪里
+        bs = BeautifulSoup(driver.page_source,&quot;html5lib&quot;)   #使用BeautifulSoup解析网页源码，使用的是html5lib,如果不安装这个库，会报错
+        allImage = bs.findAll(&quot;img&quot;,{&quot;src&quot;:re.compile(&quot;^\/\/img\.alicdn\.com\/imgextra\/.*.jpg$&quot;)}) #使用正则表达式匹配所有图片 
+        for image in allImage:
+            img_url = image[&quot;src&quot;]    #获取图片的src
+            if not img_url.startswith(&quot;http:&quot;): 
+                img_url = &quot;http:&quot;+img_url    #给图片地址加上http：
+            num = num +1    #计数器+1
+            r = requests.get(img_url)   #使用requests获取图片
+            if not os.path.exists(&quot;%s/%d.jpg&quot;%(dir_name,num)):    #判断是否已经存在这个文件了
+                with open(&quot;%s/%d.jpg&quot;%(dir_name,num),&quot;wb&quot;) as pic:
+                    pic.write(r.content)    #不存在的话就保存到文件中
+
+    def get_all_data(self):  
+        self.driver.get(homePage)   #访问主页
+        js=&quot;var q=document.documentElement.scrollTop=10000&quot;
+        self.driver.execute_script(js)
+        time.sleep(3)    #等待网页加载完成
+        self.driver.get_screenshot_as_file(&quot;1.jpg&quot;)    #保存网页截图
+        bs = BeautifulSoup(self.driver.page_source,&quot;html5lib&quot;)    #使用BeautifulSoup解析网页源码，使用的是html5lib,如果不安装这个库，会报错
+        allItem = bs.findAll(class_=&quot;item&quot;)   #找到所有的项，是class 为item的
+        for item in allItem:
+            detail_url = item.find(class_=&quot;item-link&quot;)[&quot;href&quot;]  #获取个人主页连接
+            header_img_url = item.find(&quot;img&quot;)[&quot;src&quot;]   #获取封面图片链接
+            dir_name = outputDir+&quot;%s_%s&quot;%(item.find(class_=&quot;name&quot;).get_text(),item.find(class_=&quot;city&quot;).get_text())   #获取名字和城市名组成文件夹名字
+            if not os.path.exists(dir_name):   #如果文件夹不存在新建
+                os.makedirs(dir_name)
+            if not detail_url.startswith(&quot;http:&quot;):
+                detail_url = &quot;http:&quot;+detail_url
+            if not header_img_url.startswith(&quot;http:&quot;):
+                header_img_url = &quot;http:&quot;+header_img_url
+            print(&quot;detail_url=%s&quot;%detail_url)
+            print(&quot;header_img_url=%s&quot;%header_img_url)
+            #将头像存入目录
+            if not os.path.exists(outputDir+&quot;%s/0.jpg&quot;%dir_name):
+                urllib.request.urlretrieve(header_img_url,outputDir+&quot;%s/0.jpg&quot;%dir_name)
+            #获取详细帖子中的照片
+            self.get_detail_imgs(detail_url,dir_name)
+
+
+#本地浏览器路径        
+browserPath = &quot;phantomjs.exe&quot;
+#主页路径
+homePage = &apos;https://mm.taobao.com/search_tstar_model.htm?&apos;
+#输出目录
+outputDir = &quot;/photos/&quot;   
+driver = webdriver.PhantomJS(executable_path = browserPath)
+#实例化类，执行获取数据
+taoObj = Taolvlang(driver,homePage,outputDir)
+taoObj.get_all_data()
+</code></pre><h2 id="五-项目地址"><a href="#五-项目地址" class="headerlink" title="五.项目地址"></a>五.项目地址</h2><p><a href="https://github.com/hust201010701/TaonvlangCrawler" target="_blank" rel="external">https://github.com/hust201010701/TaonvlangCrawler</a></p>
+<p>欢迎大家Star.</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;Python3-实现淘女郎照片爬虫-（完整版教程）&quot;&gt;&lt;a href=&quot;#Python3-实现淘女郎照片爬虫-（完整版教程）&quot; class=&quot;headerlink&quot; title=&quot;Python3 实现淘女郎照片爬虫 （完整版教程）&quot;&gt;&lt;/a&gt;Python3 实现淘
+    
+    </summary>
+    
+      <category term="未分类" scheme="http://yoursite.com/categories/%E6%9C%AA%E5%88%86%E7%B1%BB/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>Python 3.5的环境下使用opencv 3.1版本</title>
+    <link href="http://yoursite.com/2016/10/21/2016-10-21_Python%203.5%E7%9A%84%E7%8E%AF%E5%A2%83%E4%B8%8B%E4%BD%BF%E7%94%A8opencv%203.1%E7%89%88%E6%9C%AC/"/>
+    <id>http://yoursite.com/2016/10/21/2016-10-21_Python 3.5的环境下使用opencv 3.1版本/</id>
+    <published>2016-10-20T16:00:00.000Z</published>
+    <updated>2016-11-03T11:19:54.781Z</updated>
+    
+    <content type="html"><![CDATA[<p>本来照着这个教程学习OpenCV，说3.5版本不能使用opencv,需要转换版本，可以是用的是linux命令，我也看不懂。上网搜了下，可以在3.5中使用opencv的，安装方法就是下载<a href="http://www.lfd.uci.edu/~gohlke/pythonlibs/6kbpejrn/opencv_python-3.1.0-cp35-cp35m-win_amd64.whl" target="_blank" rel="external">opencv<br>for<br>python</a>.<br>然后新建一个py脚本进行测试，脚本内容为：</p>
+<pre><code>import cv2
+import numpy as np
+image = cv2.imread(&quot;1.jpg&quot;)
+cv2.imshow(&quot;Image&quot;,image)
+cv2.waitKey(0)
+</code></pre><p>需要提前安装numpy，使用 pip install numpy .</p>
+<p>当然会提示这样的错误：</p>
+<pre><code>Traceback (most recent call last):
+File &quot;test.py&quot;, line 1, in &lt;module&gt;
+import cv2
+ImportError: DLL load failed: 找不到指定的模块。
+</code></pre><p>这时候，安装一个vs的C++库就行了，下载地址：</p>
+<p><a href="https://www.microsoft.com/zh-cn/download/confirmation.aspx?id=48145" target="_blank" rel="external">https://www.microsoft.com/zh-cn/download/confirmation.aspx?id=48145</a></p>
+<p>安装完成后，就发现可以正常显示图片了~~~</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;本来照着这个教程学习OpenCV，说3.5版本不能使用opencv,需要转换版本，可以是用的是linux命令，我也看不懂。上网搜了下，可以在3.5中使用opencv的，安装方法就是下载&lt;a href=&quot;http://www.lfd.uci.edu/~gohlke/pytho
+    
+    </summary>
+    
+      <category term="Python" scheme="http://yoursite.com/categories/Python/"/>
+    
+    
+      <category term="Python" scheme="http://yoursite.com/tags/Python/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>LeapMotion 在Unity中的手势识别</title>
+    <link href="http://yoursite.com/2016/10/12/2016-10-12_LeapMotion%20%E5%9C%A8Unity%E4%B8%AD%E7%9A%84%E6%89%8B%E5%8A%BF%E8%AF%86%E5%88%AB/"/>
+    <id>http://yoursite.com/2016/10/12/2016-10-12_LeapMotion 在Unity中的手势识别/</id>
+    <published>2016-10-11T16:00:00.000Z</published>
+    <updated>2016-11-03T11:19:54.356Z</updated>
+    
+    <content type="html"><![CDATA[<p>今天终于把LeapMotion的手势（特指静态手势）识别搞懂了，现在以下记录。</p>
+<p>首先识别的脚本是绑定在物理手臂上。对手势的识别是通过对手势的分析做出来的。如果你的手势是比较复杂的手势，例如下图：<br><img src="http://i.imgur.com/MgEXWgx.png" alt=""></p>
+<p>这个手势几个特点：</p>
+<ol>
+<li>大拇指和食指需要伸出；</li>
+<li>大拇指指向正上方；</li>
+<li>食指指向左边。</li>
+</ol>
+<p>而且这三个条件之间的关系是And，所以需要添加一个逻辑控制模块DetectorLogicGate<br>，这个模块可以将多个条件进行与或运算，而且可以对输出进行取非运算。</p>
+<p><img src="http://i.imgur.com/gJvq0fY.png" alt=""></p>
+<p>下面详细介绍:</p>
+<p>1.代表如果混合逻辑满足条件时的动作。</p>
+<p>2.代表如果混合逻辑不满足条件时的动作。</p>
+<p>3.代表检测器，可以理解为条件，这里就代表上面描述的三个条件。注意到修改size时，Element的元素是不需要自己填写的，应该是系统自动添的，需要注意的是，如果是复杂逻辑的自条件的顺序要紧连。</p>
+<p>4.选择运算符，是与还是或。</p>
+<p>5.对结果取非运算。</p>
+<h3 id="子条件可以有以下几种组合而成"><a href="#子条件可以有以下几种组合而成" class="headerlink" title="子条件可以有以下几种组合而成:"></a>子条件可以有以下几种组合而成:</h3><p>ExtendedFingerDetector : 伸出手指检测，可以指定伸出哪些手指</p>
+<p>FingerDirectionDetector ： 手指方向检测，一次只能指定一个方向，如果想指定多个手指的方向，需要添加多个脚本</p>
+<p>PalmDirectionDetector ： 手掌方向监测，是从掌心发出的法线方向</p>
+<p>还有两个脚本，PinchDetector和ProximityDetector ，因为暂时还不清楚它们的用途，所以暂不介绍。</p>
+<p><img src="http://i.imgur.com/EguVj1l.jpg" alt=""></p>
+<p>可以从图片中看到，大拇指和食指我指定为Extended,代表需要这两根手指伸出，而OnActivate和OnDeactivate()保持为空，这是因为我现在使用的这个ExtendedFingerDetector是作为复杂运算的子运算，所以里面不需要写输出。另一方面，如果只想单独地判断是否有手指伸出的话，可以直接在里面定义输出。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;今天终于把LeapMotion的手势（特指静态手势）识别搞懂了，现在以下记录。&lt;/p&gt;
+&lt;p&gt;首先识别的脚本是绑定在物理手臂上。对手势的识别是通过对手势的分析做出来的。如果你的手势是比较复杂的手势，例如下图：&lt;br&gt;&lt;img src=&quot;http://i.imgur.com/
+    
+    </summary>
+    
+      <category term="unity3D" scheme="http://yoursite.com/categories/unity3D/"/>
+    
+    
+      <category term="unity3D" scheme="http://yoursite.com/tags/unity3D/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Android中上拉、下拉刷新的解决方案总结</title>
+    <link href="http://yoursite.com/2016/10/09/2016-10-09_Android%E4%B8%AD%E4%B8%8A%E6%8B%89%E3%80%81%E4%B8%8B%E6%8B%89%E5%88%B7%E6%96%B0%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88%E6%80%BB%E7%BB%93/"/>
+    <id>http://yoursite.com/2016/10/09/2016-10-09_Android中上拉、下拉刷新的解决方案总结/</id>
+    <published>2016-10-08T16:00:00.000Z</published>
+    <updated>2016-11-03T11:19:53.924Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="Android中上拉、下拉刷新的解决方案总结"><a href="#Android中上拉、下拉刷新的解决方案总结" class="headerlink" title="Android中上拉、下拉刷新的解决方案总结"></a>Android中上拉、下拉刷新的解决方案总结</h1><blockquote>
+<p>序：<br>android中上拉、下拉刷新在日常的交互中最为常见，而android系统并没有提供完善的解决方案，本文通过总结几种常见的刷新解决方案的优缺点，供各位读者方便选取适合自己的方案。本文的内容控件以RecyclerView为例。</p>
+</blockquote>
+<p>常见的方案主要有以下几种：</p>
+<p><strong>1. SwipeRefreshLayout 解决方案</strong></p>
+<p>根据需求不同可以分为两类</p>
+<ul>
+<li>只需要显示刷新的进度动画</li>
+<li>需要在底部显示加载更多</li>
+</ul>
+<p><strong>2. 第三方自定义控件 解决方案</strong></p>
+<ul>
+<li><a href="https://github.com/OrangeGangsters/SwipyRefreshLayout" target="_blank" rel="external">SwipyRefreshLayout</a></li>
+<li><a href="https://github.com/lynnchurch/PullToRefresh" title="PullToRefresh" target="_blank" rel="external">PullToRefresh</a></li>
+<li><a href="https://github.com/bingoogolapple/BGARefreshLayout-Android" target="_blank" rel="external">BGARefreshLayout-Android</a></li>
+</ul>
+<p>咱们按照顺序依次剖析</p>
+<h2 id="1-SwipeRefreshLayout-解决方案"><a href="#1-SwipeRefreshLayout-解决方案" class="headerlink" title="1. SwipeRefreshLayout 解决方案"></a>1. SwipeRefreshLayout 解决方案</h2><p>SwipeRefreshLayout是android官方出的下拉组件，但是只拥有监听下拉刷新的功能，并没有开放上拉刷新的功能，所以这部分我们需要自定义。</p>
+<p>以下主要说上拉功能，分为根据需求分为两种：</p>
+<ul>
+<li>只需要显示刷新的进度动画</li>
+<li>需要在底部显示加载更多</li>
+</ul>
+<h3 id="1-只需要显示刷新的进度动画"><a href="#1-只需要显示刷新的进度动画" class="headerlink" title="1. 只需要显示刷新的进度动画"></a>1. 只需要显示刷新的进度动画</h3><p>监听上拉动作的原理是对RecyclerView设置滑动监听器OnScrollListener，如果当前滑动状态为<code>RecyclerView.SCROLL_STATE_IDLE</code><br>而且当前最后一个可见项的位置正好是列表中最后一项，代码如下：</p>
+<pre><code>recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+    @Override
+    public void onScrollStateChanged(RecyclerView recyclerView,
+                                     int newState) {
+        super.onScrollStateChanged(recyclerView, newState);
+        if (newState == RecyclerView.SCROLL_STATE_IDLE
+                &amp;&amp; lastVisibleItem + 1 == adapter.getItemCount()) {
+            swipeRefreshLayout.setRefreshing(true);
+            //在这里添加请求数据代码，请求完成后 swipeRefreshLayout.setRefreshing(false);
+        }
+    }
+    @Override
+    public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+        super.onScrolled(recyclerView, dx, dy);
+        lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
+    }
+
+});
+</code></pre><p>显示效果为，上拉时也显示刷新提示，和下拉的那个没有区别，只是提示刷新，所以用户体验略差点，但是使用方法简单。</p>
+<p><img src="http://pic.sdodo.com/tool/picadjust/r.php?fu=../_tempf/1009/1475991116-28.png&amp;fn=1475991116-28.png&amp;type=png" alt=""></p>
+<h3 id="2-需要在底部显示加载更多"><a href="#2-需要在底部显示加载更多" class="headerlink" title="2. 需要在底部显示加载更多"></a>2. 需要在底部显示加载更多</h3><p>如果需要给RecyclerView添加刷新提示，比如HeaderView和FooterView 。 先上代码，</p>
+<pre><code>public class RecyclerViewAdapter extends RecyclerView.Adapter {
+
+private ArrayList&lt;String&gt; mList;
+int load_more_status ;
+public static final int PULLUP_LOAD_MORE = 0;
+public static final int LOADING_MORE = 1;
+public static final int NO_MORE = 2;
+
+RecyclerViewAdapter(Context context)
+{
+    mList = MainActivity.list;
+}
+@Override
+public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    if (viewType == 0) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(
+                R.layout.layout_item, null);
+        return new ItemViewHolder(view);
+    }
+    // type == TYPE_FOOTER 返回footerView
+    else if (viewType == 1) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(
+                R.layout.layout_footerview, null);
+        return new FooterViewHolder(view);
+    }
+
+    return null;
+}
+
+public void changeFooterViewState(int status)
+{
+    load_more_status = status;
+    notifyDataSetChanged();
+}
+
+public void addMoreItem(List&lt;String&gt; newDatas) {
+    mList.addAll(newDatas);
+    notifyDataSetChanged();
+}
+
+@Override
+public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    if(holder instanceof ItemViewHolder)
+        ((ItemViewHolder) holder).textView.setText(position+&quot;位置&quot;);
+    else
+    {
+        FooterViewHolder footViewHolder = (FooterViewHolder)holder;
+        switch (load_more_status){
+            case PULLUP_LOAD_MORE:
+                footViewHolder.foot_view_item_tv.setText(&quot;上拉加载更多...&quot;);
+                break;
+            case LOADING_MORE:
+                footViewHolder.foot_view_item_tv.setText(&quot;正在加载更多数据...&quot;);
+                break;
+            case NO_MORE:
+                footViewHolder.foot_view_item_tv.setText(&quot;没有更多数据&quot;);
+                break;
+        }
+    }
+}
+
+@Override
+public int getItemCount() {
+    return mList.size()+1;
+}
+
+public class ItemViewHolder extends RecyclerView.ViewHolder
+{
+    public ItemViewHolder(View itemView) {
+        super(itemView);
+        textView = (TextView)itemView.findViewById(R.id.textView);
+    }
+    public TextView textView;
+}
+
+class FooterViewHolder extends RecyclerView.ViewHolder {
+    public FooterViewHolder(View view) {
+        super(view);
+        foot_view_item_tv = (TextView) view.findViewById(R.id.textView);
+    }
+    TextView foot_view_item_tv;
+}
+
+@Override
+public int getItemViewType(int position) {
+        if (position + 1 == getItemCount() )
+            return 1;
+        else
+            return 0;
+}
+}
+</code></pre><p>注意看下就发现有几个地方与普通的不一样：</p>
+<ul>
+<li>getItemCount 的返回值是 <code>mList.size()+1;</code> 因为当滑动到最后一项时，最后一项需要添加一个提示：“继续滑动加载更多”</li>
+<li>添加两个ViewHolder，分别为普通的item和footer的ViewHolder,在onCreateViewHolder中为不同的item绑定不同的布局。</li>
+<li>在getItemViewType中建两个ViewType，分别代表普通item和FooterView。</li>
+<li>在onBindViewHolder中对FooterView项进行处理，判断当前状态，显示不同的文字。</li>
+</ul>
+<p>实际上的原理是这样的，其实列表中会一直比数据的List多一项，这一项在列表最后，每次滑动到最后时，就可以看到这个项，而加载不仅是当前最后一项可见而且需要停止滑动，所以滑动到最后一项并松手可以就刷新了，刷新时通过以下代码调用：</p>
+<pre><code>recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+        @Override
+        public void onScrollStateChanged(RecyclerView recyclerView,
+                                         int newState) {
+            super.onScrollStateChanged(recyclerView, newState);
+            if (newState == RecyclerView.SCROLL_STATE_IDLE
+                    &amp;&amp; lastVisibleItem + 1 == adapter.getItemCount()) {
+                adapter.changeFooterViewState(RecyclerViewAdapter.LOADING_MORE);
+                // 此处在现实项目中，请换成网络请求数据代码，sendRequest .....
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        List&lt;String&gt; newDatas = new ArrayList&lt;String&gt;();
+                        for (int i = 0; i&lt; 5; i++) {
+                            int index = i +1;
+                            newDatas.add(&quot;more item&quot; + index);
+                        }
+                        adapter.addMoreItem(newDatas);
+                        adapter.changeFooterViewState(RecyclerViewAdapter.PULLUP_LOAD_MORE);
+                    }
+                }, 2500);
+            }
+        }
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+            lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
+        }
+
+    });
+</code></pre><p>效果如图，类似地可以做HeaderView。代码上略微复杂，但是交互效果好，而且目前市面上的大部分啊拍拍也是如此做的。</p>
+<p><img src="http://pic.sdodo.com/tool/picadjust/r.php?fu=../_tempf/1009/1475993744-62.png&amp;fn=1475993744-62.png&amp;type=png" alt=""></p>
+<p>未完待续。。。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;Android中上拉、下拉刷新的解决方案总结&quot;&gt;&lt;a href=&quot;#Android中上拉、下拉刷新的解决方案总结&quot; class=&quot;headerlink&quot; title=&quot;Android中上拉、下拉刷新的解决方案总结&quot;&gt;&lt;/a&gt;Android中上拉、下拉刷新的解决方案
+    
+    </summary>
+    
+      <category term="android" scheme="http://yoursite.com/categories/android/"/>
+    
+    
+      <category term="android" scheme="http://yoursite.com/tags/android/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>android  关于图片加载速度优化方案</title>
+    <link href="http://yoursite.com/2016/09/20/2016-09-20_android%20%20%E5%85%B3%E4%BA%8E%E5%9B%BE%E7%89%87%E5%8A%A0%E8%BD%BD%E9%80%9F%E5%BA%A6%E4%BC%98%E5%8C%96%E6%96%B9%E6%A1%88/"/>
+    <id>http://yoursite.com/2016/09/20/2016-09-20_android  关于图片加载速度优化方案/</id>
+    <published>2016-09-19T16:00:00.000Z</published>
+    <updated>2016-11-03T11:19:53.863Z</updated>
+    
+    <content type="html"><![CDATA[<p>今天下载了58同城旗下的转转app,发现那里的图片加载速度真的是太快了，快的我基本没有感觉到这是网络上下载的，第一次见到这么快的加载速度，让我惊讶，问了下转转的负责人，他跟我说了几个关键词，这里我记录下，以后方便自己实现体验：</p>
+<p>1.webp 合适的尺寸</p>
+<p>2.腾讯云cdn</p>
+<p>3.fresco框架</p>
+<p>4.还有后端的服务</p>
+<p>后端我接触不了，我就下次根据前三点做个测试，记录出详细的测试数据。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;今天下载了58同城旗下的转转app,发现那里的图片加载速度真的是太快了，快的我基本没有感觉到这是网络上下载的，第一次见到这么快的加载速度，让我惊讶，问了下转转的负责人，他跟我说了几个关键词，这里我记录下，以后方便自己实现体验：&lt;/p&gt;
+&lt;p&gt;1.webp 合适的尺寸&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="未分类" scheme="http://yoursite.com/categories/%E6%9C%AA%E5%88%86%E7%B1%BB/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>对java集合类的理解</title>
+    <link href="http://yoursite.com/2016/09/14/2016-09-14_%E5%AF%B9java%E9%9B%86%E5%90%88%E7%B1%BB%E7%9A%84%E7%90%86%E8%A7%A3/"/>
+    <id>http://yoursite.com/2016/09/14/2016-09-14_对java集合类的理解/</id>
+    <published>2016-09-13T16:00:00.000Z</published>
+    <updated>2016-11-03T11:19:53.663Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="对java集合类的理解"><a href="#对java集合类的理解" class="headerlink" title="对java集合类的理解"></a>对java集合类的理解</h1><hr>
+<h2 id="1-ArrayList扩容策略"><a href="#1-ArrayList扩容策略" class="headerlink" title="1. ArrayList扩容策略"></a>1. ArrayList扩容策略</h2><p>这段时间，找工作，一方面是辛苦，另一方面也是收获，知道自己的哪些不足或者哪些技术没有完全弄清楚，是一个不错的检测自己的方式。</p>
+<blockquote>
+<p>-面试官问道：说下ArrayList和LinkedList的区别？</p>
+</blockquote>
+<p>首先这道题的答案我当时是知道的，我开始说ArrayList是动态数组，LinkedList是链表，然后面试官打断我：</p>
+<blockquote>
+<ul>
+<li>ArrayList是怎么实现动态数组的？</li>
+</ul>
+</blockquote>
+<p>&gt;</p>
+<p>当时就有点懵，实在想不起来了，我就按照我的想法说：</p>
+<blockquote>
+<ul>
+<li>里面用一个数组存数据，当新加的数据超出数组长度的时候，就新建一个数组长度多1的数组，然后把之前的数组复制过去，在添加新的数组。</li>
+</ul>
+</blockquote>
+<p>&gt;</p>
+<p>面试官又说</p>
+<blockquote>
+<ul>
+<li>那我有需要添加一个数据呢？继续增加1个长度在复制？</li>
+</ul>
+</blockquote>
+<p>&gt;</p>
+<p>面试过后，我就查阅ArrayList的源代码（jdk 1.8.0_101）：</p>
+<pre><code>@Override public boolean add(E object) {
+    Object[] a = array;
+    int s = size;
+    if (s == a.length) {
+        Object[] newArray = new Object[s +
+                (s &lt; (MIN_CAPACITY_INCREMENT / 2) ?
+                 MIN_CAPACITY_INCREMENT : s &gt;&gt; 1)];
+        System.arraycopy(a, 0, newArray, 0, s);
+        array = a = newArray;
+    }
+    a[s] = object;
+    size = s + 1;
+    modCount++;
+    return true;
+}
+</code></pre><p>具体解释下这段代码，在添加新元素时，首先判断当前容量是否超过MIN_CAPACITY_INCREMENT / 2 =<br>6，如果不超过6就直接把长度变为s+12,否则当容量大于6时，扩容为之前容量的1.5倍。再使用System.arraycopy复制数组，添加新元素。</p>
+<p>而在jdk1.7版本，扩容策略上略有不同：</p>
+<pre><code>private void grow(int minCapacity) {
+    // overflow-conscious code
+    int oldCapacity = elementData.length;
+    int newCapacity = oldCapacity + (oldCapacity &gt;&gt; 1);
+    if (newCapacity - minCapacity &lt; 0)
+        newCapacity = minCapacity;
+    if (newCapacity - MAX_ARRAY_SIZE &gt; 0)
+        newCapacity = hugeCapacity(minCapacity);
+    // minCapacity is usually close to size, so this is a win:
+    elementData = Arrays.copyOf(elementData, newCapacity);
+}
+</code></pre><p>扩容策略为新的数组长度是之前的1.5倍，然后再进行判断，如果当前新长度小于当前最小容量，数组长度就等于最小容量，如果新的长度长度大于最大长度，就返回hugeCapacity(minCapacity)。</p>
+<h2 id="2-ArrayList和Vector区别"><a href="#2-ArrayList和Vector区别" class="headerlink" title="2. ArrayList和Vector区别"></a>2. ArrayList和Vector区别</h2><p>ArrayList和Vector都是动态数组，不过二者的主要区别是Vector内部大部分方法使用syncchronized关键字同步，所以是线程安全的，而ArrayList则不是线程安全的。</p>
+<p>所以在单线程或者多线程但是不会同时访问同一个对象时可以使用ArrayList,速度快；多线程操作同一个对象的情况下使用Vector因为安全。</p>
+<p>另外，ArrayList和Vector在扩容策略上也有一点区别：</p>
+<blockquote>
+<ul>
+<li><p>ArrayList的策略上一段文字已经说明，基本可以概述为容量满时扩容为原来的1.5倍；</p>
+</li>
+<li><p>而Vector则是在容量满时扩容为原来的2倍。</p>
+</li>
+</ul>
+</blockquote>
+<p>&gt;</p>
+<p><em>注：CopyOnWriteArrayList是线程安全的ArrayList,一般来说可以替代Vector使用</em></p>
+<h2 id="3-ArrayList和LinkedList的区别"><a href="#3-ArrayList和LinkedList的区别" class="headerlink" title="3.ArrayList和LinkedList的区别"></a>3.ArrayList和LinkedList的区别</h2><p>ArrayList是线性表结构，而LinkedList是链表结构。<br>ArrayList内部由数组实现，数组可以由下标快速寻址，所以ArrayList的get和set速度很快。<br>LinkedList内部使用Node类包含上一个节点，下一个节点的指针和当前节点的值，所以对于LinkedList<br>使用add和remove速度很快，而get和set则需要一个遍历来寻址节点。</p>
+<p>LinkedList还可以实现队列，双向队列，栈等数据结构。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;对java集合类的理解&quot;&gt;&lt;a href=&quot;#对java集合类的理解&quot; class=&quot;headerlink&quot; title=&quot;对java集合类的理解&quot;&gt;&lt;/a&gt;对java集合类的理解&lt;/h1&gt;&lt;hr&gt;
+&lt;h2 id=&quot;1-ArrayList扩容策略&quot;&gt;&lt;a href
+    
+    </summary>
+    
+      <category term="面试" scheme="http://yoursite.com/categories/%E9%9D%A2%E8%AF%95/"/>
+    
+    
+      <category term="面试" scheme="http://yoursite.com/tags/%E9%9D%A2%E8%AF%95/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Android 自定义弹幕 View</title>
+    <link href="http://yoursite.com/2016/09/05/2016-09-05_Android%20%E8%87%AA%E5%AE%9A%E4%B9%89%E5%BC%B9%E5%B9%95%20View/"/>
+    <id>http://yoursite.com/2016/09/05/2016-09-05_Android 自定义弹幕 View/</id>
+    <published>2016-09-04T16:00:00.000Z</published>
+    <updated>2016-11-03T11:19:53.042Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="Android-自定义弹幕-View-高度自定义"><a href="#Android-自定义弹幕-View-高度自定义" class="headerlink" title="Android 自定义弹幕 View 高度自定义"></a>Android 自定义弹幕 View 高度自定义</h1><p>##<br><a href="https://github.com/hust201010701/Danmu/tree/master#1自定义弹幕的model层" target="_blank" rel="external"></a>1.自定义弹幕的Model层</p>
+<p>本着MVC的框架，弹幕分为弹幕的Model层和View层，Activity中负责Controller层连接二者。 自定义一个DanmuText类</p>
+<pre><code>private String content ;
+private int textSize ;
+private int textColor;
+private int x;
+private int y;
+private double xRate;
+private double yRate;
+private Paint paint;
+private boolean isShow ;
+private int speed ;
+private int width;
+private int height;
+private int orientation; //方向，0代表水平，1代表竖直
+private int antiDirection; //是否反方向运动，0代表否，1代表是
+</code></pre><p>分别定义以上弹幕属性，然后添加get，set方法。 并添加默认构造方法：</p>
+<pre><code>DanmuText()
+{
+    paint = new Paint();
+    paint.setColor(Color.BLUE);
+    paint.setTextSize(80);
+    width = 0;
+    speed = 1;
+    xRate = yRate = Math.random();
+    orientation = 0;
+    antiDirection = 0;
+    new Thread(new DanmuRollRunnable()).start();
+}
+</code></pre><p>在构造方法中启动一个线程，以对弹幕进行滚动处理。</p>
+<pre><code>public class DanmuRollRunnable implements Runnable {
+        @Override
+        public void run() {
+            while (true) {
+                if(orientation == 0)
+                    x += speed;
+                else
+                    y += speed;
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+}
+</code></pre><p>DanmuRollRunnable 中是一个死循环，每隔10ms判断一次，orientation 代表<br>弹幕的滚动方向是水平的还是竖直的，0代表水平，1代表竖直。</p>
+<p>##<br><a href="https://github.com/hust201010701/Danmu/tree/master#2自定义弹幕view层" target="_blank" rel="external"></a>2.自定义弹幕View层</p>
+<p>自定义一个DanmuView类，DanmuView是继承自View，其中主要的变量是</p>
+<pre><code>private String mOrientation = &quot;horizontal&quot;;
+private boolean mAntidirection = false;
+private int width;
+private int height;
+ArrayList&lt;DanmuText&gt; list;
+</code></pre><p>mOrientation 和 mAntidirection 用来保存从XML文件中获取的弹幕的排列方向和运动方向。<br>width和height用于保存DanmuView的宽和高。list用于动态存储弹幕DanmuText类。</p>
+<p>重点： 在onDraw中对list中所有弹幕进行判断处理。</p>
+<pre><code>@Override
+protected void onDraw(Canvas canvas) {
+    super.onDraw(canvas);
+    for (int i = 0; i &lt; list.size(); i++) {
+        if(list.get(i).getAntiDirection() == 0) {
+            //竖直方向运动
+            if (list.get(i).getOrientation() == 1) {
+                if (list.get(i).getY() &lt; height + list.get(i).getHeight()) {
+                    canvas.drawText(list.get(i).getContent(), (int) (list.get(i).getxRate() * width), height - list.get(i).getY(), list.get(i).getPaint());
+                    postInvalidate();
+                } else {
+                    list.get(i).setShow(false);
+                    removeDanmu(i);
+                    postInvalidate();
+                }
+            } else {
+                if (list.get(i).getX() &lt; width + list.get(i).getWidth()) {
+                    canvas.drawText(list.get(i).getContent(), width - list.get(i).getX(), (int) (list.get(i).getyRate() * height), list.get(i).getPaint());
+                    postInvalidate();
+                } else {
+                    list.get(i).setShow(false);
+                    removeDanmu(i);
+                    postInvalidate();
+                }
+            }
+        }
+        else
+        {
+            //竖直方向运动
+            if (list.get(i).getOrientation() == 1) {
+                if (list.get(i).getY() &lt; height) {
+                    canvas.drawText(list.get(i).getContent(), (int) (list.get(i).getxRate() * width), list.get(i).getY() - list.get(i).getHeight(), list.get(i).getPaint());
+                    postInvalidate();
+                } else {
+                    list.get(i).setShow(false);
+                    removeDanmu(i);
+                    postInvalidate();
+                }
+            } else {
+                if (list.get(i).getX() &lt; width) {
+                    canvas.drawText(list.get(i).getContent(), list.get(i).getX() - list.get(i).getWidth(), (int) (list.get(i).getyRate() * height), list.get(i).getPaint());
+                    postInvalidate();
+                } else {
+                    list.get(i).setShow(false);
+                    removeDanmu(i);
+                    postInvalidate();
+                }
+            }
+        }
+    }
+
+}
+</code></pre><p>同时增加添加弹幕和移除弹幕的方法：</p>
+<pre><code>public void addDanmu(DanmuText text) {
+    if (mOrientation.equals(&quot;vertical&quot;))
+        text.setOrientation(1);
+    else
+        text.setOrientation(0);
+    if (mAntidirection)
+        text.setAntiDirection(1);
+    else
+        text.setAntiDirection(0);
+    list.add(text);
+}
+
+public void removeDanmu(int i) {
+    list.remove(i);
+}
+</code></pre><p>3.在Activity中对弹幕进行调用</p>
+<pre><code>package com.orzangleli.danmu;
+
+import android.graphics.Color;
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+
+import java.util.Random;
+
+public class MainActivity extends AppCompatActivity {
+
+    String danmu[] = new String[]{&quot;这是一个Danmu Demo&quot;,&quot;它可以自定义Danmu的速度&quot;,&quot;方向&quot;,&quot;还有颜色&quot;,&quot;文本大小&quot;,&quot;还有滑动方向&quot;};
+    DanmuView danmuView;
+    EditText message;
+    Button send;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        toolbar.setOnMenuItemClickListener(onMenuItemClick);
+
+        danmuView = (DanmuView) this.findViewById(R.id.danmuView);
+        message = (EditText) this.findViewById(R.id.message);
+        send = (Button) this.findViewById(R.id.send);
+
+        send.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(!message.getText().toString().trim().equals(&quot;&quot;))
+                {
+                    DanmuText danmuText = new DanmuText();
+                    danmuText.setContent(message.getText().toString().trim());
+                    Random random =new Random();
+                    danmuText.setTextColor(Color.rgb(random.nextInt(255), random.nextInt(255), random.nextInt(255)));
+                    danmuView.addDanmu(danmuText);
+                    message.setText(&quot;&quot;);
+                }
+            }
+        });
+
+        for(int i=0;i&lt;danmu.length;i++)
+        {
+            DanmuText danmuText = new DanmuText();
+            danmuText.setContent(danmu[i]);
+            Random random =new Random();
+            danmuText.setTextColor(Color.rgb(random.nextInt(255), random.nextInt(255), random.nextInt(255)));
+            danmuView.addDanmu(danmuText);
+        }
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    private Toolbar.OnMenuItemClickListener onMenuItemClick = new Toolbar.OnMenuItemClickListener() {
+        @Override
+        public boolean onMenuItemClick(MenuItem menuItem) {
+            switch (menuItem.getItemId()) {
+                case R.id.action_vertical:
+                    danmuView.setOrientation(&quot;vertical&quot;);
+                    break;
+                case R.id.action_horizontal:
+                    danmuView.setOrientation(&quot;horizontal&quot;);
+                    break;
+                case R.id.action_normaldirection:
+                    danmuView.setmAntidirection(false);
+                    break;
+                case R.id.action_antinormaldirention:
+                    danmuView.setmAntidirection(true);
+                    break;
+            }
+            return true;
+        }
+    };
+
+}
+</code></pre><p>添加一个效果图：</p>
+<p><a href="https://camo.githubusercontent.com/e8e079a4d259df8e4ee1eb7e468d397d457ab46b/687474703a2f2f377872726e692e636f6d312e7a302e676c622e636c6f7564646e2e636f6d2f53637265656e5265636f72645f323031362d30392d30352d31332d35332d31342e6d70345f313437333035353632392e6769663f696d61676556696577322f302f772f333630" target="_blank" rel="external"><img src="https://camo.githubusercontent.com/e8e079a4d259df8e4ee1eb7e468d397d457ab46b/687474703a2f2f377872726e692e636f6d312e7a302e676c622e636c6f7564646e2e636f6d2f53637265656e5265636f72645f323031362d30392d30352d31332d35332d31342e6d70345f313437333035353632392e6769663f696d61676556696577322f302f772f333630" alt=""></a></p>
+<p>项目托管地址：</p>
+<p><a href="https://github.com/myst729/wp-reposidget" target="_blank" rel="external">GitHub 仓库挂件 WordPress 插件</a></p>
+<h2 id="hust201010701"><a href="#hust201010701" class="headerlink" title="hust201010701 /"></a><a href="https://github.com/hust201010701" target="_blank" rel="external">hust201010701</a> /</h2><p><a href="https://github.com/hust201010701/Danmu" target="_blank" rel="external"><strong>Danmu</strong></a></p>
+<p>自定义弹幕视图，可以实现水平/竖直方向，正向/反向弹幕，可以自定义颜色、文字大小等</p>
+<p><a href="http://www.orzangleli.com" target="_blank" rel="external"><strong>http://www.orzangleli.com</strong></a></p>
+<p>21 <a href="https://github.com/hust201010701/Danmu/archive/master.zip" target="_blank" rel="external">Download ZIP</a></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;Android-自定义弹幕-View-高度自定义&quot;&gt;&lt;a href=&quot;#Android-自定义弹幕-View-高度自定义&quot; class=&quot;headerlink&quot; title=&quot;Android 自定义弹幕 View 高度自定义&quot;&gt;&lt;/a&gt;Android 自定义弹幕 
+    
+    </summary>
+    
+      <category term="未分类" scheme="http://yoursite.com/categories/%E6%9C%AA%E5%88%86%E7%B1%BB/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>Android Service 持久运行不被杀死方法总结</title>
+    <link href="http://yoursite.com/2016/08/22/2016-08-22_Android%20Service%20%E6%8C%81%E4%B9%85%E8%BF%90%E8%A1%8C%E4%B8%8D%E8%A2%AB%E6%9D%80%E6%AD%BB%E6%96%B9%E6%B3%95%E6%80%BB%E7%BB%93/"/>
+    <id>http://yoursite.com/2016/08/22/2016-08-22_Android Service 持久运行不被杀死方法总结/</id>
+    <published>2016-08-21T16:00:00.000Z</published>
+    <updated>2016-11-03T11:19:54.102Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote>
+<p>序：好久没有写文字了，并不代表我不在学习，只是学习的过程有些漫长，加上总结需要时间。</p>
+</blockquote>
+<h1 id="Android-Service-持久运行不被杀死方法总结"><a href="#Android-Service-持久运行不被杀死方法总结" class="headerlink" title="Android Service 持久运行不被杀死方法总结"></a>Android Service 持久运行不被杀死方法总结</h1><p>&gt;<br>简介：Android应用开发中，我们经常会遇到各种各样的场景需要保持Service不被杀死的需求。最常见的即时通讯类软件，由于实时性需求，需要保持消息服务类的运行状态。这里我总结了当下几种常见的解决方法及其利弊。首先申明：迄今为止我没有发现能够通过常规方法达到流氓需求(通过长按home键清除都清除不掉)的方法，目前所有方法都是指通过Android的内存回收机制和普通的第三方内存清除等手段后仍然保持运行的方法。</p>
+<h2 id="方法1：申明Service为前台服务和提高Service的优先级"><a href="#方法1：申明Service为前台服务和提高Service的优先级" class="headerlink" title="方法1：申明Service为前台服务和提高Service的优先级"></a>方法1：申明Service为前台服务和提高Service的优先级</h2><p>这里说到了两个小分类，申明Service为前台服务和提高Service的优先级，实际上申明Service为前台服务也是提高服务的优先级，因为Android系统中默认的内存回收顺序(越往下越先回收)是：</p>
+<blockquote>
+<p>( 引用自：<a href="http://blog.csdn.net/mad1989/article/details/22492519" target="_blank" rel="external">http://blog.csdn.net/mad1989/article/details/22492519</a>)</p>
+</blockquote>
+<p>&gt;</p>
+<blockquote>
+<ol>
+<li><p>前台进程( FOREGROUND_APP)</p>
+</li>
+<li><p>可视进程(VISIBLE_APP )</p>
+</li>
+<li><p>次要服务进程(SECONDARY_SERVER )</p>
+</li>
+<li><p>后台进程 (HIDDEN_APP)</p>
+</li>
+<li><p>内容供应节点(CONTENT_PROVIDER)</p>
+</li>
+<li><p>空进程(EMPTY_APP)</p>
+</li>
+</ol>
+</blockquote>
+<p>&gt;</p>
+<p>具体方法是在Service的onStartCommand方法中初始化Notification对象并将其绑定在服务上成为前台(Foreground)服务。<br>具体代码：</p>
+<pre><code>@Override
+public int onStartCommand(Intent intent, int flags, int startId) {
+    //使用Notification.Builder构造Notification
+    Notification.Builder builder = new Notification.Builder(this.getApplicationContext());
+    builder.setContentInfo(&quot;补充内容&quot;);
+    builder.setContentText(&quot;主内容区&quot;);
+    builder.setContentTitle(&quot;通知标题&quot;);
+    builder.setSmallIcon(R.mipmap.ic_launcher);
+    builder.setTicker(&quot;新消息&quot;);
+    builder.setAutoCancel(true);
+    builder.setWhen(System.currentTimeMillis());
+    Intent intent2 = new Intent(this.getApplicationContext(), MainActivity.class);
+    PendingIntent pendingIntent = PendingIntent.getActivity(this.getApplicationContext(), 0, intent2, PendingIntent.FLAG_CANCEL_CURRENT);
+    builder.setContentIntent(pendingIntent);
+    Notification notification = builder.build();
+    //设置为前台服务，必须绑定一个notification对象，实际上也就是说如果你想做持久化的Service就得让用户知道，PID是自定义的整数表明notification的ID
+    startForeground(PID, notification);
+
+    return START_STICKY;
+}
+</code></pre><p>代码中提到：<em>设置为前台服务，必须绑定一个notification对象，实际上也就是说如果你想做持久化的Service就得让用户知道，PID是自定义的整数表明notification的ID</em><br>，实际上有一种方法可以达到前台服务不显示通知栏的效果。</p>
+<h3 id="前台服务不显示通知栏"><a href="#前台服务不显示通知栏" class="headerlink" title="前台服务不显示通知栏"></a>前台服务不显示通知栏</h3><p>这里用到的黑科技来自博客：<a href="http://blog.csdn.net/wxx614817/article/details/50669420" target="_blank" rel="external">http://blog.csdn.net/wxx614817/article/details/50669420</a>。文中所提的方法即为：再新开一个辅助Service，onStartCommand里面同样设置为前台服务，而且startForeground(PID,<br>notification)的PID和第一个Service相同，然后在辅助Service中关闭前台服务，这样第一个Service还在运行，但是第二个服务会让通知栏关闭，这样就实现了所需功能。具体实现方式为：</p>
+<ol>
+<li><p>修改第一个Service里的onStartCommand方法，在后面启动辅助Service. </p>
+<p>   @Override<br>   public int onStartCommand(Intent intent, int flags, int startId) {<br>   //使用Notification.Builder构造Notification<br>   Notification.Builder builder = new Notification.Builder(this.getApplicationContext());<br>   builder.setContentInfo(“补充内容”);<br>   builder.setContentText(“主内容区”);<br>   builder.setContentTitle(“通知标题”);<br>   builder.setSmallIcon(R.mipmap.ic_launcher);<br>   builder.setTicker(“新消息”);<br>   builder.setAutoCancel(true);<br>   builder.setWhen(System.currentTimeMillis());<br>   Intent intent2 = new Intent(this.getApplicationContext(), MainActivity.class);<br>   PendingIntent pendingIntent = PendingIntent.getActivity(this.getApplicationContext(), 0, intent2, PendingIntent.FLAG_CANCEL_CURRENT);<br>   builder.setContentIntent(pendingIntent);<br>   Notification notification = builder.build();<br>   //设置为前台服务，必须绑定一个notification对象，实际上也就是说如果你想做持久化的Service就得让用户知道，PID是自定义的整数表明notification的ID<br>   startForeground(PID, notification);</p>
+<p>   //启动辅助Service<br>   Intent intent3 = new Intent(MyService.this,AssistService.class);<br>   MyService.this.startService(intent3);</p>
+<p>   return START_STICKY;<br>}</p>
+</li>
+</ol>
+<ol>
+<li><p>在辅助Service中开启一个同样ID的notification，并取消。 </p>
+<p>   @Override<br>   public int onStartCommand(Intent intent, int flags, int startId) {</p>
+<pre><code>Notification.Builder builder = new Notification.Builder(this.getApplicationContext());
+builder.setContentInfo(&quot;补充内容&quot;);
+builder.setContentText(&quot;主内容区&quot;);
+builder.setContentTitle(&quot;通知标题&quot;);
+builder.setSmallIcon(R.mipmap.ic_launcher);
+builder.setTicker(&quot;新消息&quot;);
+builder.setAutoCancel(true);
+builder.setWhen(System.currentTimeMillis());
+Intent intent2 = new Intent(this.getApplicationContext(), MainActivity.class);
+PendingIntent pendingIntent = PendingIntent.getActivity(this.getApplicationContext(), 0, intent2, PendingIntent.FLAG_CANCEL_CURRENT);
+builder.setContentIntent(pendingIntent);
+Notification notification = builder.build();
+NotificationManager manager =
+        (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+//先显示
+startForeground(PID, notification);
+//再销毁
+stopForeground(true);
+
+return START_STICKY;
+</code></pre><p>   }</p>
+</li>
+</ol>
+<p>修改Service优先级比较简单：在AndroidManifest.xml文件中添加intent-<br>fliter,priority值在-1000到1000范围内，数值越高优先级越高。</p>
+<pre><code>&lt;service android:name=&quot;.MyService&quot;&gt;
+    &lt;intent-filter android:priority=&quot;1000&quot;&gt;
+        &lt;action android:name=&quot;com.orzangleli.qqservicekeepdemo&quot; /&gt;
+    &lt;/intent-filter&gt;
+&lt;/service&gt;
+</code></pre><p><strong>测试效果：</strong>这种方法经过测试，在手机较高内存使用率时，大概能够运行5分钟左右（测试手机型号：nubia z7 mini ,内存2G）。这实际上也就表明了其缺点，申明为前台服务只能提高优先级，并不能保证在低内存时不被回收。</p>
+<h2 id="方法2：通过BroadcastReceiver-重启服务"><a href="#方法2：通过BroadcastReceiver-重启服务" class="headerlink" title="方法2：通过BroadcastReceiver 重启服务"></a>方法2：通过BroadcastReceiver 重启服务</h2><p>首先解释下BroadcastReceiver的两种注册方式，动态注册和静态注册，两者大多数情况下可以通用，但存在以下l两点区别：</p>
+<ol>
+<li>动态注册在程序关闭时，无法接收到广播，因为注册广播是在程序运行时执行的。</li>
+<li>静态注册虽然可以在程序未打开时接收到广播，但是有三种广播无法静态注册： <ul>
+<li>android.intent.action.SCREEN_ON</li>
+<li>android.intent.action.SCREEN_OFF</li>
+<li>android.intent.action.BATTERY_CHANGED</li>
+<li>android.intent.action.CONFIGURATION_CHANGED</li>
+<li>android.intent.action.TIME_TICK</li>
+</ul>
+</li>
+</ol>
+<p>在测试时，我使用android.intent.action.TIME_TICK动态注册广播接受者，在onReceive方法中添加判断目标服务是否在运行的判断，如果不在运行就重新启动。代码如下：</p>
+<pre><code>public class MyBroadcastReceiver extends BroadcastReceiver {
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        if(intent.getAction().equals(Intent.ACTION_TIME_TICK))
+        {
+            Log.i(&quot;lxc&quot;,&quot;接收到广播了&quot;);
+            if(!isServiceRunning(context,&quot;com.orzangleli.qqservicekeepdemo.MyService&quot;))
+            {
+                Intent service = new Intent(context,MyService.class);
+                service .setAction(&quot;com.orzangleli.qqservicekeepdemo&quot;);
+                context.startService(service);
+            }
+        }
+    }
+
+    public static boolean isServiceRunning(Context context,String serviceClassName){
+        final ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        final List&lt;ActivityManager.RunningServiceInfo&gt; services = activityManager.getRunningServices(Integer.MAX_VALUE);
+
+        for (ActivityManager.RunningServiceInfo runningServiceInfo : services) {
+            if (runningServiceInfo.service.getClassName().equals(serviceClassName)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+}
+</code></pre><p>测试结果：在程序不退出但是服务停止的情况下，的确可以重启服务，但是重启不是即时的，而是每隔1分钟(在每分钟的第0秒触发)，没有尝试其他的静态注册方式，因为我没有找到一个静态注册的广播，它的广播频率比这个android.intent.action.TIME_TICK还要高的，如果各位读者有知道的，麻烦告知下。而在程序完全退出时，动态注册的BroadcastReceiver不再接受广播，所以也就不会重启Service.</p>
+<h2 id="方法3-双进程守护"><a href="#方法3-双进程守护" class="headerlink" title="方法3.双进程守护"></a>方法3.双进程守护</h2><p>双进程守护是指开启两个进程，这两个进程相互独立但是又相互守护，如果其中一个进程被杀死，另一个进程则重启该进程，因为一般情况下不会发生两个进程同时死亡的场景，所以在Service常驻功能上能够满足。</p>
+<p>这里插上一句话：在手机的应用程序中可以看到我们手机里大部分常驻内存的Service都是两个或以上的，比如下图中的微信电话本，Hola桌面和<del>QQ</del>(后面解释了QQ不是用的这种方法).</p>
+<p><img src="http://7xrrni.com1.z0.glb.clouddn.com/Screenshot_2016-08-21-22-52-24.png?imageView2/0/w/360" alt="运行中的程序"></p>
+<p>具体操作步骤为：</p>
+<p><strong>1. 申明Service的进程，主服务和辅助服务不要同一个进程</strong></p>
+<pre><code>&lt;service android:name=&quot;.MyService&quot;
+            android:process=&quot;:myservice&quot;
+            &gt;
+            &lt;intent-filter android:priority=&quot;1000&quot;&gt;
+                &lt;action android:name=&quot;com.orzangleli.qqservicekeepdemo&quot; /&gt;
+            &lt;/intent-filter&gt;
+        &lt;/service&gt;
+        &lt;service android:name=&quot;.AssistService&quot;
+            android:process=&quot;:assistservice&quot;
+            &gt;
+        &lt;/service&gt;
+</code></pre><p><strong>2. 在两个服务中分别启动一个线程检查另一个服务的状态</strong></p>
+<pre><code>class MyRunnable implements  Runnable
+{
+    @Override
+    public void run() {
+        while(enable) {
+            Log.i(TAG, &quot; 时间： &quot; + Calendar.getInstance().get(Calendar.SECOND));
+            keepAssistService();
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
+private  void keepAssistService(){
+    boolean isRun = isServiceRunning(this, Process_Name);
+    if (isRun == false) {
+
+            Log.i(TAG,&quot;重新启动 AssistService&quot;);
+            Intent intent = new Intent(this,AssistService.class);
+            intent .setAction(&quot;com.orzangleli.qqservicekeepdemo&quot;);
+            this.startService(intent);
+    }
+
+}
+
+public static boolean isServiceRunning(Context context,String serviceClassName){
+    final ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+    final List&lt;ActivityManager.RunningServiceInfo&gt; services = activityManager.getRunningServices(Integer.MAX_VALUE);
+
+    for (ActivityManager.RunningServiceInfo runningServiceInfo : services) {
+        if (runningServiceInfo.service.getClassName().equals(serviceClassName)){
+            return true;
+        }
+    }
+    return false;
+}
+</code></pre><p>测试结果：经过一个多小时的使用，后台服务仍然在运行状态。比较完美实现了，唯一的确定就是里面有两个线程循环执行，会导致耗电更快。</p>
+<h2 id="方法4-QQ的一像素保持前台服务方法"><a href="#方法4-QQ的一像素保持前台服务方法" class="headerlink" title="方法4.QQ的一像素保持前台服务方法"></a>方法4.QQ的一像素保持前台服务方法</h2><p>先推荐阅读文章： <a href="http://www.expreview.com/39438.html" target="_blank" rel="external">手机QQ后台为何清不掉？MIUI工程师：全靠1像素的页面保命</a></p>
+<p>文中提到，QQ通过一个像素，在程序退出时，显示这个像素，使得系统认为该服务为前台服务，所以允许常驻内存，这种方法我不很懂。</p>
+<p>我在测试的时候，在Service显示一个悬浮窗，用这个悬浮窗代替QQ的一个像素，但是在运行5分钟左右后，悬浮窗消失同时后台服务也停止运行，不是说有可见的UI的后台服务就是为前台服务了么，怎么也会被杀死。而且如果是用这种方法实现的常驻内存，为什么QQ也会使用到双进程呢？(<strong>更新：经过测试，QQ的双进程并没有守护关系，关闭掉Downloader的那个进程并不会重新启动</strong>)。</p>
+<p>现在的问题就是：为什么我在Service中启动的悬浮窗会被杀死呢？本文会持续更新。</p>
+<h2 id="方法5：使用一些常见的白名单推送包"><a href="#方法5：使用一些常见的白名单推送包" class="headerlink" title="方法5：使用一些常见的白名单推送包"></a>方法5：使用一些常见的白名单推送包</h2><p>据说使用常见的白名单推送包在保持进行活跃上也有一定效果，例如Jpush，或者内置的系统账户同步系统等，定时推送消息然后启动服务。此方法暂未测试，不知道效果如何，暂时留白。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;blockquote&gt;
+&lt;p&gt;序：好久没有写文字了，并不代表我不在学习，只是学习的过程有些漫长，加上总结需要时间。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h1 id=&quot;Android-Service-持久运行不被杀死方法总结&quot;&gt;&lt;a href=&quot;#Android-Service
+    
+    </summary>
+    
+      <category term="android" scheme="http://yoursite.com/categories/android/"/>
+    
+    
+      <category term="android" scheme="http://yoursite.com/tags/android/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>【源码解析】UIL的图片缓存策略</title>
+    <link href="http://yoursite.com/2016/08/16/2016-08-16_%E3%80%90%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90%E3%80%91UIL%E7%9A%84%E5%9B%BE%E7%89%87%E7%BC%93%E5%AD%98%E7%AD%96%E7%95%A5/"/>
+    <id>http://yoursite.com/2016/08/16/2016-08-16_【源码解析】UIL的图片缓存策略/</id>
+    <published>2016-08-15T16:00:00.000Z</published>
+    <updated>2016-11-03T11:19:52.954Z</updated>
+    
+    <content type="html"><![CDATA[<p>UIL中缓存分为内存缓存（MemoryCache）和磁盘缓存(DiscCache).</p>
+<h3 id="内存缓存"><a href="#内存缓存" class="headerlink" title="内存缓存"></a>内存缓存</h3><p>1.强引用缓存</p>
+<p><strong>LRUMemoryCache:</strong> 这个类缓存的都是bitmap对象的强引用.强引用只要引用存在，就不会被回收，而且bitmap的数据量很大，很容易导致程序超过最大内存限制，容易发生OOM.LRUMemoryCache就是最近最少使用内存缓存先删除的原理，这样保证程序不会发生OOM.</p>
+<p>2.弱引用缓存</p>
+<p><strong>WeakMemoryCache:</strong> 这个类缓存的都是bitmap的弱引用，对内存的总大小没有限制，但是不稳定，容易被gc回收掉。</p>
+<p>3.强引用和弱引用相结合</p>
+<ul>
+<li><strong>UsingFreqLimitedMemoryCache:</strong> 先删除最少使用的bitmap</li>
+<li><strong>LRULimitedMemoryCache:</strong> 先删除<strong>最近</strong>最少使用的bitmap</li>
+<li><strong>FIFOLimitedMemoryCache:</strong> 先删除最先加入缓存的bitmap</li>
+<li><strong>LargestLimitedMemortCache:</strong> 先删除最大内存的bitmap</li>
+<li><strong>LimitedAgeMemoryCache:</strong> 先删除比设定值早加入缓存中的bitmap</li>
+</ul>
+<h3 id="磁盘缓存"><a href="#磁盘缓存" class="headerlink" title="磁盘缓存"></a>磁盘缓存</h3><ol>
+<li><strong>FileCountLimitedDiscCache:</strong> 当缓存图片个数超过设定值时，先删除最先加入到磁盘中的文件</li>
+<li><strong>TotalSizeLimitedDiscCache:</strong> 当缓存图片的总文件大小超过设定值时，先删除最先加入到磁盘中的文件</li>
+<li><strong>LimitedAgeDiscCache:</strong> 设置图片存活的最长时间，超过这个时间的，就删除该文件</li>
+<li><strong>UnlimitedDiscCache:</strong> 不限制地在磁盘上缓存</li>
+</ol>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;UIL中缓存分为内存缓存（MemoryCache）和磁盘缓存(DiscCache).&lt;/p&gt;
+&lt;h3 id=&quot;内存缓存&quot;&gt;&lt;a href=&quot;#内存缓存&quot; class=&quot;headerlink&quot; title=&quot;内存缓存&quot;&gt;&lt;/a&gt;内存缓存&lt;/h3&gt;&lt;p&gt;1.强引用缓存&lt;/p&gt;
+
+    
+    </summary>
+    
+      <category term="android" scheme="http://yoursite.com/categories/android/"/>
+    
+    
+      <category term="android" scheme="http://yoursite.com/tags/android/"/>
+    
+      <category term="面试" scheme="http://yoursite.com/tags/%E9%9D%A2%E8%AF%95/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>HTC VIVE VR关卡场景切换原理</title>
+    <link href="http://yoursite.com/2016/08/09/2016-08-09_HTC%20VIVE%20VR%E5%85%B3%E5%8D%A1%E5%9C%BA%E6%99%AF%E5%88%87%E6%8D%A2%E5%8E%9F%E7%90%86/"/>
+    <id>http://yoursite.com/2016/08/09/2016-08-09_HTC VIVE VR关卡场景切换原理/</id>
+    <published>2016-08-08T16:00:00.000Z</published>
+    <updated>2016-11-03T11:19:52.938Z</updated>
+    
+    <content type="html"><![CDATA[<p>在VR中，有时候不止一个场景，我们需要把他单独的场景连接起来，这里我们模仿普遍的网游中“传送门”的原理。</p>
+<p>如图所示，在某一处，有一个传送门标志：</p>
+<p><img src="http://www.orzangleli.com/wp-
+content/uploads/2016/08/chuansong.gif" alt="chuansong"></p>
+<p>然后主角移动到传送门附近时，跳转到下一关。</p>
+<p>这里是根据两者之间的距离来判断的，我们要VIVE<br>包中camer(head)来表示主角位置。场景的加载可以通过Application.LoadLevel来切换，在这里之前，我们需要在File-<br>Build中添加需要加载的所有场景，我这里只有两个，系统会自动分配id给它们，如我的两个场景是0和1。</p>
+<p><img src="http://www.orzangleli.com/wp-
+content/uploads/2016/08/20160809211302.png" alt="20160809211302"></p>
+<p>我们新建一个脚本，然后把脚本托给传送门的GameObject.脚本代码为：</p>
+<pre><code>using UnityEngine;
+using System.Collections;
+
+public class ChangeSence : MonoBehaviour {
+    public GameObject cameraRig;
+    // Use this for initialization
+    void Start () {
+
+    }
+
+    // Update is called once per frame
+    void Update () {
+        if (Vector3.Distance (cameraRig.transform.position, this.transform.position) &lt; 2f) {
+            if (MyApplication.level == 0) {
+                Application.LoadLevel (1);
+                MyApplication.level = 1;
+            } else if (MyApplication.level == 1) {
+                Application.LoadLevel (0);
+                MyApplication.level = 0;
+            }
+        }
+    }
+}
+</code></pre><p>恩，主要就是这样。下一讲，我们来看看VIVE控制器下的武器切换原理。</p>
+<p>组件我打包了，可以下载：需要unity 5.3+版本。</p>
+<p>链接：<a href="http://pan.baidu.com/s/1gfAvRX5" target="_blank" rel="external">http://pan.baidu.com/s/1gfAvRX5</a> 密码：zrk8</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;在VR中，有时候不止一个场景，我们需要把他单独的场景连接起来，这里我们模仿普遍的网游中“传送门”的原理。&lt;/p&gt;
+&lt;p&gt;如图所示，在某一处，有一个传送门标志：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://www.orzangleli.com/wp-
+content/up
+    
+    </summary>
+    
+      <category term="HTC VIVE" scheme="http://yoursite.com/categories/HTC-VIVE/"/>
+    
+    
+      <category term="unity3D" scheme="http://yoursite.com/tags/unity3D/"/>
+    
+      <category term="HTC VIVE" scheme="http://yoursite.com/tags/HTC-VIVE/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Unity3D 虚拟现实FPS游戏</title>
+    <link href="http://yoursite.com/2016/08/07/2016-08-07_Unity3D%20%E8%99%9A%E6%8B%9F%E7%8E%B0%E5%AE%9EFPS%E6%B8%B8%E6%88%8F/"/>
+    <id>http://yoursite.com/2016/08/07/2016-08-07_Unity3D 虚拟现实FPS游戏/</id>
+    <published>2016-08-06T16:00:00.000Z</published>
+    <updated>2016-11-03T11:19:52.460Z</updated>
+    
+    <content type="html"><![CDATA[<p>Share the video</p>
+<ul>
+<li><a href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Fwww.orzangleli.com%2F2016%2F08%2F07%2Funity3d-%25e8%2599%259a%25e6%258b%259f%25e7%258e%25b0%25e5%25ae%259efps%25e6%25b8%25b8%25e6%2588%258f%2F" target="_blank" rel="external">Facebook</a></li>
+<li><a href="https://twitter.com/home?status=Unity3D+%E8%99%9A%E6%8B%9F%E7%8E%B0%E5%AE%9EFPS%E6%B8%B8%E6%88%8F+http%3A%2F%2Fwww.orzangleli.com%2F2016%2F08%2F07%2Funity3d-%25e8%2599%259a%25e6%258b%259f%25e7%258e%25b0%25e5%25ae%259efps%25e6%25b8%25b8%25e6%2588%258f%2F" target="_blank" rel="external">Twitter</a></li>
+<li><a href="https://plus.google.com/share?url=http%3A%2F%2Fwww.orzangleli.com%2F2016%2F08%2F07%2Funity3d-%25e8%2599%259a%25e6%258b%259f%25e7%258e%25b0%25e5%25ae%259efps%25e6%25b8%25b8%25e6%2588%258f%2F" target="_blank" rel="external">Google+</a></li>
+<li><a href="mailto:?body=Check%20the%20amazing%20video%20here%3A%20http%3A%2F%2Fwww.orzangleli.com%2F2016%2F08%2F07%2Funity3d-%25e8%2599%259a%25e6%258b%259f%25e7%258e%25b0%25e5%25ae%259efps%25e6%25b8%25b8%25e6%2588%258f%2F" target="_blank" rel="external">Email</a></li>
+</ul>
+<p><strong>Embed</strong></p>
+<p>Copy and paste this HTML code into your webpage to embed.</p>
+<hr>
+<p><a href="http://flowplayer.org" target="_blank" rel="external">flowplayer</a></p>
+<p><em>00:00</em> __ <em>00:00</em></p>
+<p>##</p>
+<p>Copy and paste this HTML code into your webpage to embed.</p>
+<p>_space_play / pause</p>
+<p>_q_unload | stop</p>
+<p>_f_fullscreen</p>
+<p>_↑__↓_volume</p>
+<p>_m_mute</p>
+<p>_←__→_seek</p>
+<p>_ . _seek to previous</p>
+<p><em>1__2</em>… <em>6</em> seek to 10%, 20% … 60%</p>
+<ul>
+<li>© 2015</li>
+<li><a href="http://flowplayer.org" target="_blank" rel="external">About Flowplayer</a></li>
+<li><a href="http://flowplayer.org/license" target="_blank" rel="external">GPL based license</a></li>
+</ul>
+<p><a href="http://flowplayer.org" target="_blank" rel="external"></a></p>
+<p>以下为技术细节记录：</p>
+<h4 id="1-自动寻路组件-Navigation"><a href="#1-自动寻路组件-Navigation" class="headerlink" title="1.自动寻路组件 Navigation"></a>1.自动寻路组件 Navigation</h4><p>首先在Unity3D中打开Window菜单的Navigation,然后依次选择场景中的模型，然后标记为这三种状态：</p>
+<ul>
+<li>Walkable</li>
+<li>NotWalkable</li>
+<li>Jump</li>
+</ul>
+<p>分别代表该处地形，可以行走，不可以行走和允许跳跃。</p>
+<p>然后在需要自动寻迹的目标上添加 Nav Mesh<br>Agent，自动寻迹代理组件。可以设置代理组件的寻迹速度和加速度，然后给目标上添加一个脚本，把它的终点位置设置好。以本游戏为例，就是僵尸自动寻找主角，主角是僵尸的目标，僵尸身上会有Nav<br>Mesh Agent组件。</p>
+<p>本游戏中，将所有建筑设置状态后，烘焙后显示寻迹路线（绿色为可以行走的部门）：</p>
+<p>特别需要注意的是，如果寻迹路线中断，僵尸是不能通过的，所以只能通过修改某些碰撞器重新烘焙，就可以生成一条连续的寻迹路线。</p>
+<p>在脚本中，使用下面的语句设置寻迹目标：</p>
+<pre><code>// Update is called once per frame
+void Update () {
+    if (agent.enabled) {
+        agent.destination = player.transform.position;
+        if (Vector3.Distance (this.transform.position, player.transform.position) &lt; 2.2f) {
+            SwitchAttack (true);    
+            agent.Stop ();
+        } else {
+            SwitchAttack (false);
+            agent.Resume ();
+        }
+    }
+}
+</code></pre><p>基本原理就是，当寻迹组件激活时，如果僵尸和主角距离超过2.2m则自动追踪主角，如果小于2.2m,就切换为攻击模式。</p>
+<h4 id="2-射击原理"><a href="#2-射击原理" class="headerlink" title="2.射击原理"></a>2.射击原理</h4><p>射击就是给子弹一个速度，然后让子弹从发射口发射出去，发射过程中，不断的在子弹的正前方发射射线，射线的长度为0.1m，这样就能检测出射击击中的位置。</p>
+<p>具体代码为：</p>
+<pre><code>using UnityEngine;
+using System.Collections;
+
+public class BulletLife : MonoBehaviour {
+
+    private Vector3 direction;
+    public GameObject holePrefab,bloodPrefab;
+    private GameObject baozha;
+
+
+    RaycastHit hit ;
+    // Use this for initialization
+    void Start () {
+        //手枪的发射方向
+        direction = -this.transform.right;
+        Destroy (gameObject,5);
+    }
+
+    // Update is called once per frame
+    void Update () {
+        Physics.Raycast (this.transform.position, direction, out hit, 0.1f);
+    }
+
+    void OnCollisionEnter(Collision c)
+    {
+        GameObject hole=Instantiate (holePrefab,hit.point,Quaternion.identity) as GameObject;
+        hole.transform.parent = hit.collider.transform;
+        hole.transform.up = hit.normal;
+        baozha = hole.transform.FindChild (&quot;baozha&quot;).gameObject;
+        if (c.collider.tag == &quot;Zombie&quot;) {
+            hole.transform.FindChild (&quot;Canvas&quot;).gameObject.SetActive (false);
+        }
+        Destroy (baozha,1.0f);
+        Destroy (hole,5f);
+        Destroy (gameObject);
+    }
+}
+</code></pre><p><strong>为什么不使用Collider来检测碰撞呢？</strong></p>
+<p>因为Collider的检测碰撞实际上是通过在间隔时间内检测是否碰撞到，如果才能返回碰撞结果的，如果物体运动速度很快，被撞物体很薄，如子弹射击木板，因为碰撞持续时间很短，很有可能检测不出碰撞来，这样就会出现一种bug：视觉上子弹穿过了僵尸，但是僵尸并没有死亡。</p>
+<p>下面附上这一周完成情况的几张截图和视频链接：</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;Share the video&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Fwww.orzangleli.com%2F2016%2F08%2F07%2Funi
+    
+    </summary>
+    
+      <category term="未分类" scheme="http://yoursite.com/categories/%E6%9C%AA%E5%88%86%E7%B1%BB/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>CouponView 开源库的发布</title>
+    <link href="http://yoursite.com/2016/08/02/2016-08-02_CouponView%20%E5%BC%80%E6%BA%90%E5%BA%93%E7%9A%84%E5%8F%91%E5%B8%83/"/>
+    <id>http://yoursite.com/2016/08/02/2016-08-02_CouponView 开源库的发布/</id>
+    <published>2016-08-01T16:00:00.000Z</published>
+    <updated>2016-11-03T11:19:52.080Z</updated>
+    
+    <content type="html"><![CDATA[<p>自己做了一个卡券视图，可以自定义裁边效果.</p>
+<h1 id="Android-CouponView-卡券视图"><a href="#Android-CouponView-卡券视图" class="headerlink" title="Android CouponView 卡券视图"></a>Android CouponView 卡券视图</h1><p>1.效果：</p>
+<p>CouponView 是一个继承自LinearLayout的布局View,边缘可以实现自动裁剪效果，所以用来做优惠券等视图效果很好。</p>
+<p>下图所示的四种视图，分别代表，不裁剪，只裁横向，只裁竖向，横竖皆裁四种情况。</p>
+<p><a href="https://camo.githubusercontent.com/d1ef22e5f5c8b44b97d8d95a9843878492495632/687474703a2f2f692e696d6775722e636f6d2f706a34585478722e706e67" target="_blank" rel="external"><img src="https://camo.githubusercontent.com/d1ef22e5f5c8b44b97d8d95a9843878492495632/687474703a2f2f692e696d6775722e636f6d2f706a34585478722e706e67" alt=""></a></p>
+<p>2.使用方法：</p>
+<pre><code>在build.gradle中添加一行： 
+
+compile &apos;com.orzangleli.coupon:coupon:1.0.1&apos;
+</code></pre><p>在布局文件中添加代码：</p>
+<pre><code>&lt;com.orzangleli.coupon.view.CouponView
+    android:layout_width=&quot;match_parent&quot;
+    android:layout_height=&quot;wrap_content&quot;
+    android:orientation=&quot;vertical&quot;
+    android:background=&quot;#FF9933&quot;
+    coupon:gap=&quot;4dp&quot;
+    coupon:radius=&quot;5dp&quot;
+    coupon:radiusBackgroundColor=&quot;#ffffff&quot;
+    coupon:showHorizontal=&quot;true&quot;
+    coupon:showVertical=&quot;true&quot;
+    android:layout_marginTop=&quot;10dp&quot;
+    &gt;
+
+    &lt;TextView
+        android:layout_width=&quot;match_parent&quot;
+        android:layout_height=&quot;40dp&quot;
+        android:text=&quot;购物优惠券&quot;
+        android:textSize=&quot;20sp&quot;
+        android:textColor=&quot;#FFFFFF&quot;
+        android:layout_marginTop=&quot;5dp&quot;
+        android:layout_marginLeft=&quot;15dp&quot;
+        android:gravity=&quot;center_vertical&quot;
+        /&gt;
+
+    &lt;TextView
+        android:layout_width=&quot;match_parent&quot;
+        android:layout_height=&quot;wrap_content&quot;
+        android:text=&quot;满50元减10元&quot;
+        android:textSize=&quot;14sp&quot;
+        android:textColor=&quot;#FFFFFF&quot;
+        android:layout_marginTop=&quot;3dp&quot;
+        android:layout_marginLeft=&quot;25dp&quot;
+        android:gravity=&quot;center_vertical&quot;
+        /&gt;
+    &lt;TextView
+        android:layout_width=&quot;match_parent&quot;
+        android:layout_height=&quot;wrap_content&quot;
+        android:text=&quot;使用期限：一周内&quot;
+        android:textSize=&quot;14sp&quot;
+        android:textColor=&quot;#FFFFFF&quot;
+        android:layout_marginTop=&quot;3dp&quot;
+        android:layout_marginLeft=&quot;25dp&quot;
+        android:layout_marginBottom=&quot;15dp&quot;
+        android:gravity=&quot;center_vertical&quot;
+        /&gt;
+
+
+&lt;/com.orzangleli.coupon.view.CouponView&gt;
+</code></pre><p>注意在父节点上添加一行：</p>
+<pre><code>xmlns:coupon=&quot;http://schemas.android.com/apk/res-auto&quot;
+</code></pre><p>3.属性解释：</p>
+<p>gap:间隔线长度</p>
+<p>radius:圆弧半径</p>
+<p>radiusBackgroundColor:圆背景颜色 一般来说需要与主背景颜色相同</p>
+<p>showHorizontal:显示横向裁剪</p>
+<p>showVertical:显示竖向裁剪</p>
+<p><a href="https://github.com/myst729/wp-reposidget" target="_blank" rel="external">GitHub 仓库挂件 WordPress 插件</a></p>
+<h2 id="hust201010701"><a href="#hust201010701" class="headerlink" title="hust201010701 /"></a><a href="https://github.com/hust201010701" target="_blank" rel="external">hust201010701</a> /</h2><p><a href="https://github.com/hust201010701/CouponView" target="_blank" rel="external"><strong>CouponView</strong></a></p>
+<p>android 卡券布局 可以自定义横向/竖向的锯齿</p>
+<p><a href="https://github.com/hust201010701/CouponView" target="_blank" rel="external"><strong>https://github.com/hust201010701/CouponView</strong></a></p>
+<p>83 <a href="https://github.com/hust201010701/CouponView/archive/master.zip" target="_blank" rel="external">Download<br>ZIP</a></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;自己做了一个卡券视图，可以自定义裁边效果.&lt;/p&gt;
+&lt;h1 id=&quot;Android-CouponView-卡券视图&quot;&gt;&lt;a href=&quot;#Android-CouponView-卡券视图&quot; class=&quot;headerlink&quot; title=&quot;Android CouponVie
+    
+    </summary>
+    
+      <category term="android" scheme="http://yoursite.com/categories/android/"/>
+    
+    
+      <category term="android" scheme="http://yoursite.com/tags/android/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>AppBarLayout 下Toolbar 在RecyclerView下实现滑动隐藏</title>
+    <link href="http://yoursite.com/2016/07/25/2016-07-25_AppBarLayout%20%E4%B8%8BToolbar%20%E5%9C%A8RecyclerView%E4%B8%8B%E5%AE%9E%E7%8E%B0%E6%BB%91%E5%8A%A8%E9%9A%90%E8%97%8F/"/>
+    <id>http://yoursite.com/2016/07/25/2016-07-25_AppBarLayout 下Toolbar 在RecyclerView下实现滑动隐藏/</id>
+    <published>2016-07-24T16:00:00.000Z</published>
+    <updated>2016-11-03T11:19:52.066Z</updated>
+    
+    <content type="html"><![CDATA[<p>今天介绍的是AppBarLayout 下Toolbar<br>在RecyclerView下实现滑动隐藏,目前网络上也存在一部分Toolbar在RecyclerView下隐藏的博文，但是是没有突出在AppBarLayout的布局下。</p>
+<p>首先是main_activity.xml的代码中AppBarLayout部分：</p>
+<pre><code>&lt;android.support.design.widget.AppBarLayout
+        android:id=&quot;@+id/appBarLayout&quot;
+        android:layout_height=&quot;wrap_content&quot;
+        android:layout_width=&quot;match_parent&quot;
+        android:theme=&quot;@style/AppTheme.AppBarOverlay&quot;&gt;
+
+        &lt;android.support.v7.widget.Toolbar
+            android:id=&quot;@+id/toolbar&quot;
+            android:layout_width=&quot;match_parent&quot;
+            android:layout_height=&quot;?attr/actionBarSize&quot;
+            android:background=&quot;?attr/colorPrimary&quot;
+            app:popupTheme=&quot;@style/AppTheme.PopupOverlay&quot; /&gt;
+
+    &lt;/android.support.design.widget.AppBarLayout&gt;
+</code></pre><p>滑动隐藏需要重写RecyclerView滑动监听：</p>
+<pre><code>public abstract class RecyclerViewScrollListener extends  RecyclerView.OnScrollListener    {
+
+    private static final int SCROLL_DISTANCE = 50;
+    private int totalScrollDistance;
+    private boolean isShow = true;
+
+    @Override public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+        super.onScrollStateChanged(recyclerView, newState);
+    }
+    @Override public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+        super.onScrolled(recyclerView, dx, dy);
+
+        int firstVisableItem = ((StaggeredGridLayoutManager) recyclerView.getLayoutManager()).findFirstCompletelyVisibleItemPositions(null)[0];
+        //当第一个item存在界面上时就不触发隐藏、显示操作
+        if(firstVisableItem==0) {
+            return;
+        } if ((dy &gt; 0 &amp;&amp; isShow) || (dy &lt; 0 &amp;&amp; !isShow)) {
+            totalScrollDistance += dy;
+        } if (totalScrollDistance &gt; SCROLL_DISTANCE &amp;&amp; isShow) {
+            hide();
+            isShow = false;
+            totalScrollDistance = 0;
+        } else if (totalScrollDistance &lt; -SCROLL_DISTANCE &amp;&amp; !isShow) {
+            show();
+            isShow = true;
+            totalScrollDistance = 0;
+        } }
+    public abstract void hide(); public abstract void show();
+}
+</code></pre><p>然后绑定监听器：</p>
+<pre><code>recyclerView.setOnScrollListener(new RecyclerViewScrollListener() {
+    @Override
+    public void hide() {
+        ViewPropertyAnimator animator = appBarLayout.animate().translationY(-toolbar.getHeight()).setInterpolator(new AccelerateInterpolator(2));
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                appBarLayout.setVisibility(View.GONE);
+            }
+        },animator.getDuration());
+    }
+
+    @Override
+    public void show() {
+        appBarLayout.setVisibility(View.VISIBLE);
+        appBarLayout.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2));
+    }
+});
+</code></pre><p>重点在这里，使用动画将appBarLayout向上移动，然后在移动结束后，设置隐藏，而显示的时候，直接显示再向下滑动动画。</p>
+<p>效果如图： <a href="http://i.imgur.com/zUY99su.gif" target="_blank" rel="external">http://i.imgur.com/zUY99su.gif</a></p>
+<hr>
+<p>2016年7月25日更新：</p>
+<p>这里提供另一种思路：</p>
+<p>之前之所以要在标题栏滑动到上面之后，设置隐藏是因为标题栏只滑到状态栏那里，所以我们可以让他在多滑一点。  </p>
+<pre><code>ViewPropertyAnimator animator = appBarLayout.animate().translationY(-toolbar.getHeight()-statusBarHeight).setInterpolator(new AccelerateInterpolator(2));
+</code></pre><p>状态栏的高度获取使用下面的代码：</p>
+<pre><code>Rect rectangle= new Rect();
+Window window= getWindow();
+window.getDecorView().getWindowVisibleDisplayFrame(rectangle);
+int statusBarHeight= rectangle.top;
+</code></pre>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;今天介绍的是AppBarLayout 下Toolbar&lt;br&gt;在RecyclerView下实现滑动隐藏,目前网络上也存在一部分Toolbar在RecyclerView下隐藏的博文，但是是没有突出在AppBarLayout的布局下。&lt;/p&gt;
+&lt;p&gt;首先是main_activi
+    
+    </summary>
+    
+      <category term="android" scheme="http://yoursite.com/categories/android/"/>
+    
+    
+      <category term="android" scheme="http://yoursite.com/tags/android/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Android 动态设置状态栏颜色</title>
+    <link href="http://yoursite.com/2016/07/24/2016-07-24_Android%20%E5%8A%A8%E6%80%81%E8%AE%BE%E7%BD%AE%E7%8A%B6%E6%80%81%E6%A0%8F%E9%A2%9C%E8%89%B2/"/>
+    <id>http://yoursite.com/2016/07/24/2016-07-24_Android 动态设置状态栏颜色/</id>
+    <published>2016-07-23T16:00:00.000Z</published>
+    <updated>2016-11-03T11:19:51.758Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="Android-动态设置状态栏颜色"><a href="#Android-动态设置状态栏颜色" class="headerlink" title="Android 动态设置状态栏颜色"></a>Android 动态设置状态栏颜色</h1><p>直接代码：</p>
+<pre><code>window = this.getWindow();
+//取消设置透明状态栏,使 ContentView 内容不再覆盖状态栏
+window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+//需要设置这个 flag 才能调用 setStatusBarColor 来设置状态栏颜色
+window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+//设置状态栏颜色
+window.setStatusBarColor(Color.parseColor(&quot;#3F51B5&quot;));
+</code></pre>]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;Android-动态设置状态栏颜色&quot;&gt;&lt;a href=&quot;#Android-动态设置状态栏颜色&quot; class=&quot;headerlink&quot; title=&quot;Android 动态设置状态栏颜色&quot;&gt;&lt;/a&gt;Android 动态设置状态栏颜色&lt;/h1&gt;&lt;p&gt;直接代码：&lt;/p&gt;
+
+    
+    </summary>
+    
+      <category term="android" scheme="http://yoursite.com/categories/android/"/>
+    
+    
+      <category term="android" scheme="http://yoursite.com/tags/android/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Snackbar 使用详解及源码解析</title>
+    <link href="http://yoursite.com/2016/07/14/2016-07-14_Snackbar%20%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3%E5%8F%8A%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/"/>
+    <id>http://yoursite.com/2016/07/14/2016-07-14_Snackbar 使用详解及源码解析/</id>
+    <published>2016-07-13T16:00:00.000Z</published>
+    <updated>2016-11-03T11:19:51.752Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="Snackbar-使用详解及源码解析"><a href="#Snackbar-使用详解及源码解析" class="headerlink" title="Snackbar 使用详解及源码解析"></a>Snackbar 使用详解及源码解析</h1><blockquote>
+<p>本文全部内容为orzangleli原创，未经允许禁止转载。</p>
+</blockquote>
+<p><em>简介：本文将详细介绍Snackbar的使用方法，源码解析以及如何不修改源码的情况下完成Snackbar的顶部显示。</em></p>
+<h2 id="1-什么是Snackbar"><a href="#1-什么是Snackbar" class="headerlink" title="1. 什么是Snackbar?"></a>1. 什么是Snackbar?</h2><p>官网上是这么解释Snackbar的功能和特点：</p>
+<blockquote>
+<p>Snackbars provide lightweight feedback about an operation. They show a brief<br>message at the bottom of the screen on mobile and lower left on larger<br>devices. Snackbars appear above all other elements on screen and only one can<br>be displayed at a time.</p>
+</blockquote>
+<p>&gt;</p>
+<blockquote>
+<p>They automatically disappear after a timeout or after user interaction<br>elsewhere on the screen, particularly after interactions that summon a new<br>surface or activity. Snackbars can be swiped off screen.</p>
+</blockquote>
+<p>&gt;</p>
+<blockquote>
+<p>Snackbars can contain an action which is set via setAction(CharSequence,<br>android.view.View.OnClickListener).</p>
+</blockquote>
+<p>&gt;</p>
+<blockquote>
+<p>To be notified when a snackbar has been shown or dismissed, you can provide<br>a Snackbar.Callback via setCallback(Callback).</p>
+</blockquote>
+<p>Snackbar是一个轻量级的交互反馈控件，可以在手机的屏幕下方或者更大设备（例如平板）的左下方显示一个简短的信息，Snackbar会显示在所有元素之上，而且只持续一段时间。</p>
+<p>它们会在超时或者用户与交互屏幕其他地方交互后自动消失，特别是在和一个新的surface和activity交互之后。Sanckbar可以被滑动移除屏幕。</p>
+<p>为了知道何时snackbar已经被显示或者关闭，你可以通过setCallback(Callback)提供一个Snackbar.Callback（反馈）。</p>
+<p>一般意义上，Snackbar的效果如图所示（图片摘自<a href="http://blog.csdn.net/jdsjlzx/article/details/46892363" target="_blank" rel="external">博客</a>）。</p>
+<p><img src="http://img.blog.csdn.net/20150114103321515" alt=""></p>
+<h2 id="2-怎么使用Snackbar"><a href="#2-怎么使用Snackbar" class="headerlink" title="2. 怎么使用Snackbar"></a>2. 怎么使用Snackbar</h2><h3 id="1-常量"><a href="#1-常量" class="headerlink" title="1). 常量"></a>1). 常量</h3><p><em>int</em> <strong>LENGTH_INDEFINITE</strong> 无限期的显示snackbar (这里只是说不会自动消失，用户仍可通过右滑移除)</p>
+<p><em>int</em> <strong>LENGTH_LONG</strong> 长时间的显示snackbar (类似于Toast)</p>
+<p><em>int</em> <strong>LENGTH_SHORT</strong> 短时间的显示snackbar (类似于Toast)</p>
+<h3 id="2-内部类"><a href="#2-内部类" class="headerlink" title="2). 内部类"></a>2). 内部类</h3><p>Snackbar.Callback是Snackbar的内部类，这个类有两个方法需要重写，<code>onDismissed</code> 和 <code>onShown</code><br>，下面的例子一看就明白：</p>
+<pre><code>snackbar.setCallback(new Snackbar.Callback() {
+    @Override
+    public void onDismissed(Snackbar snackbar, int event) {
+        super.onDismissed(snackbar, event);
+        Toast.makeText(MainActivity.this,&quot;通过Callback监听到snackbar消失&quot;,Toast.LENGTH_SHORT).show();
+    }
+    @Override
+    public void onShown(Snackbar snackbar) {
+        super.onShown(snackbar);
+        Toast.makeText(MainActivity.this,&quot;通过Callback监听到snackbar显示&quot;,Toast.LENGTH_SHORT).show();
+    }
+});
+</code></pre><h3 id="3-公开方法"><a href="#3-公开方法" class="headerlink" title="3). 公开方法"></a>3). 公开方法</h3><p><img src="http://i.imgur.com/XzhgXE4.png" alt=""></p>
+<p>重点说下几个方法： 1.<code>make(View view, CharSequence text, int duration)</code> 和 <code>make(View
+view, int resId, int duration)</code> 实际上是两种初始化Snackbar的方法，只不过第二种使用的是text的id而已。</p>
+<p>2.<code>setAction(CharSequence text, View.OnClickListener listener)</code><br>是给Snackbar增加一个动作按钮，按钮的响应用过OnClickListenr重写。最典型的用途是，在用户完成一个操作时，Snackbar提示用户操作成功，按钮显示撤销操作。</p>
+<p>3.<code>setActionTextColor(int color)</code> 动作按钮的文本颜色可以设置，默认的颜色是主题的colorAccent颜色。</p>
+<h3 id="4）-使用Snackbar"><a href="#4）-使用Snackbar" class="headerlink" title="4）.使用Snackbar"></a>4）.使用Snackbar</h3><p>使用SnackBar非常简单，代码如下：</p>
+<pre><code>Snackbar snackbar = Snackbar.make(view, &quot;张三：今天晚上干嘛？&quot;, Snackbar.LENGTH_LONG)
+    .setAction(&quot;关闭&quot;, new View.OnClickListener()
+    {
+        @Override
+        public void onClick(View v) {
+
+        }
+    });
+</code></pre><h2 id="4-阅读源码并自定义Snackbar"><a href="#4-阅读源码并自定义Snackbar" class="headerlink" title="4.阅读源码并自定义Snackbar"></a>4.阅读源码并自定义Snackbar</h2><h3 id="1）-右滑的说明"><a href="#1）-右滑的说明" class="headerlink" title="1）. 右滑的说明"></a>1）. 右滑的说明</h3><blockquote>
+<p>补充说明下：Snackbar 只能在CoordinatorLayout布局下才能执行右滑删除，在其他布局下右滑手势无效。这一点可以从下面代码中得到解释。</p>
+</blockquote>
+<p>在使用make方法构造Snackbar时，会调用下面的方法：</p>
+<pre><code>@NonNull
+public static Snackbar make(@NonNull View view, @NonNull CharSequence text,@Duration int duration) {
+    Snackbar snackbar = new Snackbar(findSuitableParent(view));
+    snackbar.setText(text);
+    snackbar.setDuration(duration);
+    return snackbar;
+}
+</code></pre><p>其中<code>findSuitableParent(view)</code>是一个寻找父布局的方法，它会在寻找到CoordinatorLayout或者id为android.R.id.content的FrameLayout时停止寻找，否则就返回默认的布局。</p>
+<pre><code>private static ViewGroup findSuitableParent(View view) {
+    ViewGroup fallback = null;
+    do {
+        if (view instanceof CoordinatorLayout) {
+            // We&apos;ve found a CoordinatorLayout, use it
+            return (ViewGroup) view;
+        } else if (view instanceof FrameLayout) {
+            if (view.getId() == android.R.id.content) {
+                // If we&apos;ve hit the decor content view, then we didn&apos;t find a CoL in the
+                // hierarchy, so use it.
+                return (ViewGroup) view;
+            } else {
+                // It&apos;s not the content view but we&apos;ll use it as our fallback
+                fallback = (ViewGroup) view;
+            }
+        }
+
+        if (view != null) {
+            // Else, we will loop and crawl up the view hierarchy and try to find a parent
+            final ViewParent parent = view.getParent();
+            view = parent instanceof View ? (View) parent : null;
+        }
+    } while (view != null);
+
+    // If we reach here then we didn&apos;t find a CoL or a suitable content view so we&apos;ll fallback
+    return fallback;
+}
+</code></pre><p>而且监听右滑操作的Behavior是继承自SwipeDismissBehavior，而SwipeDismissBehavior继承自CoordinatorLayout.Behavior，所以只有在CoordinatorLayout布局下的Snackbar才能被监听到右滑事件。</p>
+<h3 id="2）-自定义Snackbar"><a href="#2）-自定义Snackbar" class="headerlink" title="2）.自定义Snackbar"></a>2）.自定义Snackbar</h3><p>看源码后会发现Snackbar预留出的接口方法太少了，不足以满足日常需求，现在我就几个常见的需求做单独说明。</p>
+<h4 id="a-Snackbar顶部显示"><a href="#a-Snackbar顶部显示" class="headerlink" title="a. Snackbar顶部显示"></a>a. Snackbar顶部显示</h4><pre><code>//顶部显示Snackbar
+    button1.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Snackbar snackbar = Snackbar.make(v, &quot;张三：今天晚上干嘛？&quot;, Snackbar.LENGTH_LONG)
+                    .setAction(&quot;关闭&quot;, new View.OnClickListener()
+                    {
+                        @Override
+                        public void onClick(View v) {
+
+                        }
+                    });
+            CoordinatorLayout.LayoutParams ly = new CoordinatorLayout.LayoutParams(FrameLayout.LayoutParams.FILL_PARENT,200);
+            ly .gravity = Gravity.TOP;
+            snackbar.getView().setLayoutParams(ly);
+
+            snackbar.show();
+        }
+    });
+</code></pre><h4 id="b-修改Snackbar背景颜色和文字颜色"><a href="#b-修改Snackbar背景颜色和文字颜色" class="headerlink" title="b.修改Snackbar背景颜色和文字颜色"></a>b.修改Snackbar背景颜色和文字颜色</h4><pre><code>//修改Snackbar背景颜色和文字颜色
+    button2.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Snackbar snackbar = Snackbar.make(v, &quot;张三：今天晚上干嘛？&quot;, Snackbar.LENGTH_LONG)
+                    .setAction(&quot;关闭&quot;, new View.OnClickListener()
+                    {
+                        @Override
+                        public void onClick(View v) {
+
+                        }
+                    });
+            //设置动作按钮文本颜色
+            snackbar.setActionTextColor(Color.BLACK);
+            //设置背景颜色
+            snackbar.getView().setBackgroundColor(Color.WHITE);
+
+            Snackbar.SnackbarLayout snackbarLayout = (Snackbar.SnackbarLayout)snackbar.getView();
+            //设置消息文本字体颜色
+            ((TextView)snackbarLayout.findViewById(R.id.snackbar_text)).setTextColor(Color.BLACK);
+            //同理可以对动作按钮进行相关设置
+            //((Button)snackbarLayout.findViewById(R.id.snackbar_action)).setBackgroundResource(R.mipmap.ic_launcher);
+            snackbar.show();
+        }
+    });
+</code></pre><h4 id="c-增加内容到Snackbar"><a href="#c-增加内容到Snackbar" class="headerlink" title="c.增加内容到Snackbar"></a>c.增加内容到Snackbar</h4><pre><code>//增加内容到Snackbar
+    button3.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Snackbar snackbar = Snackbar.make(v, &quot;张三：今天晚上干嘛？&quot;, Snackbar.LENGTH_LONG)
+                    .setAction(&quot;关闭&quot;, new View.OnClickListener()
+                    {
+                        @Override
+                        public void onClick(View v) {
+
+                        }
+                    });
+            View add_view = LayoutInflater.from(v.getContext()).inflate(R.layout.custom_layout
+                    , null);
+
+            LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            p.gravity = Gravity.CENTER_VERTICAL; //数字表示新加的布局在SnackBar中的位置，从0开始,取决于你SnackBar里面有多少个子View
+
+            Snackbar.SnackbarLayout snackbarLayout = (Snackbar.SnackbarLayout)snackbar.getView();
+            snackbarLayout.addView(add_view, 0, p);
+
+
+            snackbar.show();
+        }
+    });
+</code></pre><p>效果图如图所示。</p>
+<p><img src="http://www.orzangleli.com/wp-content/uploads/2016/07/demo.gif" alt="demo"></p>
+<h2 id="写在最后"><a href="#写在最后" class="headerlink" title="写在最后"></a>写在最后</h2><p>本文使用的代码在github上可以获取到，地址：</p>
+<p><a href="https://github.com/hust201010701/SnackbarCustomUsage/" target="_blank" rel="external">https://github.com/hust201010701/SnackbarCustomUsage/</a></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;Snackbar-使用详解及源码解析&quot;&gt;&lt;a href=&quot;#Snackbar-使用详解及源码解析&quot; class=&quot;headerlink&quot; title=&quot;Snackbar 使用详解及源码解析&quot;&gt;&lt;/a&gt;Snackbar 使用详解及源码解析&lt;/h1&gt;&lt;blockquo
+    
+    </summary>
+    
+      <category term="android" scheme="http://yoursite.com/categories/android/"/>
+    
+    
+      <category term="android" scheme="http://yoursite.com/tags/android/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Android 面试基础知识总结（原创）</title>
+    <link href="http://yoursite.com/2016/07/12/2016-07-12_Android%20%E9%9D%A2%E8%AF%95%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93%EF%BC%88%E5%8E%9F%E5%88%9B%EF%BC%89/"/>
+    <id>http://yoursite.com/2016/07/12/2016-07-12_Android 面试基础知识总结（原创）/</id>
+    <published>2016-07-11T16:00:00.000Z</published>
+    <updated>2016-11-03T11:19:51.636Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="Android-基础知识总结"><a href="#Android-基础知识总结" class="headerlink" title="Android 基础知识总结"></a>Android 基础知识总结</h1><blockquote>
+<p>本文是orzangleli原创，转载请注明出处(<a href="http://www.orzangleli.com" target="_blank" rel="external">http://www.orzangleli.com</a>)。</p>
+</blockquote>
+<h2 id="1-Activity的理解"><a href="#1-Activity的理解" class="headerlink" title="1.Activity的理解"></a>1.Activity的理解</h2><p>在Android开发中Activity非常重要,在一个应用中,每一个显示的屏幕都是一个Activity.Activity是单独用于处理用户操作的，要使用Activity开发人员可以通过setContentView(View)<br>把UI放到activity创建的窗口中。一般来说，必须要实现的接口是onCreate(Bundle),这是初始化Activity的地方，一般在这里调用setContentView和findViewById<br>.</p>
+<p>每个Activity在定义的时候，还需要在AndroidManifest.xml文件中声明，Activity的生命周期分为<br>onCreate(),onStart(),onResume(),onPause(),onStop(),onDestory(),OnRestart()<br>,7个过程，具体这几个过程之间的转换过程如图所示。</p>
+<p><img src="http://hi.csdn.net/attachment/201109/1/0_1314838777He6C.gif" alt=""></p>
+<h2 id="2-Activity、View和Window-的理解"><a href="#2-Activity、View和Window-的理解" class="headerlink" title="2.Activity、View和Window 的理解"></a>2.Activity、View和Window 的理解</h2><ul>
+<li>Activity与View的区别</li>
+</ul>
+<p>1).<br>Activity是四大组件中唯一一个用来和用户进行交互的组件。可以说Activity就是android的视图层。(Android中四大组件：Activity,Service,BroadCast,Content<br>Provider).</p>
+<p>2). 如果再细化，Activity相当于视图层中的控制层，是用来控制和管理View的，真正用来显示和处理事件的实际上是View。</p>
+<p>3). 每个Activity内部都有一个Window对象，<br>Window对象包含了一个DecorView(实际上就是FrameLayout)，我们通过setContentView给Activity设置显示的View实际上都是加到了DecorView中。</p>
+<h2 id="3-Activity的四大LaunchMode"><a href="#3-Activity的四大LaunchMode" class="headerlink" title="3.Activity的四大LaunchMode"></a>3.Activity的四大LaunchMode</h2><ul>
+<li><strong>standard</strong> ———— 默认模式，可以不用写配置。在这个模式下，都会默认创建一个新的实例。因此，在这种模式下，可以有多个相同的实例，也允许多个相同Activity叠加。</li>
+<li><strong>singleTop</strong>————可以有多个实例，但是不允许多个相同Activity叠加。即，如果Activity在栈顶的时候，启动相同的Activity，不会创建新的实例，而会调用其onNewIntent方法。</li>
+<li><strong>singleTask</strong>————只有一个实例。在同一个应用程序中启动它的时候，若Activity不存在，则会在当前task创建一个新的实例，若存在，则会把task中在其之上的其它Activity destory掉并调用它的onNewIntent方法。 如果是在别的应用程序中启动它，则会新建一个task ，并在该task中启动这个Activity，singleTask允许别的Activity与其在一个task中共存，也就是说，如果我在这个singleTask的实例中再打开新的Activity，这个新的Activity还是会在singleTask的实例的task中。</li>
+<li><strong>singleInstance</strong>————只有一个实例，并且这个实例独立运行在一个task中，这个task只有这个实例，不允许有别的Activity存在。</li>
+</ul>
+<h2 id="4-View的绘制流程"><a href="#4-View的绘制流程" class="headerlink" title="4.View的绘制流程"></a>4.View的绘制流程</h2><p>Android的View绘制是从根节点（Activity是DecorView）开始，他是一个自上而下的过程。View的绘制经历三个过程：Measure、Layout、Draw。基本流程如下图：</p>
+<p><img src="http://www.orzangleli.com/wp-
+content/uploads/2016/07/20140318084318609.png" alt="20140318084318609"></p>
+<p>Measure是确定视图的大小，Layout是确定视图的位置，Draw是绘制视图。</p>
+<h2 id="5-Touch事件机制"><a href="#5-Touch事件机制" class="headerlink" title="5.Touch事件机制"></a>5.Touch事件机制</h2><p>1.Touch事件分发机制中有两个主角：ViewGroup和View,ViewGroup包含onInterceptTouchEvent,dispatchTouchEvent,onTouchEvent三个相关事件，而View只包含dispatchTouchEvent和onTouchEvent事件。</p>
+<p>2.触摸事件由Action_Down,Action_Move,Action_Up三个事件组成，Down和Up只有1个，Move可以为多个，也可以为0个。</p>
+<p>3.Activity内部包含一个ViewGroup，当Activity接收到触摸事件时，会分发Down事件给子ViewGroup和子View，如果子View处理了这个触摸事件，这个View的onTouchEvent会返回true.当ViewGroup的所有子View都不捕获Down事件时，ViewGroup会触发自身的onTouchEvent事件。</p>
+<p>4.onInterceptTouchEvent有两个作用：1.拦截Down事件的分发。2.中止Up和Move事件向目标View传递，使得目标View所在的ViewGroup捕获Up和Move事件。</p>
+<h2 id="6-Android动画原理"><a href="#6-Android动画原理" class="headerlink" title="6.Android动画原理"></a>6.Android动画原理</h2><p>Android平台提供两类动画：</p>
+<ol>
+<li>Tween动画，通过场景里的对象不断做图像变化产生动画效果，主要是指平移，旋转，缩放。</li>
+<li>Frame动画，通过顺序播放事先做好的图像，逐帧播放，类似与老式胶片电影的原理。</li>
+</ol>
+<p>Android动画可以在java代码中直接使用动画，也可以在anim目录下新建xml文件，然后在java代码中使用。Android中的动画是建立在View级别上的，其中View类有一个接口startAnimatoin来开始动画。</p>
+<h2 id="7-Handler和Looper理解"><a href="#7-Handler和Looper理解" class="headerlink" title="7.Handler和Looper理解"></a>7.Handler和Looper理解</h2><p><strong>Handler</strong> 是消息处理者，负责Message的发送和处理，需要实现handleMessage(Message msg) 方法对特定的消息进行处理。</p>
+<p><strong>Looper</strong> 是消息泵，不断地从MessageQueue中抽取消息。</p>
+<p><strong>MessageQueue</strong> 消息队列，用来存取handler发送过来的消息，并且Looper会从中不断抽取Message，一个MessageQueue对应一个Looper.</p>
+<p>三者之间的关系可以用下图表示：</p>
+<p><img src="http://i.imgur.com/LdgBDUC.jpg" alt=""></p>
+<h2 id="8-Android跨进程通信"><a href="#8-Android跨进程通信" class="headerlink" title="8.Android跨进程通信"></a>8.Android跨进程通信</h2><p>在android SDK中提供了4种用于跨进程通讯的方式。这4种方式正好对应于android系统中4种应用程序组件：Activity、Content<br>Provider、Broadcast和Service。</p>
+<ul>
+<li>其中Activity可以跨进程调用其他应用程序的Activity；</li>
+<li>Content Provider可以跨进程访问其他应用程序中的数据（以Cursor对象形式返回），当然，也可以对其他应用程序的数据进行增、删、改操作；</li>
+<li>Broadcast可以向android系统中所有应用程序发送广播，而需要跨进程通讯的应用程序可以监听这些广播；</li>
+<li>Service和Content Provider类似，也可以访问其他应用程序中的数据，但不同的是，Content Provider返回的是Cursor对象，而Service返回的是Java对象，这种可以跨进程通讯的服务叫AIDL服务（Android Interface Definition Language）。</li>
+</ul>
+<h2 id="9-Binder理解"><a href="#9-Binder理解" class="headerlink" title="9.Binder理解"></a>9.Binder理解</h2><ol>
+<li>binder用来做什么？用来实现不同进程之间的通信。</li>
+<li>Binder是什么？binder属于一个驱动，工作在linux层面，运行在内核态，它的操作完成是基于一段内存。所以我们开发的程序中对binder的使用都是通过系统的调用来完成的。</li>
+<li>binder是怎样实现进程通信的？我们来通过Binder的架构来了解它实现进程间通信（IPC）的过程。</li>
+</ol>
+<p>客户端是通过Binder驱动来调用服务端的相关服务。首先，在服务端创建一个Binder对象，然后相应在Binder驱动中创建一个Binder对象，接着客户端通过获取Binder驱动中Binder对象的引用来调用服务端的服务。在Binder机制中正是借着Binder驱动将不同进程间的组件bind（粘连）在一起，实现通信。</p>
+<p>##</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;Android-基础知识总结&quot;&gt;&lt;a href=&quot;#Android-基础知识总结&quot; class=&quot;headerlink&quot; title=&quot;Android 基础知识总结&quot;&gt;&lt;/a&gt;Android 基础知识总结&lt;/h1&gt;&lt;blockquote&gt;
+&lt;p&gt;本文是orzang
+    
+    </summary>
+    
+      <category term="android" scheme="http://yoursite.com/categories/android/"/>
+    
+    
+      <category term="android" scheme="http://yoursite.com/tags/android/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>XBOX One 游戏手柄键位图 适用于Unity3D开发</title>
+    <link href="http://yoursite.com/2016/07/05/2016-07-05_XBOX%20One%20%E6%B8%B8%E6%88%8F%E6%89%8B%E6%9F%84%E9%94%AE%E4%BD%8D%E5%9B%BE%20%E9%80%82%E7%94%A8%E4%BA%8EUnity3D%E5%BC%80%E5%8F%91/"/>
+    <id>http://yoursite.com/2016/07/05/2016-07-05_XBOX One 游戏手柄键位图 适用于Unity3D开发/</id>
+    <published>2016-07-04T16:00:00.000Z</published>
+    <updated>2016-11-03T11:19:50.930Z</updated>
+    
+    <content type="html"><![CDATA[<p>XBOX One 游戏手柄键位图如下图所示。转载引用请注明出处。<img src="http://www.orzangleli.com/wp-content/uploads/2016/07/XBox-
+one手柄键位图2.png" alt="XBox
+one手柄键位图2"></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;XBOX One 游戏手柄键位图如下图所示。转载引用请注明出处。&lt;img src=&quot;http://www.orzangleli.com/wp-content/uploads/2016/07/XBox-
+one手柄键位图2.png&quot; alt=&quot;XBox
+one手柄键位图2&quot;&gt;
+    
+    </summary>
+    
+      <category term="unity3D" scheme="http://yoursite.com/categories/unity3D/"/>
+    
+    
+      <category term="unity3D" scheme="http://yoursite.com/tags/unity3D/"/>
     
   </entry>
   

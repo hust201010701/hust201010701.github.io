@@ -1,0 +1,1309 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Kinect,unity3D," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="orzangleli" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.2" />
+
+
+
+
+
+
+<meta name="description" content="this post is copied fromthenappingkat
+Kinect Skeleton in UnitySo most of this code is used from the SDK, however I will be going into adetailed explanation about how it all works. As well as how to pu">
+<meta property="og:type" content="article">
+<meta property="og:title" content="在unity3D 5.x中加入Kinect的骨骼追踪">
+<meta property="og:url" content="http://yoursite.com/2016/05/11/2016-05-11_在unity3D 5.x中加入Kinect的骨骼追踪/index.html">
+<meta property="og:site_name" content="orzangleli">
+<meta property="og:description" content="this post is copied fromthenappingkat
+Kinect Skeleton in UnitySo most of this code is used from the SDK, however I will be going into adetailed explanation about how it all works. As well as how to pu">
+<meta property="og:image" content="http://thenappingkat.azurewebsites.net/wp-
+content/uploads/2015/06/UnityScriptsOrg.png">
+<meta property="og:image" content="http://thenappingkat.azurewebsites.net/wp-
+content/uploads/2015/06/UnityObjectsBVBM.png">
+<meta property="og:image" content="http://thenappingkat.azurewebsites.net/wp-
+content/uploads/2015/06/BodyManagerInspector.png">
+<meta property="og:image" content="http://thenappingkat.azurewebsites.net/wp-
+content/uploads/2015/06/BodyViewObjectSettings.png">
+<meta property="og:image" content="http://thenappingkat.azurewebsites.net/wp-
+content/uploads/2015/06/UnityKinectScene.png">
+<meta property="og:updated_time" content="2016-11-03T11:19:48.049Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="在unity3D 5.x中加入Kinect的骨骼追踪">
+<meta name="twitter:description" content="this post is copied fromthenappingkat
+Kinect Skeleton in UnitySo most of this code is used from the SDK, however I will be going into adetailed explanation about how it all works. As well as how to pu">
+<meta name="twitter:image" content="http://thenappingkat.azurewebsites.net/wp-
+content/uploads/2015/06/UnityScriptsOrg.png">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/05/11/2016-05-11_在unity3D 5.x中加入Kinect的骨骼追踪/"/>
+
+
+  <title> 在unity3D 5.x中加入Kinect的骨骼追踪 | orzangleli </title>
+</head>
+
+<body itemscope itemtype="//schema.org/WebPage" lang="">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="//schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">orzangleli</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">a programer and designer living in the dream</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-schedule">
+          <a href="/schedule" rel="section">
+            
+            Schedule
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="//schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                在unity3D 5.x中加入Kinect的骨骼追踪
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">Posted on</span>
+            <time itemprop="dateCreated" datetime="2016-05-11T00:00:00+08:00" content="2016-05-11">
+              2016-05-11
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Kinect/" itemprop="url" rel="index">
+                    <span itemprop="name">Kinect</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>this post is copied from<br><a href="https://thenappingkat.azurewebsites.net/unity-gaming-
+integrating-kinect-part-3/" title="Posts by thenappingkat" target="_blank" rel="external">thenappingkat</a></p>
+<h1 id="Kinect-Skeleton-in-Unity"><a href="#Kinect-Skeleton-in-Unity" class="headerlink" title="Kinect Skeleton in Unity"></a>Kinect Skeleton in Unity</h1><p>So most of this code is used from the SDK, however I will be going into a<br>detailed explanation about how it all works. As well as how to put it into<br>Unity.</p>
+<p>First things First. Create a new Folder inside your Scripts folder Called<br>KinectScripts. Now in that folder create two new scripts; one called<br>BodyManger and the other called BodyView.</p>
+<p><a href="http://thenappingkat.azurewebsites.net/wp-
+content/uploads/2015/06/UnityScriptsOrg.png" target="_blank" rel="external"><img src="http://thenappingkat.azurewebsites.net/wp-
+content/uploads/2015/06/UnityScriptsOrg.png" alt="UnityScriptsOrg"></a></p>
+<h2 id="BodyManager-Script"><a href="#BodyManager-Script" class="headerlink" title="BodyManager Script"></a>BodyManager Script</h2><p>First we need a BodyManager script. This object will Mange the Kinect sensor<br>connection and read in all the body data coming from the Kinect. Import Kinect<br>Library with:</p>
+<p>1</p>
+<p>|</p>
+<p><code>using</code> <code>Windows.Kinect;</code>  </p>
+<p>—|—  </p>
+<p>Then we need some fields for the manager to store and the data and get sensor<br>data.</p>
+<p>1</p>
+<p>2</p>
+<p>3</p>
+<p>4</p>
+<p>5</p>
+<p>6</p>
+<p>7</p>
+<p>8</p>
+<p>|</p>
+<p><code>private</code> <code>KinectSensor _Sensor;</code></p>
+<p><code>private</code> <code>BodyFrameReader _Reader;</code></p>
+<p><code>private</code> <code>Body[] _Data = ``null``;</code></p>
+<p><code>public</code> <code>Body[] GetData()</code></p>
+<p><code>{</code></p>
+<p><code>``return</code> <code>_Data;</code></p>
+<p><code>}</code>  </p>
+<p>—|—  </p>
+<p>Okay so now in the Start method we want to establish the connection for the<br>Kinect.</p>
+<p>1</p>
+<p>2</p>
+<p>3</p>
+<p>4</p>
+<p>5</p>
+<p>6</p>
+<p>7</p>
+<p>8</p>
+<p>9</p>
+<p>10</p>
+<p>11</p>
+<p>12</p>
+<p>13</p>
+<p>14</p>
+<p>|</p>
+<p><code>void</code> <code>Start()</code></p>
+<p><code>{</code></p>
+<p><code>``_Sensor = KinectSensor.GetDefault();</code></p>
+<p><code>``if</code> <code>(_Sensor != ``null``)</code></p>
+<p><code>``{</code></p>
+<p><code>``_Reader = _Sensor.BodyFrameSource.OpenReader();</code></p>
+<p><code>``if</code> <code>(!_Sensor.IsOpen)</code></p>
+<p><code>``{</code></p>
+<p><code>``_Sensor.Open();</code></p>
+<p><code>``}</code></p>
+<p><code>``}</code></p>
+<p><code>}</code>  </p>
+<p>—|—  </p>
+<p>Now that the connection is open and reading in the data we need to store it in<br>the Body array. We will do this every frame of the game, therefore we need to<br>edit the Update() method.<br>First we check to see if the _Reader has been established and the connection<br>has been completed. If it has we will take the last frame, the reader read in<br>and if it’s not null, we can then check to see if the data is there.</p>
+<p>1</p>
+<p>2</p>
+<p>3</p>
+<p>4</p>
+<p>5</p>
+<p>6</p>
+<p>7</p>
+<p>8</p>
+<p>9</p>
+<p>10</p>
+<p>11</p>
+<p>12</p>
+<p>13</p>
+<p>|</p>
+<p><code>void</code> <code>Update()</code></p>
+<p><code>{</code></p>
+<p><code>``if</code> <code>(_Reader != ``null``)</code></p>
+<p><code>``{</code></p>
+<p><code>``var</code> <code>frame = _Reader.AcquireLatestFrame();</code></p>
+<p><code>``if</code> <code>(frame != ``null``)</code></p>
+<p><code>``{</code></p>
+<p><code>``if</code> <code>(_Data == ``null``)</code></p>
+<p><code>``{</code></p>
+<p><code>``}</code></p>
+<p><code>``}</code></p>
+<p><code>``}</code></p>
+<p><code>}</code>  </p>
+<p>—|—  </p>
+<p>We still need to get the Body data from the Senor. To do this we will need to<br>create a new Body array with data from the Sensor.BodyFrameSource.BodyCount.<br>At the end the method should look like this:</p>
+<p>1</p>
+<p>2</p>
+<p>3</p>
+<p>4</p>
+<p>5</p>
+<p>6</p>
+<p>7</p>
+<p>8</p>
+<p>9</p>
+<p>10</p>
+<p>11</p>
+<p>12</p>
+<p>13</p>
+<p>14</p>
+<p>|</p>
+<p><code>void</code> <code>Update()</code></p>
+<p><code>{</code></p>
+<p><code>``if</code> <code>(_Reader != ``null``)</code></p>
+<p><code>``{</code></p>
+<p><code>``var</code> <code>frame = _Reader.AcquireLatestFrame();</code></p>
+<p><code>``if</code> <code>(frame != ``null``)</code></p>
+<p><code>``{</code></p>
+<p><code>``if</code> <code>(_Data == ``null``)</code></p>
+<p><code>``{</code></p>
+<p><code>``_Data = ``new</code> <code>Body[_Sensor.BodyFrameSource.BodyCount];</code></p>
+<p><code>``}</code></p>
+<p><code>``}</code></p>
+<p><code>``}</code></p>
+<p><code>}</code>  </p>
+<p>—|—  </p>
+<p>Then we need to refresh the stream of data from the Reader. By adding the<br>following code to manipulate the frame.</p>
+<p>1</p>
+<p>2</p>
+<p>3</p>
+<p>4</p>
+<p>5</p>
+<p>6</p>
+<p>7</p>
+<p>8</p>
+<p>9</p>
+<p>10</p>
+<p>11</p>
+<p>12</p>
+<p>13</p>
+<p>14</p>
+<p>15</p>
+<p>16</p>
+<p>17</p>
+<p>18</p>
+<p>19</p>
+<p>|</p>
+<p><code>void</code> <code>Update()</code></p>
+<p><code>{</code></p>
+<p><code>``if</code> <code>(_Reader != ``null``)</code></p>
+<p><code>``{</code></p>
+<p><code>``var</code> <code>frame = _Reader.AcquireLatestFrame();</code></p>
+<p><code>``if</code> <code>(frame != ``null``)</code></p>
+<p><code>``{</code></p>
+<p><code>``if</code> <code>(_Data == ``null``)</code></p>
+<p><code>``{</code></p>
+<p><code>``_Data = ``new</code> <code>Body[_Sensor.BodyFrameSource.BodyCount];</code></p>
+<p><code>``}</code></p>
+<p><code>``frame.GetAndRefreshBodyData(_Data);</code></p>
+<p><code>``frame.Dispose();</code></p>
+<p><code>``frame = ``null``;</code></p>
+<p><code>``}</code></p>
+<p><code>``}</code></p>
+<p><code>}</code>  </p>
+<p>—|—  </p>
+<p>The last method in the Body Manager Class is OnApplicationQuit(), which<br>Disposes the Reader, and closes the Sensor stream, sets it to null.</p>
+<p>1</p>
+<p>2</p>
+<p>3</p>
+<p>4</p>
+<p>5</p>
+<p>6</p>
+<p>7</p>
+<p>8</p>
+<p>9</p>
+<p>10</p>
+<p>11</p>
+<p>12</p>
+<p>13</p>
+<p>14</p>
+<p>15</p>
+<p>16</p>
+<p>17</p>
+<p>18</p>
+<p>|</p>
+<p><code>void</code> <code>OnApplicationQuit()</code></p>
+<p><code>``{</code></p>
+<p><code>``if</code> <code>(_Reader != ``null``)</code></p>
+<p><code>``{</code></p>
+<p><code>``_Reader.Dispose();</code></p>
+<p><code>``_Reader = ``null``;</code></p>
+<p><code>``}</code></p>
+<p><code>``if</code> <code>(_Sensor != ``null``)</code></p>
+<p><code>``{</code></p>
+<p><code>``if</code> <code>(_Sensor.IsOpen)</code></p>
+<p><code>``{</code></p>
+<p><code>``_Sensor.Close();</code></p>
+<p><code>``}</code></p>
+<p><code>``_Sensor = ``null``;</code></p>
+<p><code>``}</code></p>
+<p><code>``}</code>  </p>
+<p>—|—  </p>
+<p>Now onto drawing the skeleton in the scene.</p>
+<h2 id="BodyView-Script"><a href="#BodyView-Script" class="headerlink" title="BodyView Script"></a>BodyView Script</h2><p>The next Script to write is one to draw the skeletal structure. We won’t<br>necessarily need to see the skeleton for the game, however, I’ll show you how<br>to show skeletal body tracking. We also need the skeletal data to track the<br>hands, whose state will dictate controller commands.</p>
+<p>For this MonoBehavoir class we will need, a material to draw the bone in the<br>Unity scene. A gameobject to store the BodyManger, to control the stream of<br>the Kinect.</p>
+<p>1</p>
+<p>2</p>
+<p>|</p>
+<p><code>public</code> <code>Material BoneMaterial;</code></p>
+<p><code>public</code> <code>GameObject BodyManager;</code>  </p>
+<p>—|—  </p>
+<p>We also need a BodyManager object and a Dictionary to store the bodies being<br>tracked.</p>
+<p>1</p>
+<p>2</p>
+<p>|</p>
+<p><code>private</code> <code>Dictionary&lt;``ulong``, GameObject&gt; _Bodies = ``new</code><br><code>Dictionary&lt;``ulong``, GameObject&gt;();</code></p>
+<p><code>private</code> <code>BodyManager _BodyManager;</code>  </p>
+<p>—|—  </p>
+<p>Next we need to map out all the bones by the two joints that they will be<br>connected to.</p>
+<p>1</p>
+<p>2</p>
+<p>3</p>
+<p>4</p>
+<p>5</p>
+<p>6</p>
+<p>7</p>
+<p>8</p>
+<p>9</p>
+<p>10</p>
+<p>11</p>
+<p>12</p>
+<p>13</p>
+<p>14</p>
+<p>15</p>
+<p>16</p>
+<p>17</p>
+<p>18</p>
+<p>19</p>
+<p>20</p>
+<p>21</p>
+<p>22</p>
+<p>23</p>
+<p>24</p>
+<p>25</p>
+<p>26</p>
+<p>27</p>
+<p>28</p>
+<p>29</p>
+<p>30</p>
+<p>31</p>
+<p>|</p>
+<p><code>private</code> <code>Dictionary&lt;Kinect.JointType, Kinect.JointType&gt; _BoneMap = ``new</code><br><code>Dictionary&lt;Kinect.JointType, Kinect.JointType&gt;()</code></p>
+<p><code>{</code></p>
+<p><code>``{ Kinect.JointType.FootLeft, Kinect.JointType.AnkleLeft },</code></p>
+<p><code>``{ Kinect.JointType.AnkleLeft, Kinect.JointType.KneeLeft },</code></p>
+<p><code>``{ Kinect.JointType.KneeLeft, Kinect.JointType.HipLeft },</code></p>
+<p><code>``{ Kinect.JointType.HipLeft, Kinect.JointType.SpineBase },</code></p>
+<p><code>``{ Kinect.JointType.FootRight, Kinect.JointType.AnkleRight },</code></p>
+<p><code>``{ Kinect.JointType.AnkleRight, Kinect.JointType.KneeRight },</code></p>
+<p><code>``{ Kinect.JointType.KneeRight, Kinect.JointType.HipRight },</code></p>
+<p><code>``{ Kinect.JointType.HipRight, Kinect.JointType.SpineBase },</code></p>
+<p><code>``{ Kinect.JointType.HandTipLeft, Kinect.JointType.HandLeft }, ``//Need this
+for HandSates</code></p>
+<p><code>``{ Kinect.JointType.ThumbLeft, Kinect.JointType.HandLeft },</code></p>
+<p><code>``{ Kinect.JointType.HandLeft, Kinect.JointType.WristLeft },</code></p>
+<p><code>``{ Kinect.JointType.WristLeft, Kinect.JointType.ElbowLeft },</code></p>
+<p><code>``{ Kinect.JointType.ElbowLeft, Kinect.JointType.ShoulderLeft },</code></p>
+<p><code>``{ Kinect.JointType.ShoulderLeft, Kinect.JointType.SpineShoulder },</code></p>
+<p><code>``{ Kinect.JointType.HandTipRight, Kinect.JointType.HandRight },
+``//Needthis for Hand State</code></p>
+<p><code>``{ Kinect.JointType.ThumbRight, Kinect.JointType.HandRight },</code></p>
+<p><code>``{ Kinect.JointType.HandRight, Kinect.JointType.WristRight },</code></p>
+<p><code>``{ Kinect.JointType.WristRight, Kinect.JointType.ElbowRight },</code></p>
+<p><code>``{ Kinect.JointType.ElbowRight, Kinect.JointType.ShoulderRight },</code></p>
+<p><code>``{ Kinect.JointType.ShoulderRight, Kinect.JointType.SpineShoulder },</code></p>
+<p><code>``{ Kinect.JointType.SpineBase, Kinect.JointType.SpineMid },</code></p>
+<p><code>``{ Kinect.JointType.SpineMid, Kinect.JointType.SpineShoulder },</code></p>
+<p><code>``{ Kinect.JointType.SpineShoulder, Kinect.JointType.Neck },</code></p>
+<p><code>``{ Kinect.JointType.Neck, Kinect.JointType.Head },</code></p>
+<p><code>};</code>  </p>
+<p>—|—  </p>
+<h3 id="BodyView-Update"><a href="#BodyView-Update" class="headerlink" title="BodyView Update()"></a>BodyView Update()</h3><p>Now in the Unity Update() method we need to check to see if the Body Manager<br>is not null and that it has data.</p>
+<p>1</p>
+<p>2</p>
+<p>3</p>
+<p>4</p>
+<p>5</p>
+<p>6</p>
+<p>7</p>
+<p>8</p>
+<p>9</p>
+<p>10</p>
+<p>11</p>
+<p>12</p>
+<p>13</p>
+<p>14</p>
+<p>15</p>
+<p>16</p>
+<p>17</p>
+<p>18</p>
+<p>19</p>
+<p>20</p>
+<p>21</p>
+<p>|</p>
+<p><code>void</code> <code>Update()</code></p>
+<p><code>``{</code></p>
+<p><code>``int</code> <code>state = 0;</code></p>
+<p><code>``if</code> <code>(BodyManager == ``null``)</code></p>
+<p><code>``{</code></p>
+<p><code>``return``;</code></p>
+<p><code>``}</code></p>
+<p><code>``_BodyManager = BodyManager.GetComponent&lt;BodyManager&gt;();</code></p>
+<p><code>``if</code> <code>(_BodyManager == ``null``)</code></p>
+<p><code>``{</code></p>
+<p><code>``return``;</code></p>
+<p><code>``}</code></p>
+<p><code>``Kinect.Body[] data = _BodyManager.GetData();</code></p>
+<p><code>``if</code> <code>(data == ``null``)</code></p>
+<p><code>``{</code></p>
+<p><code>``return``;</code></p>
+<p><code>``}</code></p>
+<p><code>``}</code>  </p>
+<p>—|—  </p>
+<p>Next, while still in the Update() method, we need to get the amount of bodies<br>in the list of tracked bodies. Then delete unknown bodies.</p>
+<p>1</p>
+<p>2</p>
+<p>3</p>
+<p>4</p>
+<p>5</p>
+<p>6</p>
+<p>7</p>
+<p>8</p>
+<p>9</p>
+<p>10</p>
+<p>11</p>
+<p>12</p>
+<p>13</p>
+<p>14</p>
+<p>15</p>
+<p>16</p>
+<p>17</p>
+<p>18</p>
+<p>19</p>
+<p>20</p>
+<p>21</p>
+<p>22</p>
+<p>23</p>
+<p>24</p>
+<p>25</p>
+<p>|</p>
+<p><code>List&lt;``ulong``&gt; trackedIds = ``new</code> <code>List&lt;``ulong``&gt;();</code></p>
+<p><code>foreach</code> <code>(``var</code> <code>body ``in</code> <code>data)</code></p>
+<p><code>{</code></p>
+<p><code>``if</code> <code>(body == ``null``)</code></p>
+<p><code>``{</code></p>
+<p><code>``continue``;</code></p>
+<p><code>``}</code></p>
+<p><code>``if</code> <code>(body.IsTracked)</code></p>
+<p><code>``{</code></p>
+<p><code>``trackedIds.Add(body.TrackingId);</code></p>
+<p><code>``}</code></p>
+<p><code>}</code></p>
+<p><code>List&lt;``ulong``&gt; knownIds = ``new</code> <code>List&lt;``ulong``&gt;(_Bodies.Keys);</code></p>
+<p><code>// First delete untracked bodies</code></p>
+<p><code>foreach</code> <code>(``ulong</code> <code>trackingId ``in</code> <code>knownIds)</code></p>
+<p><code>{</code></p>
+<p><code>``if</code> <code>(!trackedIds.Contains(trackingId))</code></p>
+<p><code>``{</code></p>
+<p><code>``Destroy(_Bodies[trackingId]);</code></p>
+<p><code>``_Bodies.Remove(trackingId);</code></p>
+<p><code>``}</code></p>
+<p><code>}</code>  </p>
+<p>—|—  </p>
+<p>Now that we have the keys for tracking the bodies we need to create a body<br>object with that tracking ID key. We need to write two more methods. A<br>CreateBodyObject() method that will take a ulong id and a RefreashBodyObject()<br>method that will take a Kinect.Body object and a GameObject for the body. We<br>will use these methods after we go through the data, and find if bodies inside<br>are being tracked or not. If it is tracked but doesn’t have a TrackingId, then<br>we need to create a body with that TrackingID. If it is being tracked and has<br>a TrackingId then we just need to refresh the drawn body.</p>
+<p>1</p>
+<p>2</p>
+<p>3</p>
+<p>4</p>
+<p>5</p>
+<p>6</p>
+<p>7</p>
+<p>8</p>
+<p>9</p>
+<p>10</p>
+<p>11</p>
+<p>12</p>
+<p>13</p>
+<p>14</p>
+<p>15</p>
+<p>16</p>
+<p>17</p>
+<p>18</p>
+<p>19</p>
+<p>|</p>
+<p><code>foreach</code> <code>(``var</code> <code>body ``in</code> <code>data)</code></p>
+<p><code>``{</code></p>
+<p><code>``if</code> <code>(body == ``null``)</code></p>
+<p><code>``{</code></p>
+<p><code>``continue``;</code></p>
+<p><code>``}</code></p>
+<p><code>``if</code> <code>(body.IsTracked)</code></p>
+<p><code>``{</code></p>
+<p><code>``if</code> <code>(!_Bodies.ContainsKey(body.TrackingId))</code></p>
+<p><code>``{</code></p>
+<p><code>``_Bodies[body.TrackingId] = CreateBodyObject(body.TrackingId);</code></p>
+<p><code>``}</code></p>
+<p><code>``RefreshBodyObject(body, _Bodies[body.TrackingId]);</code></p>
+<p><code>``}</code></p>
+<p><code>``}</code></p>
+<p><code>``}</code>  </p>
+<p>—|—  </p>
+<h3 id="CreateBodyObject"><a href="#CreateBodyObject" class="headerlink" title="CreateBodyObject()"></a>CreateBodyObject()</h3><p>The CreateBodyObject takes an ID and returns a body gameobject. So we first<br>need to create a gameobject that will store the appropriate data retrieved;<br>then we need a for loop to go through every joint to draw the body.</p>
+<p>1</p>
+<p>2</p>
+<p>3</p>
+<p>4</p>
+<p>5</p>
+<p>6</p>
+<p>7</p>
+<p>8</p>
+<p>9</p>
+<p>10</p>
+<p>11</p>
+<p>|</p>
+<p><code>private</code> <code>GameObject CreateBodyObject(``ulong</code> <code>id)</code></p>
+<p><code>``{</code></p>
+<p><code>``GameObject body = ``new</code> <code>GameObject(``&quot;Body:&quot;</code> <code>+ id);</code></p>
+<p><code>``for</code> <code>(Kinect.JointType jt = Kinect.JointType.SpineBase; jt &lt;=
+Kinect.JointType.ThumbRight; jt++)</code></p>
+<p><code>``{</code></p>
+<p><code>``}</code></p>
+<p><code>``return</code> <code>body;</code></p>
+<p><code>``}</code>  </p>
+<p>—|—  </p>
+<p>For every joint in the body we create a cube and add a lineRenderer to that<br>cube. The cube will be drawn at each joint while the line renderer will be<br>drawn to connect the joints.</p>
+<p>1</p>
+<p>|  </p>
+<p>—|—  </p>
+<p>1</p>
+<p>2</p>
+<p>3</p>
+<p>4</p>
+<p>5</p>
+<p>6</p>
+<p>7</p>
+<p>8</p>
+<p>9</p>
+<p>10</p>
+<p>11</p>
+<p>12</p>
+<p>13</p>
+<p>14</p>
+<p>15</p>
+<p>16</p>
+<p>17</p>
+<p>18</p>
+<p>19</p>
+<p>20</p>
+<p>|</p>
+<p><code>private</code> <code>GameObject CreateBodyObject(``ulong</code> <code>id)</code></p>
+<p><code>``{</code></p>
+<p><code>``GameObject body = ``new</code> <code>GameObject(``&quot;Body:&quot;</code> <code>+ id);</code></p>
+<p><code>``for</code> <code>(Kinect.JointType jt = Kinect.JointType.SpineBase; jt &lt;=
+Kinect.JointType.ThumbRight; jt++)</code></p>
+<p><code>``{</code></p>
+<p><code>``GameObject jointObj = GameObject.CreatePrimitive(PrimitiveType.Cube);</code></p>
+<p><code>``LineRenderer lr = jointObj.AddComponent&lt;LineRenderer&gt;();</code></p>
+<p><code>``lr.SetVertexCount(2);</code></p>
+<p><code>``lr.material = BoneMaterial;</code></p>
+<p><code>``lr.SetWidth(0.05f, 0.05f);</code></p>
+<p><code>``jointObj.transform.localScale = ``new</code> <code>Vector3(0.3f, 0.3f, 0.3f);</code></p>
+<p><code>``jointObj.name = jt.ToString();</code></p>
+<p><code>``jointObj.transform.parent = body.transform;</code></p>
+<p><code>``}</code></p>
+<p><code>``return</code> <code>body;</code></p>
+<p><code>``}</code>  </p>
+<p>—|—  </p>
+<h3 id="RefreashBodyObject"><a href="#RefreashBodyObject" class="headerlink" title="RefreashBodyObject()"></a>RefreashBodyObject()</h3><p>Now to write the ResfreshBodyObject method. In this method we need to go<br>through each joint type possible just like we did in the CreateBodyObject<br>method. But this time we are passing in the current body, as well as the<br>appropriate tracking number so we don’t draw the bones for the wrong person.</p>
+<p>1</p>
+<p>2</p>
+<p>3</p>
+<p>4</p>
+<p>5</p>
+<p>6</p>
+<p>7</p>
+<p>|</p>
+<p><code>private</code> <code>void</code> <code>RefreshBodyObject(Kinect.Body body, GameObject bodyObject)</code></p>
+<p><code>``{</code></p>
+<p><code>``for</code> <code>(Kinect.JointType jt = Kinect.JointType.SpineBase; jt &lt;=
+Kinect.JointType.ThumbRight; jt++)</code></p>
+<p><code>``{</code></p>
+<p><code>``}</code></p>
+<p><code>``}</code>  </p>
+<p>—|—  </p>
+<p>Inside this for loop we need to get the key value pairs we made before in the<br>bone loop for each joint.</p>
+<p>1</p>
+<p>2</p>
+<p>3</p>
+<p>4</p>
+<p>5</p>
+<p>6</p>
+<p>7</p>
+<p>8</p>
+<p>9</p>
+<p>10</p>
+<p>11</p>
+<p>12</p>
+<p>13</p>
+<p>|</p>
+<p><code>private</code> <code>void</code> <code>RefreshBodyObject(Kinect.Body body, GameObject bodyObject)</code></p>
+<p><code>``{</code></p>
+<p><code>``for</code> <code>(Kinect.JointType jt = Kinect.JointType.SpineBase; jt &lt;=
+Kinect.JointType.ThumbRight; jt++)</code></p>
+<p><code>``{</code></p>
+<p><code>``Kinect.Joint sourceJoint = body.Joints[jt];</code></p>
+<p><code>``Kinect.Joint? targetJoint = ``null``;</code></p>
+<p><code>``if``(_BoneMap.ContainsKey(jt))</code></p>
+<p><code>``{</code></p>
+<p><code>``targetJoint = body.Joints[_BoneMap[jt]];</code></p>
+<p><code>``}</code></p>
+<p><code>``}</code></p>
+<p><code>``}</code>  </p>
+<p>—|—  </p>
+<p>We also need to update the skeletons position so it’s in the accurate place on<br>the screen. To do this we need to write a method to get the Vetcor3 from the<br>sourceJoint.</p>
+<p>1</p>
+<p>2</p>
+<p>3</p>
+<p>4</p>
+<p>|</p>
+<p><code>private</code> <code>static</code> <code>Vector3 GetVector3FromJoint(Kinect.Joint joint)</code></p>
+<p><code>{</code></p>
+<p><code>``return</code> <code>new</code> <code>Vector3(joint.Position.X * 10, joint.Position.Y * 10,
+joint.Position.Z * 10);</code></p>
+<p><code>}</code>  </p>
+<p>—|—  </p>
+<p>The scale by 10 is to enlarge the skeleton, which will make it easier to work<br>with. Now we have position to correct the gameObjects position.</p>
+<p>1</p>
+<p>2</p>
+<p>3</p>
+<p>4</p>
+<p>5</p>
+<p>6</p>
+<p>7</p>
+<p>8</p>
+<p>9</p>
+<p>10</p>
+<p>11</p>
+<p>12</p>
+<p>13</p>
+<p>14</p>
+<p>15</p>
+<p>16</p>
+<p>|</p>
+<p><code>private</code> <code>void</code> <code>RefreshBodyObject(Kinect.Body body, GameObject bodyObject)</code></p>
+<p><code>``{</code></p>
+<p><code>``for</code> <code>(Kinect.JointType jt = Kinect.JointType.SpineBase; jt &lt;=
+Kinect.JointType.ThumbRight; jt++)</code></p>
+<p><code>``{</code></p>
+<p><code>``Kinect.Joint sourceJoint = body.Joints[jt];</code></p>
+<p><code>``Kinect.Joint? targetJoint = ``null``;</code></p>
+<p><code>``if``(_BoneMap.ContainsKey(jt))</code></p>
+<p><code>``{</code></p>
+<p><code>``targetJoint = body.Joints[_BoneMap[jt]];</code></p>
+<p><code>``}</code></p>
+<p><code>``Transform jointObj = bodyObject.transform.FindChild(jt.ToString());</code></p>
+<p><code>``jointObj.localPosition = GetVector3FromJoint(sourceJoint);</code></p>
+<p><code>``}</code></p>
+<p><code>``}</code>  </p>
+<p>—|—  </p>
+<p>Next step in the for-loop is to get the linerenderer from the bodyObject,<br>which was the cube we create for each joint. Then we need to see if target<br>joint has a value. If it does we can then draw a line from the original joint<br>to the target.</p>
+<p>1</p>
+<p>2</p>
+<p>3</p>
+<p>4</p>
+<p>5</p>
+<p>6</p>
+<p>7</p>
+<p>8</p>
+<p>9</p>
+<p>10</p>
+<p>|</p>
+<p><code>LineRenderer lr = jointObj.GetComponent&lt;LineRenderer&gt;();</code></p>
+<p><code>if``(targetJoint.HasValue)</code></p>
+<p><code>{</code></p>
+<p><code>``lr.SetPosition(0, jointObj.localPosition);</code></p>
+<p><code>``lr.SetPosition(1, GetVector3FromJoint(targetJoint.Value));</code></p>
+<p><code>}</code></p>
+<p><code>else</code></p>
+<p><code>{</code></p>
+<p><code>``lr.enabled = ``false``;</code></p>
+<p><code>}</code>  </p>
+<p>—|—  </p>
+<p>Great! So we are almost done with drawing the skeleton. There is a bit more<br>information that will be helpful that the SDK gives you, which is tracking<br>status. There are three states to choose from, Tracked, Inferred, or<br>NotTracked. We can have the line renderer show us the state of tracking by<br>changing it’s color. To do this we need a method that will return a color<br>based on the current state.</p>
+<p>1</p>
+<p>2</p>
+<p>3</p>
+<p>4</p>
+<p>5</p>
+<p>6</p>
+<p>7</p>
+<p>8</p>
+<p>9</p>
+<p>10</p>
+<p>11</p>
+<p>12</p>
+<p>13</p>
+<p>14</p>
+<p>|</p>
+<p><code>private</code> <code>static</code> <code>Color GetColorForState(Kinect.TrackingState state)</code></p>
+<p><code>{</code></p>
+<p><code>``switch</code> <code>(state)</code></p>
+<p><code>``{</code></p>
+<p><code>``case</code> <code>Kinect.TrackingState.Tracked:</code></p>
+<p><code>``return</code> <code>Color.green;</code></p>
+<p><code>``case</code> <code>Kinect.TrackingState.Inferred:</code></p>
+<p><code>``return</code> <code>Color.red;</code></p>
+<p><code>``default``:</code></p>
+<p><code>``return</code> <code>Color.black;</code></p>
+<p><code>``}</code></p>
+<p><code>}</code>  </p>
+<p>—|—  </p>
+<p>Now we add one more line to the for-loop of the RefreachBodyObject method and<br>we are done.</p>
+<p>1</p>
+<p>2</p>
+<p>3</p>
+<p>4</p>
+<p>5</p>
+<p>6</p>
+<p>7</p>
+<p>8</p>
+<p>9</p>
+<p>10</p>
+<p>11</p>
+<p>12</p>
+<p>13</p>
+<p>14</p>
+<p>15</p>
+<p>16</p>
+<p>17</p>
+<p>18</p>
+<p>19</p>
+<p>20</p>
+<p>21</p>
+<p>22</p>
+<p>23</p>
+<p>24</p>
+<p>25</p>
+<p>26</p>
+<p>27</p>
+<p>28</p>
+<p>|</p>
+<p><code>private</code> <code>void</code> <code>RefreshBodyObject(Kinect.Body body, GameObject bodyObject)</code></p>
+<p><code>{</code></p>
+<p><code>``for</code> <code>(Kinect.JointType jt = Kinect.JointType.SpineBase; jt &lt;=
+Kinect.JointType.ThumbRight; jt++)</code></p>
+<p><code>``{</code></p>
+<p><code>``Kinect.Joint sourceJoint = body.Joints[jt];</code></p>
+<p><code>``Kinect.Joint? targetJoint = ``null``;</code></p>
+<p><code>``if</code> <code>(_BoneMap.ContainsKey(jt))</code></p>
+<p><code>``{</code></p>
+<p><code>``targetJoint = body.Joints[_BoneMap[jt]];</code></p>
+<p><code>``}</code></p>
+<p><code>``Transform jointObj = bodyObject.transform.FindChild(jt.ToString());</code></p>
+<p><code>``jointObj.localPosition = GetVector3FromJoint(sourceJoint);</code></p>
+<p><code>``LineRenderer lr = jointObj.GetComponent&lt;LineRenderer&gt;();</code></p>
+<p><code>``if</code> <code>(targetJoint.HasValue)</code></p>
+<p><code>``{</code></p>
+<p><code>``lr.SetPosition(0, jointObj.localPosition);</code></p>
+<p><code>``lr.SetPosition(1, GetVector3FromJoint(targetJoint.Value));</code></p>
+<p><code>``lr.SetColors(GetColorForState(sourceJoint.TrackingState),
+GetColorForState(targetJoint.Value.TrackingState));</code></p>
+<p><code>``}</code></p>
+<p><code>``else</code></p>
+<p><code>``{</code></p>
+<p><code>``lr.enabled = ``false``;</code></p>
+<p><code>``}</code></p>
+<p><code>``}</code></p>
+<p><code>}</code>  </p>
+<p>—|—  </p>
+<p>And that’s it for drawing the skeleton!</p>
+<h2 id="Putting-the-Skeleton-into-Unity"><a href="#Putting-the-Skeleton-into-Unity" class="headerlink" title="Putting the Skeleton into Unity"></a>Putting the Skeleton into Unity</h2><p>Now in Unity I’ve created another scene by going to file new scene (it will<br>prompt you to save your current scene if you haven’t already). This empty<br>scene will make it easier for you to test and see what you’re doing.</p>
+<p>In the empty scene, which I have saved as kinectTest, create two empty game<br>objects. Call them Body Manager and Body View.</p>
+<p><a href="http://thenappingkat.azurewebsites.net/wp-
+content/uploads/2015/06/UnityObjectsBVBM.png" target="_blank" rel="external"><img src="http://thenappingkat.azurewebsites.net/wp-
+content/uploads/2015/06/UnityObjectsBVBM.png" alt="UnityObjectsBVBM"></a></p>
+<p>Attach the Body Manager script to the body manager object. Attach the Body<br>View script to the BodyView object.</p>
+<p><a href="http://thenappingkat.azurewebsites.net/wp-
+content/uploads/2015/06/BodyManagerInspector.png" target="_blank" rel="external"><img src="http://thenappingkat.azurewebsites.net/wp-
+content/uploads/2015/06/BodyManagerInspector.png" alt="BodyManagerInspector"></a></p>
+<p>Select the Body View object. In the inspector you need to fill in the Body<br>Manager slot and Bone Material slot. Click and drag the BodyManager from the<br>hierarchy to the slot. Then in your materials folder click and drag the Bone<br>Material into the bone material slot.</p>
+<p><a href="http://thenappingkat.azurewebsites.net/wp-
+content/uploads/2015/06/BodyViewObjectSettings.png" target="_blank" rel="external"><img src="http://thenappingkat.azurewebsites.net/wp-
+content/uploads/2015/06/BodyViewObjectSettings.png" alt="BodyViewObjectSettings"></a></p>
+<p>Now hit run. You should see nothing on your screen at first. This is because<br>the Kinect hasn’t registered your skeleton yet. Stand back about 4 ft, and you<br>should see the skeleton appear.</p>
+<p><a href="http://thenappingkat.azurewebsites.net/wp-
+content/uploads/2015/06/UnityKinectScene.png" target="_blank" rel="external"><img src="http://thenappingkat.azurewebsites.net/wp-
+content/uploads/2015/06/UnityKinectScene.png" alt="UnityKinectScene"></a></p>
+<p>If you look closely you can tell that the legs of the skeleton are red. This<br>is because the Kinect is interpreting that’s where my legs should be. My desk<br>was blocking the sensor from detecting where my legs actually were.</p>
+<p>But wait! You say. We don’t need a skeleton in our infinite runner game, just<br>the hand gestures and states! So was all this a waste? NO! Of course it<br>wasn’t. We just don’t need to draw the whole skeleton in the scene anymore.<br>But we now have the know-how if you need to in the future. YAY!</p>
+<p>The next part of this mini series will be getting those hand gestures to work<br>in the game!</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Kinect/" rel="tag">#Kinect</a>
+          
+            <a href="/tags/unity3D/" rel="tag">#unity3D</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/05/11/2016-05-11_UNITY 5 AND KINECT 2 INTEGRATION (unity5 和kinect2.0整合)/" rel="next" title="UNITY 5 AND KINECT 2 INTEGRATION (unity5 和kinect2.0整合)">
+                <i class="fa fa-chevron-left"></i> UNITY 5 AND KINECT 2 INTEGRATION (unity5 和kinect2.0整合)
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/05/13/2016-05-13_解决3ds max模型导出fbx到unity3d中蒙皮材质丢失的问题/" rel="prev" title="解决3ds max模型导出fbx到unity3d中蒙皮材质丢失的问题">
+                解决3ds max模型导出fbx到unity3d中蒙皮材质丢失的问题 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="//schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="orzangleli" />
+          <p class="site-author-name" itemprop="name">orzangleli</p>
+          <p class="site-description motion-element" itemprop="description">android python untiy3D</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">42</span>
+              <span class="site-state-item-name">posts</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Kinect-Skeleton-in-Unity"><span class="nav-number">1.</span> <span class="nav-text">Kinect Skeleton in Unity</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#BodyManager-Script"><span class="nav-number">1.1.</span> <span class="nav-text">BodyManager Script</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BodyView-Script"><span class="nav-number">1.2.</span> <span class="nav-text">BodyView Script</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#BodyView-Update"><span class="nav-number">1.2.1.</span> <span class="nav-text">BodyView Update()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CreateBodyObject"><span class="nav-number">1.2.2.</span> <span class="nav-text">CreateBodyObject()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RefreashBodyObject"><span class="nav-number">1.2.3.</span> <span class="nav-text">RefreashBodyObject()</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Putting-the-Skeleton-into-Unity"><span class="nav-number">1.3.</span> <span class="nav-text">Putting the Skeleton into Unity</span></a></li></ol></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">orzangleli</span>
+</div>
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.2"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>

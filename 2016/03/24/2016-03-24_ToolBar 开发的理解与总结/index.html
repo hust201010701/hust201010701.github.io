@@ -1,0 +1,732 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="android," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="orzangleli" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.2" />
+
+
+
+
+
+
+<meta name="description" content="Toolbar 从API 21(android 5.0) 由谷歌官方加入。以前使用ActionBar很麻烦，我还没怎么搞懂，不过现在Toolbar是一个控件了，大大地方便了开发者的自定义。
+根据D_clock的 最详细的 Toolbar 开发实践总结这篇博客，我可以知道Toolbar的新特性：
+
+设置导航栏图标；
+设置App的logo；
+支持设置标题和子标题；
+支持添加一个或多个的自定义控件；
+支">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ToolBar 开发的理解与总结">
+<meta property="og:url" content="http://yoursite.com/2016/03/24/2016-03-24_ToolBar 开发的理解与总结/index.html">
+<meta property="og:site_name" content="orzangleli">
+<meta property="og:description" content="Toolbar 从API 21(android 5.0) 由谷歌官方加入。以前使用ActionBar很麻烦，我还没怎么搞懂，不过现在Toolbar是一个控件了，大大地方便了开发者的自定义。
+根据D_clock的 最详细的 Toolbar 开发实践总结这篇博客，我可以知道Toolbar的新特性：
+
+设置导航栏图标；
+设置App的logo；
+支持设置标题和子标题；
+支持添加一个或多个的自定义控件；
+支">
+<meta property="og:image" content="http://yoursite.com/file:///c:/users/administrator/appdata/roaming/360se6/User
+Data/temp/1240.png">
+<meta property="og:image" content="http://upload-
+images.jianshu.io/upload_images/912181-a2527fe0389b320f.jpg?imageMogr2/auto-
+orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://www.orzangleli.com/wp-
+content/uploads/2016/03/747930297326087951-576x1024.jpg">
+<meta property="og:updated_time" content="2016-11-03T11:19:44.912Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ToolBar 开发的理解与总结">
+<meta name="twitter:description" content="Toolbar 从API 21(android 5.0) 由谷歌官方加入。以前使用ActionBar很麻烦，我还没怎么搞懂，不过现在Toolbar是一个控件了，大大地方便了开发者的自定义。
+根据D_clock的 最详细的 Toolbar 开发实践总结这篇博客，我可以知道Toolbar的新特性：
+
+设置导航栏图标；
+设置App的logo；
+支持设置标题和子标题；
+支持添加一个或多个的自定义控件；
+支">
+<meta name="twitter:image" content="http://yoursite.com/file:///c:/users/administrator/appdata/roaming/360se6/User
+Data/temp/1240.png">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/03/24/2016-03-24_ToolBar 开发的理解与总结/"/>
+
+
+  <title> ToolBar 开发的理解与总结 | orzangleli </title>
+</head>
+
+<body itemscope itemtype="//schema.org/WebPage" lang="">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="//schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">orzangleli</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">a programer and designer living in the dream</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-schedule">
+          <a href="/schedule" rel="section">
+            
+            Schedule
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="//schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                ToolBar 开发的理解与总结
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">Posted on</span>
+            <time itemprop="dateCreated" datetime="2016-03-24T00:00:00+08:00" content="2016-03-24">
+              2016-03-24
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Toolbar 从API 21(android 5.0) 由谷歌官方加入。以前使用ActionBar<br>很麻烦，我还没怎么搞懂，不过现在Toolbar是一个控件了，大大地方便了开发者的自定义。</p>
+<p>根据D_clock的 <a href="http://www.jianshu.com/p/79604c3ddcae" target="_blank" rel="external">最详细的 Toolbar 开发实践总结</a><br>这篇博客，我可以知道Toolbar的新特性：</p>
+<ul>
+<li>设置导航栏图标；</li>
+<li>设置App的logo；</li>
+<li>支持设置标题和子标题；</li>
+<li>支持添加一个或多个的自定义控件；</li>
+<li>支持Action Menu；</li>
+</ul>
+<p>下面开始正式使用：</p>
+<p>首先是布局：</p>
+<pre><code>&lt;android.support.v7.widget.Toolbar
+       android:id=&quot;@+id/toolbar&quot;
+       android:layout_width=&quot;match_parent&quot;
+       android:layout_height=&quot;wrap_content&quot;
+       android:background=&quot;#aa0000aa&quot;/&gt;
+</code></pre><p>Toolbar 可以内嵌控件，类似于LinnerLayout 。</p>
+<p>然后在Java代码中设置相关属性：</p>
+<pre><code>Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        //设置导航栏图标        
+        toolbar.setNavigationIcon(R.mipmap.ic_drawer_home);
+        //设置app logo
+        toolbar.setLogo(R.mipmap.ic_launcher);
+        //设置主标题
+        toolbar.setTitle(&quot;Title&quot;);
+        //设置子标题
+        toolbar.setSubtitle(&quot;Subtitle&quot;);
+        //设置右上角的填充菜单
+        toolbar.inflateMenu(R.menu.base_toolbar_menu);
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                return true;
+            }
+        });
+</code></pre><p>一般来说，可以在java代码中设置属性就可以在xml中设置，但是原博主遇到了问题，</p>
+<pre><code>&lt;android.support.v7.widget.Toolbar
+       android:id=&quot;@+id/toolbar&quot;
+       android:layout_width=&quot;match_parent&quot;
+       android:layout_height=&quot;wrap_content&quot;
+       android:background=&quot;@color/color_0176da&quot;
+       android:logo=&quot;@mipmap/ic_launcher&quot;
+       android:navigationIcon=&quot;@mipmap/ic_drawer_home&quot;
+       android:subtitle=&quot;456&quot;
+       android:title=&quot;123&quot;&gt;
+       &lt;!--自定义控件--&gt;
+       &lt;TextView
+           android:layout_width=&quot;wrap_content&quot;
+           android:layout_height=&quot;wrap_content&quot;
+           android:text=&quot;Clock&quot; /&gt;
+   &lt;/android.support.v7.widget.Toolbar&gt;
+</code></pre><p>效果如下，并没有出现想要的结果。为什么呢？<img src="file:///c:/users/administrator/appdata/roaming/360se6/User
+Data/temp/1240.png" alt=""></p>
+<p><img src="http://upload-
+images.jianshu.io/upload_images/912181-a2527fe0389b320f.jpg?imageMogr2/auto-
+orient/strip%7CimageView2/2/w/1240" alt=""></p>
+<p>解决方法是在根布局中添加自定义属性的命名空间，但是为什么？(这里我不太理解，以后理解在再做补充)</p>
+<hr>
+<p>2016.3.23 补充： 经过网上查询，终于理解了，这个xmlns就是xml namespace的意思，后面跟的内容可以理解为自定义字符串，</p>
+<pre><code>xmlns:toolbar=&quot;http://schemas.android.com/apk/res-auto&quot;
+</code></pre><p>完全可以修改</p>
+<pre><code>xmlns:toolbar=&quot;http://schemas.android.com/apk/mytoolbar&quot;
+</code></pre><p>因为toolbar下面有这几个属性：</p>
+<ul>
+<li>navigationIcon</li>
+<li>logo</li>
+<li>subtitle</li>
+<li>title</li>
+</ul>
+<p>这个属性并不是android下面的，而且有些属性可能在android这个命名空间里也有，所以区分下。</p>
+<p>2016.03.24补充：经过测试，在androidstudio中自定义控件的命名空间都必须为<br>xmlns:toolbar=”<a href="http://schemas.android.com/apk/res-auto”" target="_blank" rel="external">http://schemas.android.com/apk/res-auto”</a> 。需要注意下。</p>
+<hr>
+<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;LinearLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+    xmlns:toolbar=&quot;http://schemas.android.com/apk/res-auto&quot;
+    android:layout_width=&quot;match_parent&quot;
+    android:layout_height=&quot;match_parent&quot;
+    android:orientation=&quot;vertical&quot;&gt;
+    &lt;android.support.v7.widget.Toolbar
+        android:id=&quot;@+id/toolbar&quot;
+        android:layout_width=&quot;match_parent&quot;
+        android:layout_height=&quot;wrap_content&quot;
+        android:background=&quot;@color/color_0176da&quot;
+        toolbar:navigationIcon=&quot;@mipmap/ic_drawer_home&quot;
+        toolbar:logo=&quot;@mipmap/ic_launcher&quot;
+        toolbar:subtitle=&quot;456&quot;
+        toolbar:title=&quot;123&quot;&gt;
+        &lt;!--自定义控件--&gt;
+        &lt;TextView
+            android:layout_width=&quot;wrap_content&quot;
+            android:layout_height=&quot;wrap_content&quot;
+            android:text=&quot;Clock&quot; /&gt;
+    &lt;/android.support.v7.widget.Toolbar&gt;
+&lt;/LinearLayout&gt;
+</code></pre><p>然后就可以出现正确结果。</p>
+<p>由于这个包是向下兼容的，所以在API21以下还要设置这样一句：</p>
+<pre><code>if(Build.VERSION.SDK_INT &lt; 21)
+             requestWindowFeature(Window.FEATURE_NO_TITLE);
+</code></pre><p>修改APPTheme主题：</p>
+<pre><code>&lt;style name=&quot;AppTheme&quot; parent=&quot;Theme.AppCompat.Light.NoActionBar&quot; /&gt;
+</code></pre><p><img src="http://www.orzangleli.com/wp-
+content/uploads/2016/03/747930297326087951-576x1024.jpg" alt="747930297326087951"></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/android/" rel="tag">#android</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/03/23/2016-03-23_genymotion 安装后无法启动/" rel="next" title="genymotion 安装后无法启动">
+                <i class="fa fa-chevron-left"></i> genymotion 安装后无法启动
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/03/30/2016-03-30_基于Bmob云数据库的APP评论与赞的部分设计与实现/" rel="prev" title="基于Bmob云数据库的APP评论与赞的部分设计与实现">
+                基于Bmob云数据库的APP评论与赞的部分设计与实现 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="//schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="orzangleli" />
+          <p class="site-author-name" itemprop="name">orzangleli</p>
+          <p class="site-description motion-element" itemprop="description">android python untiy3D</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">42</span>
+              <span class="site-state-item-name">posts</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <p class="post-toc-empty">This post does not have a Table of Contents</p>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">orzangleli</span>
+</div>
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.2"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>

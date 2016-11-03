@@ -1,0 +1,731 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+  
+
+
+  <link rel="alternate" href="/atom.xml" title="orzangleli" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.2" />
+
+
+
+
+
+
+<meta name="description" content="#Python 实用技巧————博客文档备份及格式转化
+##1. 为什么要备份博客文章？备份博客文章原因有很多，其中很重要的一点就是担心服务器数据丢失。我购买的是主机公园的香港主机，当时图便宜，也图方便（不需要备案），因此购买此主机，购买之后发现使用很是不方便：
+
+一方面速度很慢，打开主页都需要几秒钟，而且有时候我的浏览器已经有缓存了，打开还是很慢；
+
+二是服务器时不时的挂掉，服务商还做过几次空间">
+<meta property="og:type" content="article">
+<meta property="og:title" content="orzangleli">
+<meta property="og:url" content="http://yoursite.com/2016/11/03/2016-11-3_Python实战_博客备份及格式转换/index.html">
+<meta property="og:site_name" content="orzangleli">
+<meta property="og:description" content="#Python 实用技巧————博客文档备份及格式转化
+##1. 为什么要备份博客文章？备份博客文章原因有很多，其中很重要的一点就是担心服务器数据丢失。我购买的是主机公园的香港主机，当时图便宜，也图方便（不需要备案），因此购买此主机，购买之后发现使用很是不方便：
+
+一方面速度很慢，打开主页都需要几秒钟，而且有时候我的浏览器已经有缓存了，打开还是很慢；
+
+二是服务器时不时的挂掉，服务商还做过几次空间">
+<meta property="og:image" content="http://7xrrni.com1.z0.glb.clouddn.com/2016-11-03_14:24:52_1.jpg?imageView2/0/w/800">
+<meta property="og:image" content="http://7xrrni.com1.z0.glb.clouddn.com/2016-11-03_15:10:25_3.jpg?imageView2/0/w/1000">
+<meta property="og:updated_time" content="2016-11-03T11:19:56.296Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="orzangleli">
+<meta name="twitter:description" content="#Python 实用技巧————博客文档备份及格式转化
+##1. 为什么要备份博客文章？备份博客文章原因有很多，其中很重要的一点就是担心服务器数据丢失。我购买的是主机公园的香港主机，当时图便宜，也图方便（不需要备案），因此购买此主机，购买之后发现使用很是不方便：
+
+一方面速度很慢，打开主页都需要几秒钟，而且有时候我的浏览器已经有缓存了，打开还是很慢；
+
+二是服务器时不时的挂掉，服务商还做过几次空间">
+<meta name="twitter:image" content="http://7xrrni.com1.z0.glb.clouddn.com/2016-11-03_14:24:52_1.jpg?imageView2/0/w/800">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/11/03/2016-11-3_Python实战_博客备份及格式转换/"/>
+
+
+  <title>  | orzangleli </title>
+</head>
+
+<body itemscope itemtype="//schema.org/WebPage" lang="">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="//schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">orzangleli</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">a programer and designer living in the dream</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-schedule">
+          <a href="/schedule" rel="section">
+            
+            Schedule
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="//schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">Posted on</span>
+            <time itemprop="dateCreated" datetime="2016-11-03T20:15:06+08:00" content="2016-11-03">
+              2016-11-03
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>#Python 实用技巧————博客文档备份及格式转化</p>
+<p>##1. 为什么要备份博客文章？<br>备份博客文章原因有很多，其中很重要的一点就是担心服务器数据丢失。我购买的是主机公园的香港主机，当时图便宜，也图方便（不需要备案），因此购买此主机，购买之后发现使用很是不方便：</p>
+<ol>
+<li><p>一方面速度很慢，打开主页都需要几秒钟，而且有时候我的浏览器已经有缓存了，打开还是很慢；</p>
+</li>
+<li><p>二是服务器时不时的挂掉，服务商还做过几次空间迁移。</p>
+</li>
+</ol>
+<p>正因为这些原因，让用户体验很差，网友们通过搜索引擎搜索到之后，打开网站等待时间过长，一般来说就会直接关闭网页了。另一方面，空间中的文章也处于一种不安全的状态，随时可能找不到备份文件。</p>
+<p>##2. 为什么要放弃wordpress？</p>
+<p>之前建博客的重点是有一个可以保存自己文章的位置，可以随时记录，随时查阅，但是作为一个极简主义者，实在受不了wp的臃肿设计，而且使用几个插件之后网页巨卡无比，让人无法接受。</p>
+<p>在知乎和google上搜索“个人编程博客框架”时，很多推荐了Hexo，这是一个基于Node.js的博客框架，非常好用，对于日常博客类网站十分适合。</p>
+<p>##3.Hexo的安装和配置教程</p>
+<p>参见这位大神的教程： <a href="http://blog.niices.com/Hexo-Blog-Github-Page-Coding-Page-Domain/" target="_blank" rel="external">niices</a></p>
+<p>##4.博客备份原理及步骤</p>
+<p>下面进入正题。</p>
+<p>###4.1 博客备份原理</p>
+<p>首先需要知道wp站点有大量的css和js，是动态网站，无法使用urllib直接获取网站源码。<br>这里使用selenium 中的webdriver 配合phantomjs.exe ，这是一个真实的浏览器访问网站，所以不需要添加任何UA标识等。<br>在wp的首页，使用浏览器访问主页，按F12或者右键审查元素，查看文章标题的class.(不同的主题可能略微有些不同)</p>
+<p><img src="http://7xrrni.com1.z0.glb.clouddn.com/2016-11-03_14:24:52_1.jpg?imageView2/0/w/800" alt=""></p>
+<p>可以知道文章的标题由 <code>&lt;h2 class=&quot;entry-title&quot;&gt;</code> 包含，再使用selenium获取网页源码之后，使用BeautifulSoup可以定位到这个标签：</p>
+<pre><code>titles =soup.findAll(class_=&quot;entry-title&quot;)
+</code></pre><p>因为主页中有很多文章，所以有很多类似的标题，我们需要将所有的都获取到。</p>
+<pre><code>for title in titles:
+        address = title.find(&quot;a&quot;)[&quot;href&quot;]
+        self.articles.add(address)
+</code></pre><p><code>self.articles</code> 是一个set集合。用于保存所有文章的url,通过上面的代码可以将每篇文章中的代码保存到<code>self.articles</code>中    </p>
+<p>这是获取主页的第一页的所有文章，还有第2页等。所以定义一个函数，根据页码获取文章地址：</p>
+<pre><code>def getArticlesByPageIndex(self,pageIndex):
+    self.browser.get(&quot;http://www.orzangleli.com/page/%d/&quot;%pageIndex)
+    time.sleep(6)
+    soup = BeautifulSoup(self.browser.page_source,&quot;html5lib&quot;)
+    titles =soup.findAll(class_=&quot;entry-title&quot;)
+    for title in titles:
+        address = title.find(&quot;a&quot;)[&quot;href&quot;]
+        self.articles.add(address)
+        print(address)
+</code></pre><p>通过一个for循环完成所有页面的文章url添加，之所以是<code>i+1</code>,是因为range(3)表示{0，1，2}：</p>
+<pre><code>def getAllArticles(self):
+        for i in range(self.pages):
+            self.getArticlesByPageIndex(i+1)
+</code></pre><p>这样，所有文章的url都存在<code>self.articles</code>中了，在浏览器中访问一个文章，观察文章的中信息，同样通过bs4可以获取文章的标题，发表时间，分类目录，hexo中的md文档还需要指明tag，这里我用分类代替，而分类使用之前分类的第一个分类代替，这些信息还要以特定格式保存在md中，下面代码负责返回一个md文档中head：</p>
+<pre><code>def mdheader(self,title,date,tags,category):
+        head = &quot;&quot;&quot;---
+title: %s
+date: %s
+tags:
+%scategories: %s
+---&quot;&quot;&quot;%(title,date,tags,category)
+        return head
+</code></pre><p>获取到文章的正文内容后，使用html2text将html语言转为markdown语言。html2text的文档在：<a href="https://pypi.python.org/pypi/html2text/2016.9.19" target="_blank" rel="external">html2text</a>，将head和html2text转化的内容连接，组成完整的md文档。</p>
+<p>入口函数为：</p>
+<pre><code>def saveBlog(self):
+        self.getAllArticles()
+        for url in self.articles:
+            self.save2md(url)
+</code></pre><p>在最外层使用下面代码初始化类：<br>    browser = webdriver.PhantomJS(executable_path =”phantomjs.exe”)<br>    blog = Blog(browser,5)<br>    blog.saveBlog()</p>
+<p>完整代码：</p>
+<pre><code>import requests
+from selenium import webdriver
+import time
+import html2text
+from bs4 import BeautifulSoup
+
+
+class Blog():
+    def __init__(self,browser,pages):
+        self.browser = browser
+        self.pages = pages
+        self.articles = set()
+
+    def getArticlesByPageIndex(self,pageIndex):
+        self.browser.get(&quot;http://www.orzangleli.com/page/%d/&quot;%pageIndex)
+        time.sleep(6)
+        soup = BeautifulSoup(self.browser.page_source,&quot;html5lib&quot;)
+        #print(self.browser.page_source)
+        titles =soup.findAll(class_=&quot;entry-title&quot;)
+        for title in titles:
+            address = title.find(&quot;a&quot;)[&quot;href&quot;]
+            self.articles.add(address)
+            print(address)
+
+    def getAllArticles(self):
+        for i in range(self.pages):
+            self.getArticlesByPageIndex(i+1)
+
+    def save2md(self,page_address):
+        self.browser.get(page_address)
+        time.sleep(6)
+        #需要事先在wp后台关闭禁用掉代码高亮显示插件
+
+        soup = BeautifulSoup(self.browser.page_source,&quot;html5lib&quot;)
+        title = soup.find(class_=&quot;entry-title&quot;).text
+        date = soup.find(class_=&quot;updated&quot;)[&quot;datetime&quot;].split(&quot;T&quot;)[0]
+        content = soup.find(class_=&quot;entry-content&quot;)
+        #获取标签
+        categorys = soup.findAll(&quot;a&quot;,{&quot;rel&quot;:&quot;category tag&quot;})
+        tags = &quot;&quot;
+        for category in categorys:
+            if category.text.startswith(&quot;未分类&quot;):
+                break
+            tags = &quot;%s- %s\n&quot;%(tags,category.text)
+
+        head = self.mdheader(title,date,tags,categorys[0].text)        
+        #print(content)
+
+        mdcontent = html2text.html2text(str(content))
+        #给md文档加上头
+        mdcontent = &quot;%s\n%s&quot;%(head,mdcontent)
+        #删除作者署名信息
+        mdcontent = mdcontent.split(&quot;![](http://2.gravatar.com/avatar/e9a1c2c77d47ac4dcfeb1fa2fc1c936a?s=42&amp;d=mm&amp;r=g)&quot;)[0]
+
+        with open(&quot;%s_%s.md&quot;%(date,title),&quot;w+&quot;,encoding=&quot;utf-8&quot;) as file:
+            file.write(mdcontent)
+            file.close()
+
+    def saveBlog(self):
+        self.getAllArticles()
+        for url in self.articles:
+            self.save2md(url)
+
+
+    def mdheader(self,title,date,tags,category):
+        head = &quot;&quot;&quot;---
+title: %s
+date: %s
+tags:
+%scategories: %s
+---&quot;&quot;&quot;%(title,date,tags,category)
+        return head
+
+
+browser = webdriver.PhantomJS(executable_path =&quot;phantomjs.exe&quot;)
+blog = Blog(browser,5)
+blog.saveBlog()
+</code></pre><p>附上，我将博客上所有文章保存下来的截图，幸福感满满~，待会可以使用hexo提交到hust201010701.github.io上：</p>
+<p><img src="http://7xrrni.com1.z0.glb.clouddn.com/2016-11-03_15:10:25_3.jpg?imageView2/0/w/1000" alt=""></p>
+<p>源码地址：<a href="https://github.com/hust201010701/WpBlogToMarkdownFile.git" target="_blank" rel="external">WpBlogToMarkdownFile.git</a></p>
+<p>##5. 为什么Python这么强大？</p>
+<p>从上面的完整代码就可以看出，python代码使用了77行，实现了整个需求，真的是：<strong>人生苦短，我用python.</strong> </p>
+<p>Pyhton的强大的内置库和第三方库，让轮子不再重复制造，完成一个网页源码的数据获取只需要两三行代码，请问除了python还有谁？</p>
+<p>学习代码这么长时间，之间一直使用C++,java,android,C#，没有哪种语言能够真真切切地解决生活中的麻烦事，直到遇到了python，庆幸~</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/11/02/hello-world/" rel="next" title="Hello World">
+                <i class="fa fa-chevron-left"></i> Hello World
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="//schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="orzangleli" />
+          <p class="site-author-name" itemprop="name">orzangleli</p>
+          <p class="site-description motion-element" itemprop="description">android python untiy3D</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">42</span>
+              <span class="site-state-item-name">posts</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <p class="post-toc-empty">This post does not have a Table of Contents</p>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">orzangleli</span>
+</div>
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.2"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>
