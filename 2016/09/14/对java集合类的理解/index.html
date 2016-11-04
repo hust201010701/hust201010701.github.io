@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" >
+  <link rel="dns-prefetch" href="http://yoursite.com">
+  <title>对java集合类的理解 | orzangleli</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="对java集合类的理解
+1. ArrayList扩容策略这段时间，找工作，一方面是辛苦，另一方面也是收获，知道自己的哪些不足或者哪些技术没有完全弄清楚，是一个不错的检测自己的方式。
+
+-面试官问道：说下ArrayList和LinkedList的区别？
+
+首先这道题的答案我当时是知道的，我开始说ArrayList是动态数组，LinkedList是链表，然后面试官打断我：
+
+
+ArrayList是怎么">
+<meta property="og:type" content="article">
+<meta property="og:title" content="对java集合类的理解">
+<meta property="og:url" content="http://yoursite.com/2016/09/14/对java集合类的理解/index.html">
+<meta property="og:site_name" content="orzangleli">
+<meta property="og:description" content="对java集合类的理解
+1. ArrayList扩容策略这段时间，找工作，一方面是辛苦，另一方面也是收获，知道自己的哪些不足或者哪些技术没有完全弄清楚，是一个不错的检测自己的方式。
+
+-面试官问道：说下ArrayList和LinkedList的区别？
+
+首先这道题的答案我当时是知道的，我开始说ArrayList是动态数组，LinkedList是链表，然后面试官打断我：
+
+
+ArrayList是怎么">
+<meta property="og:updated_time" content="2016-11-03T11:19:53.663Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="对java集合类的理解">
+<meta name="twitter:description" content="对java集合类的理解
+1. ArrayList扩容策略这段时间，找工作，一方面是辛苦，另一方面也是收获，知道自己的哪些不足或者哪些技术没有完全弄清楚，是一个不错的检测自己的方式。
+
+-面试官问道：说下ArrayList和LinkedList的区别？
+
+首先这道题的答案我当时是知道的，我开始说ArrayList是动态数组，LinkedList是链表，然后面试官打断我：
+
+
+ArrayList是怎么">
+  
+    <link rel="alternative" href="/atom.xml" title="orzangleli" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/assets/img/favicon.ico">
+  
+  <link rel="stylesheet" href="/main.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div class="left-col">
+      <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img src="/assets/avatar.gif" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">orzangleli</a></h1>
+		</hgroup>
+
+		
+		<p class="header-subtitle">活在梦里的程序员和设计师</p>
+		
+
+		<nav class="header-menu">
+			<ul>
+			
+				<li><a href="/">主页</a></li>
+	        
+				<li><a href="/techs">技术</a></li>
+	        
+			</ul>
+		</nav>
+		<nav class="header-smart-menu">
+	        
+    		
+    			
+    			<a class="js-smart-menu" data-idx="0" href="javascript:void(0)">所有文章</a>
+    			
+    			
+            
+    			
+    			<a class="js-smart-menu" data-idx="1" href="javascript:void(0)">标签</a>
+    			
+    			
+            
+    			
+            
+    			
+    			<a class="js-smart-menu" data-idx="2" href="javascript:void(0)">关于我</a>
+    			
+    			
+            
+		</nav>
+		<nav class="header-nav">
+			<div class="social">
+				
+					<a class="github" target="_blank" href="https://github.com/hust201010701" title="github">github</a>
+		        
+					<a class="weibo" target="_blank" href="http://weibo.com/androidjiqiaogonglue" title="weibo">weibo</a>
+		        
+					<a class="rss" target="_blank" href="/atom.xml" title="rss">rss</a>
+		        
+					<a class="mail" target="_blank" href="/orzangleli@163.com" title="mail">mail</a>
+		        
+			</div>
+		</nav>
+	</header>		
+</div>
+
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"><i class="icon-list"></i></div>
+  		<h1 class="header-author js-mobile-header hide">orzangleli</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				
+					<img src="/assets/avatar.gif" class="js-avatar">
+				
+			</div>
+			<hgroup>
+			  <h1 class="header-author">orzangleli</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">活在梦里的程序员和设计师</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/techs">技术</a></li>
+		        
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+						<a class="github" target="_blank" href="https://github.com/hust201010701" title="github">github</a>
+			        
+						<a class="weibo" target="_blank" href="http://weibo.com/androidjiqiaogonglue" title="weibo">weibo</a>
+			        
+						<a class="rss" target="_blank" href="/atom.xml" title="rss">rss</a>
+			        
+						<a class="mail" target="_blank" href="/orzangleli@163.com" title="mail">mail</a>
+			        
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+
+      <div class="body-wrap">
+        <article id="post-对java集合类的理解" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      对java集合类的理解
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="对java集合类的理解"><a href="#对java集合类的理解" class="headerlink" title="对java集合类的理解"></a>对java集合类的理解</h1><hr>
+<h2 id="1-ArrayList扩容策略"><a href="#1-ArrayList扩容策略" class="headerlink" title="1. ArrayList扩容策略"></a>1. ArrayList扩容策略</h2><p>这段时间，找工作，一方面是辛苦，另一方面也是收获，知道自己的哪些不足或者哪些技术没有完全弄清楚，是一个不错的检测自己的方式。</p>
+<blockquote>
+<p>-面试官问道：说下ArrayList和LinkedList的区别？</p>
+</blockquote>
+<p>首先这道题的答案我当时是知道的，我开始说ArrayList是动态数组，LinkedList是链表，然后面试官打断我：</p>
+<blockquote>
+<ul>
+<li>ArrayList是怎么实现动态数组的？</li>
+</ul>
+</blockquote>
+<p>&gt;</p>
+<p>当时就有点懵，实在想不起来了，我就按照我的想法说：</p>
+<blockquote>
+<ul>
+<li>里面用一个数组存数据，当新加的数据超出数组长度的时候，就新建一个数组长度多1的数组，然后把之前的数组复制过去，在添加新的数组。</li>
+</ul>
+</blockquote>
+<p>&gt;</p>
+<p>面试官又说</p>
+<blockquote>
+<ul>
+<li>那我有需要添加一个数据呢？继续增加1个长度在复制？</li>
+</ul>
+</blockquote>
+<p>&gt;</p>
+<p>面试过后，我就查阅ArrayList的源代码（jdk 1.8.0_101）：</p>
+<pre><code>@Override public boolean add(E object) {
+    Object[] a = array;
+    int s = size;
+    if (s == a.length) {
+        Object[] newArray = new Object[s +
+                (s &lt; (MIN_CAPACITY_INCREMENT / 2) ?
+                 MIN_CAPACITY_INCREMENT : s &gt;&gt; 1)];
+        System.arraycopy(a, 0, newArray, 0, s);
+        array = a = newArray;
+    }
+    a[s] = object;
+    size = s + 1;
+    modCount++;
+    return true;
+}
+</code></pre><p>具体解释下这段代码，在添加新元素时，首先判断当前容量是否超过MIN_CAPACITY_INCREMENT / 2 =<br>6，如果不超过6就直接把长度变为s+12,否则当容量大于6时，扩容为之前容量的1.5倍。再使用System.arraycopy复制数组，添加新元素。</p>
+<p>而在jdk1.7版本，扩容策略上略有不同：</p>
+<pre><code>private void grow(int minCapacity) {
+    // overflow-conscious code
+    int oldCapacity = elementData.length;
+    int newCapacity = oldCapacity + (oldCapacity &gt;&gt; 1);
+    if (newCapacity - minCapacity &lt; 0)
+        newCapacity = minCapacity;
+    if (newCapacity - MAX_ARRAY_SIZE &gt; 0)
+        newCapacity = hugeCapacity(minCapacity);
+    // minCapacity is usually close to size, so this is a win:
+    elementData = Arrays.copyOf(elementData, newCapacity);
+}
+</code></pre><p>扩容策略为新的数组长度是之前的1.5倍，然后再进行判断，如果当前新长度小于当前最小容量，数组长度就等于最小容量，如果新的长度长度大于最大长度，就返回hugeCapacity(minCapacity)。</p>
+<h2 id="2-ArrayList和Vector区别"><a href="#2-ArrayList和Vector区别" class="headerlink" title="2. ArrayList和Vector区别"></a>2. ArrayList和Vector区别</h2><p>ArrayList和Vector都是动态数组，不过二者的主要区别是Vector内部大部分方法使用syncchronized关键字同步，所以是线程安全的，而ArrayList则不是线程安全的。</p>
+<p>所以在单线程或者多线程但是不会同时访问同一个对象时可以使用ArrayList,速度快；多线程操作同一个对象的情况下使用Vector因为安全。</p>
+<p>另外，ArrayList和Vector在扩容策略上也有一点区别：</p>
+<blockquote>
+<ul>
+<li><p>ArrayList的策略上一段文字已经说明，基本可以概述为容量满时扩容为原来的1.5倍；</p>
+</li>
+<li><p>而Vector则是在容量满时扩容为原来的2倍。</p>
+</li>
+</ul>
+</blockquote>
+<p>&gt;</p>
+<p><em>注：CopyOnWriteArrayList是线程安全的ArrayList,一般来说可以替代Vector使用</em></p>
+<h2 id="3-ArrayList和LinkedList的区别"><a href="#3-ArrayList和LinkedList的区别" class="headerlink" title="3.ArrayList和LinkedList的区别"></a>3.ArrayList和LinkedList的区别</h2><p>ArrayList是线性表结构，而LinkedList是链表结构。<br>ArrayList内部由数组实现，数组可以由下标快速寻址，所以ArrayList的get和set速度很快。<br>LinkedList内部使用Node类包含上一个节点，下一个节点的指针和当前节点的值，所以对于LinkedList<br>使用add和remove速度很快，而get和set则需要一个遍历来寻址节点。</p>
+<p>LinkedList还可以实现队列，双向队列，栈等数据结构。</p>
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2016/09/14/对java集合类的理解/" class="archive-article-date">
+  	<time datetime="2016-09-13T16:00:00.000Z" itemprop="datePublished"><i class="icon-clock"></i>2016-09-14</time>
+</a>
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags"></i>
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/面试/">面试</a></li></ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+	<i class="icon-price-tags"></i>
+	<a class="article-category-link" href="/categories/面试/">面试</a>
+	</div>
+
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+  
+<nav id="article-nav">
+  
+    <a href="/2016/09/20/android  关于图片加载速度优化方案/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          android  关于图片加载速度优化方案
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2016/09/05/Android 自定义弹幕 View/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Android 自定义弹幕 View</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+
+
+<div class="share_jia">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">Share to: &nbsp; </span>
+		<a class="jiathis_button_facebook"></a> 
+	    <a class="jiathis_button_twitter"></a>
+	    <a class="jiathis_button_plus"></a> 
+	    <a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+    <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="//v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="对java集合类的理解" data-title="对java集合类的理解" data-url="http://yoursite.com/2016/09/14/对java集合类的理解/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"litten-hexo"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+
+      </div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2016 orzangleli
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+</footer>
+    </div>
+    <script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: false,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: true,
+		root: "/",
+		innerArchive: true
+	}
+</script>
+
+<script src="/./main.js"></script>
+
+
+    
+<div class="tools-col">
+  <ul class="btn-wrap">
+    
+      <li class="chose" data-hook="tools-section-all"><span class="text">全部</span><i class="icon-book"></i></li>
+    
+    
+      <li data-hook="tools-section-tag"><span class="text">标签</span><i class="icon-price-tags"></i></li>
+    
+    
+    
+      <li data-hook="tools-section-me"><span class="text">我</span><i class="icon-smile"></i></li>
+    
+  </ul>
+  <div class="tools-wrap">
+    
+    	<section class="tools-section tools-section-all chose">
+    	</section>
+    
+
+    
+    	<section class="tools-section tools-section-tag">
+    			<div class="widget tagcloud" id="js-tagcloud">
+    				<a href="/tags/Arduino/" style="font-size: 10px;">Arduino</a> <a href="/tags/HTC-VIVE/" style="font-size: 15px;">HTC VIVE</a> <a href="/tags/Kinect/" style="font-size: 12.5px;">Kinect</a> <a href="/tags/Pyhton/" style="font-size: 10px;">Pyhton</a> <a href="/tags/Python/" style="font-size: 10px;">Python</a> <a href="/tags/Shader/" style="font-size: 12.5px;">Shader</a> <a href="/tags/android/" style="font-size: 20px;">android</a> <a href="/tags/api请求/" style="font-size: 10px;">api请求</a> <a href="/tags/unity3D/" style="font-size: 17.5px;">unity3D</a> <a href="/tags/其他/" style="font-size: 10px;">其他</a> <a href="/tags/面试/" style="font-size: 12.5px;">面试</a>
+    			</div>
+    	</section>
+    
+
+    
+
+    
+    	<section class="tools-section tools-section-me">
+  	  	
+  	  		<div class="aboutme-wrap" id="js-aboutme">可以通过下方微博或者邮箱联系我</div>
+  	  	
+    	</section>
+    
+  </div>
+  
+</div>
+    <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+  </div>
+</body>
+</html>

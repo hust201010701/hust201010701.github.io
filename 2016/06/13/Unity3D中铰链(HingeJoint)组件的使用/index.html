@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" >
+  <link rel="dns-prefetch" href="http://yoursite.com">
+  <title>Unity3D中铰链(HingeJoint)组件的使用 | orzangleli</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="HingeJoint(铰链关节)什么是铰链
+铰链（英:hinge），又称合页,是用来连接两个固体，并允许两者之间做转动的机械装置。铰链可能由可移动的组件构成，或者由可折叠的材料构成。最常见的是门窗上安装的铰链。
+
+
+开始制作自己的铰链
+在unity3D中新建一个Cube,然后将X轴方向的scale调整为10，然后添加RigidBody (刚体)组件，取消掉Use Gravity选项，设置x=0
+将">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Unity3D中铰链(HingeJoint)组件的使用">
+<meta property="og:url" content="http://yoursite.com/2016/06/13/Unity3D中铰链(HingeJoint)组件的使用/index.html">
+<meta property="og:site_name" content="orzangleli">
+<meta property="og:description" content="HingeJoint(铰链关节)什么是铰链
+铰链（英:hinge），又称合页,是用来连接两个固体，并允许两者之间做转动的机械装置。铰链可能由可移动的组件构成，或者由可折叠的材料构成。最常见的是门窗上安装的铰链。
+
+
+开始制作自己的铰链
+在unity3D中新建一个Cube,然后将X轴方向的scale调整为10，然后添加RigidBody (刚体)组件，取消掉Use Gravity选项，设置x=0
+将">
+<meta property="og:image" content="http://image.cn.made-in-
+china.com/2f0j01EenQVjiWaYqG/%E5%90%88%E9%A1%B5.jpg">
+<meta property="og:image" content="http://i.imgur.com/Psmz53y.jpg">
+<meta property="og:image" content="http://i.imgur.com/eW9fCrh.jpg">
+<meta property="og:image" content="http://i.imgur.com/7bKDPqE.gif">
+<meta property="og:updated_time" content="2016-11-03T11:19:49.143Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Unity3D中铰链(HingeJoint)组件的使用">
+<meta name="twitter:description" content="HingeJoint(铰链关节)什么是铰链
+铰链（英:hinge），又称合页,是用来连接两个固体，并允许两者之间做转动的机械装置。铰链可能由可移动的组件构成，或者由可折叠的材料构成。最常见的是门窗上安装的铰链。
+
+
+开始制作自己的铰链
+在unity3D中新建一个Cube,然后将X轴方向的scale调整为10，然后添加RigidBody (刚体)组件，取消掉Use Gravity选项，设置x=0
+将">
+<meta name="twitter:image" content="http://image.cn.made-in-
+china.com/2f0j01EenQVjiWaYqG/%E5%90%88%E9%A1%B5.jpg">
+  
+    <link rel="alternative" href="/atom.xml" title="orzangleli" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/assets/img/favicon.ico">
+  
+  <link rel="stylesheet" href="/main.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div class="left-col">
+      <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img src="/assets/avatar.gif" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">orzangleli</a></h1>
+		</hgroup>
+
+		
+		<p class="header-subtitle">活在梦里的程序员和设计师</p>
+		
+
+		<nav class="header-menu">
+			<ul>
+			
+				<li><a href="/">主页</a></li>
+	        
+				<li><a href="/techs">技术</a></li>
+	        
+			</ul>
+		</nav>
+		<nav class="header-smart-menu">
+	        
+    		
+    			
+    			<a class="js-smart-menu" data-idx="0" href="javascript:void(0)">所有文章</a>
+    			
+    			
+            
+    			
+    			<a class="js-smart-menu" data-idx="1" href="javascript:void(0)">标签</a>
+    			
+    			
+            
+    			
+            
+    			
+    			<a class="js-smart-menu" data-idx="2" href="javascript:void(0)">关于我</a>
+    			
+    			
+            
+		</nav>
+		<nav class="header-nav">
+			<div class="social">
+				
+					<a class="github" target="_blank" href="https://github.com/hust201010701" title="github">github</a>
+		        
+					<a class="weibo" target="_blank" href="http://weibo.com/androidjiqiaogonglue" title="weibo">weibo</a>
+		        
+					<a class="rss" target="_blank" href="/atom.xml" title="rss">rss</a>
+		        
+					<a class="mail" target="_blank" href="/orzangleli@163.com" title="mail">mail</a>
+		        
+			</div>
+		</nav>
+	</header>		
+</div>
+
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"><i class="icon-list"></i></div>
+  		<h1 class="header-author js-mobile-header hide">orzangleli</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				
+					<img src="/assets/avatar.gif" class="js-avatar">
+				
+			</div>
+			<hgroup>
+			  <h1 class="header-author">orzangleli</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">活在梦里的程序员和设计师</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/techs">技术</a></li>
+		        
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+						<a class="github" target="_blank" href="https://github.com/hust201010701" title="github">github</a>
+			        
+						<a class="weibo" target="_blank" href="http://weibo.com/androidjiqiaogonglue" title="weibo">weibo</a>
+			        
+						<a class="rss" target="_blank" href="/atom.xml" title="rss">rss</a>
+			        
+						<a class="mail" target="_blank" href="/orzangleli@163.com" title="mail">mail</a>
+			        
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+
+      <div class="body-wrap">
+        <article id="post-Unity3D中铰链(HingeJoint)组件的使用" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Unity3D中铰链(HingeJoint)组件的使用
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="HingeJoint-铰链关节"><a href="#HingeJoint-铰链关节" class="headerlink" title="HingeJoint(铰链关节)"></a>HingeJoint(铰链关节)</h2><h3 id="什么是铰链"><a href="#什么是铰链" class="headerlink" title="什么是铰链"></a>什么是铰链</h3><blockquote>
+<p>铰链（英:<br>hinge），又称合页,是用来连接两个固体，并允许两者之间做转动的机械装置。铰链可能由可移动的组件构成，或者由可折叠的材料构成。最常见的是门窗上安装的铰链。</p>
+</blockquote>
+<p><img src="http://image.cn.made-in-
+china.com/2f0j01EenQVjiWaYqG/%E5%90%88%E9%A1%B5.jpg" alt=""></p>
+<h3 id="开始制作自己的铰链"><a href="#开始制作自己的铰链" class="headerlink" title="开始制作自己的铰链"></a>开始制作自己的铰链</h3><ul>
+<li>在unity3D中新建一个Cube,然后将X轴方向的scale调整为10，然后添加RigidBody (刚体)组件，取消掉Use Gravity选项，设置x=0</li>
+<li>将Cube选中，按住Ctrl+D复制一份，然后将新的Cube移动到x=-10的位置</li>
+<li>给第一个Cube添加FixedJoint，不需要修改其中属性，完成后应该与下图一致</li>
+</ul>
+<p><img src="http://i.imgur.com/Psmz53y.jpg" alt=""></p>
+<ul>
+<li>给第二个Cube(1)添加HingeJoint，将Cube拖到Connected Body中，然后修改锚点为局部坐标下的(-0.5,0,0),同时设置旋转轴，为z轴(0,0,1),系统会自动计算出第一个Cube的锚点位置，完成后应该如下图。</li>
+</ul>
+<p><img src="http://i.imgur.com/eW9fCrh.jpg" alt=""></p>
+<h3 id="让铰链运动起来"><a href="#让铰链运动起来" class="headerlink" title="让铰链运动起来"></a>让铰链运动起来</h3><p>因为铰链是一种物理结构，使用到物理引擎，所以控制铰链运动时，不可以使用transfrom,只能添加一个物理上的力或者速度，这里我们添加恒力。<br>因为要使铰链结构再xy平面内旋转，所以添加一个沿着局部坐标系下的y轴的力Relative Force(0,1,0),1代表单位力，可以改成其他数值。</p>
+<h3 id="运动效果"><a href="#运动效果" class="headerlink" title="运动效果"></a>运动效果</h3><p>直接上图吧</p>
+<p><img src="http://i.imgur.com/7bKDPqE.gif" alt=""></p>
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2016/06/13/Unity3D中铰链(HingeJoint)组件的使用/" class="archive-article-date">
+  	<time datetime="2016-06-12T16:00:00.000Z" itemprop="datePublished"><i class="icon-clock"></i>2016-06-13</time>
+</a>
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags"></i>
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/unity3D/">unity3D</a></li></ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+	<i class="icon-price-tags"></i>
+	<a class="article-category-link" href="/categories/unity3D/">unity3D</a>
+	</div>
+
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+  
+<nav id="article-nav">
+  
+    <a href="/2016/06/14/使用Github中的项目 SwipeBackLayout 侧滑关闭 黑屏解决方案/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          使用Github中的项目 SwipeBackLayout 侧滑关闭 黑屏解决方案
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2016/06/12/VIVE普通车床车削2   完善与优化/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">VIVE普通车床车削2   完善与优化</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+
+
+<div class="share_jia">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">Share to: &nbsp; </span>
+		<a class="jiathis_button_facebook"></a> 
+	    <a class="jiathis_button_twitter"></a>
+	    <a class="jiathis_button_plus"></a> 
+	    <a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+    <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="//v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="Unity3D中铰链(HingeJoint)组件的使用" data-title="Unity3D中铰链(HingeJoint)组件的使用" data-url="http://yoursite.com/2016/06/13/Unity3D中铰链(HingeJoint)组件的使用/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"litten-hexo"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+
+      </div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2016 orzangleli
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+</footer>
+    </div>
+    <script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: false,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: true,
+		root: "/",
+		innerArchive: true
+	}
+</script>
+
+<script src="/./main.js"></script>
+
+
+    
+<div class="tools-col">
+  <ul class="btn-wrap">
+    
+      <li class="chose" data-hook="tools-section-all"><span class="text">全部</span><i class="icon-book"></i></li>
+    
+    
+      <li data-hook="tools-section-tag"><span class="text">标签</span><i class="icon-price-tags"></i></li>
+    
+    
+    
+      <li data-hook="tools-section-me"><span class="text">我</span><i class="icon-smile"></i></li>
+    
+  </ul>
+  <div class="tools-wrap">
+    
+    	<section class="tools-section tools-section-all chose">
+    	</section>
+    
+
+    
+    	<section class="tools-section tools-section-tag">
+    			<div class="widget tagcloud" id="js-tagcloud">
+    				<a href="/tags/Arduino/" style="font-size: 10px;">Arduino</a> <a href="/tags/HTC-VIVE/" style="font-size: 15px;">HTC VIVE</a> <a href="/tags/Kinect/" style="font-size: 12.5px;">Kinect</a> <a href="/tags/Pyhton/" style="font-size: 10px;">Pyhton</a> <a href="/tags/Python/" style="font-size: 10px;">Python</a> <a href="/tags/Shader/" style="font-size: 12.5px;">Shader</a> <a href="/tags/android/" style="font-size: 20px;">android</a> <a href="/tags/api请求/" style="font-size: 10px;">api请求</a> <a href="/tags/unity3D/" style="font-size: 17.5px;">unity3D</a> <a href="/tags/其他/" style="font-size: 10px;">其他</a> <a href="/tags/面试/" style="font-size: 12.5px;">面试</a>
+    			</div>
+    	</section>
+    
+
+    
+
+    
+    	<section class="tools-section tools-section-me">
+  	  	
+  	  		<div class="aboutme-wrap" id="js-aboutme">可以通过下方微博或者邮箱联系我</div>
+  	  	
+    	</section>
+    
+  </div>
+  
+</div>
+    <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+  </div>
+</body>
+</html>

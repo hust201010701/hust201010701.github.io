@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" >
+  <link rel="dns-prefetch" href="http://yoursite.com">
+  <title>UNITY 5 AND KINECT 2 INTEGRATION (unity5 和kinect2.0整合) | orzangleli</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Copied from JamesAshley .
+
+Until just this month one of the best Kinect 2 integration tools was hidden,like Rappuccini’s daughter, inside a walled garden. Microsoft released aUnity3D plugin for the Ki">
+<meta property="og:type" content="article">
+<meta property="og:title" content="UNITY 5 AND KINECT 2 INTEGRATION (unity5 和kinect2.0整合)">
+<meta property="og:url" content="http://yoursite.com/2016/05/11/UNITY 5 AND KINECT 2 INTEGRATION (unity5 和kinect2.0整合)/index.html">
+<meta property="og:site_name" content="orzangleli">
+<meta property="og:description" content="Copied from JamesAshley .
+
+Until just this month one of the best Kinect 2 integration tools was hidden,like Rappuccini’s daughter, inside a walled garden. Microsoft released aUnity3D plugin for the Ki">
+<meta property="og:image" content="http://www.imaginativeuniversal.com/wp-
+content/uploads/pointcloud.png">
+<meta property="og:image" content="http://www.imaginativeuniversal.com/wp-
+content/uploads/linktounityplugin_thumb.png">
+<meta property="og:image" content="http://www.imaginativeuniversal.com/wp-
+content/uploads/unitypluginfolder_thumb.png">
+<meta property="og:image" content="http://www.imaginativeuniversal.com/wp-
+content/uploads/newunityproject_thumb.png">
+<meta property="og:image" content="http://www.imaginativeuniversal.com/wp-
+content/uploads/import_thumb.png">
+<meta property="og:image" content="http://www.imaginativeuniversal.com/wp-
+content/uploads/selectplugin_thumb.png">
+<meta property="og:image" content="http://www.imaginativeuniversal.com/wp-
+content/uploads/unitywarning_thumb.png">
+<meta property="og:image" content="http://www.imaginativeuniversal.com/wp-
+content/uploads/added_assets_thumb.png">
+<meta property="og:image" content="http://www.imaginativeuniversal.com/wp-
+content/uploads/allthemarbles_thumb.png">
+<meta property="og:updated_time" content="2016-11-03T11:19:49.651Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="UNITY 5 AND KINECT 2 INTEGRATION (unity5 和kinect2.0整合)">
+<meta name="twitter:description" content="Copied from JamesAshley .
+
+Until just this month one of the best Kinect 2 integration tools was hidden,like Rappuccini’s daughter, inside a walled garden. Microsoft released aUnity3D plugin for the Ki">
+<meta name="twitter:image" content="http://www.imaginativeuniversal.com/wp-
+content/uploads/pointcloud.png">
+  
+    <link rel="alternative" href="/atom.xml" title="orzangleli" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/assets/img/favicon.ico">
+  
+  <link rel="stylesheet" href="/main.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div class="left-col">
+      <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img src="/assets/avatar.gif" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">orzangleli</a></h1>
+		</hgroup>
+
+		
+		<p class="header-subtitle">活在梦里的程序员和设计师</p>
+		
+
+		<nav class="header-menu">
+			<ul>
+			
+				<li><a href="/">主页</a></li>
+	        
+				<li><a href="/techs">技术</a></li>
+	        
+			</ul>
+		</nav>
+		<nav class="header-smart-menu">
+	        
+    		
+    			
+    			<a class="js-smart-menu" data-idx="0" href="javascript:void(0)">所有文章</a>
+    			
+    			
+            
+    			
+    			<a class="js-smart-menu" data-idx="1" href="javascript:void(0)">标签</a>
+    			
+    			
+            
+    			
+            
+    			
+    			<a class="js-smart-menu" data-idx="2" href="javascript:void(0)">关于我</a>
+    			
+    			
+            
+		</nav>
+		<nav class="header-nav">
+			<div class="social">
+				
+					<a class="github" target="_blank" href="https://github.com/hust201010701" title="github">github</a>
+		        
+					<a class="weibo" target="_blank" href="http://weibo.com/androidjiqiaogonglue" title="weibo">weibo</a>
+		        
+					<a class="rss" target="_blank" href="/atom.xml" title="rss">rss</a>
+		        
+					<a class="mail" target="_blank" href="/orzangleli@163.com" title="mail">mail</a>
+		        
+			</div>
+		</nav>
+	</header>		
+</div>
+
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"><i class="icon-list"></i></div>
+  		<h1 class="header-author js-mobile-header hide">orzangleli</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				
+					<img src="/assets/avatar.gif" class="js-avatar">
+				
+			</div>
+			<hgroup>
+			  <h1 class="header-author">orzangleli</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">活在梦里的程序员和设计师</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/techs">技术</a></li>
+		        
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+						<a class="github" target="_blank" href="https://github.com/hust201010701" title="github">github</a>
+			        
+						<a class="weibo" target="_blank" href="http://weibo.com/androidjiqiaogonglue" title="weibo">weibo</a>
+			        
+						<a class="rss" target="_blank" href="/atom.xml" title="rss">rss</a>
+			        
+						<a class="mail" target="_blank" href="/orzangleli@163.com" title="mail">mail</a>
+			        
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+
+      <div class="body-wrap">
+        <article id="post-UNITY 5 AND KINECT 2 INTEGRATION (unity5 和kinect2.0整合)" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      UNITY 5 AND KINECT 2 INTEGRATION (unity5 和kinect2.0整合)
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Copied from <a href="http://www.imaginativeuniversal.com/blog/post/2015/03/27/unity-5-and-
+kinect-2-integration.aspx" target="_blank" rel="external">James<br>Ashley</a> .</p>
+<p><img src="http://www.imaginativeuniversal.com/wp-
+content/uploads/pointcloud.png" alt="pointcloud"></p>
+<p>Until just this month one of the best Kinect 2 integration tools was hidden,<br>like Rappuccini’s daughter, inside a walled garden. Microsoft released a<br>Unity3D plugin for the Kinect 2 in 2014. Unfortunately, Unity 4 only supported<br>plugins (bridges to non-Unity technology) if you owned a Unity Pro license<br>which typically cost over a thousand dollars per year.</p>
+<p>On March 3rd, Unity released Unity 5 which includes plugin support in their<br>free Personal edition – making it suddenly very easy to start building<br>otherwise complex experiences like point cloud simulations that would<br>otherwise require a decent knowledge of C++. In this post, I’ll show you how<br>to get started with the plugin and start running a Kinect 2 application in<br>about 15 minutes.</p>
+<p>(As an aside, I always have trouble keeping this straight: Unity has plugins,<br>openFrameworks as add-ins, while Cinder has bricks. Visual Studio has<br>extensions and add-ins as well as NuGet packages after a confusing few years<br>of rebranding efforts. There may be a difference between them but I can’t<br>tell.)</p>
+<p>1. First you are going to need a Kinect 2 and the Unity 5 software. If you<br>already have a Kinect 2 attached to your XBox One, then this part is easy.<br>You’ll just need to buy a <a href="http://www.microsoftstore.com/store/msca/en_CA/pdp/Kinect-Adapter-for-
+Windows/productID.308878000" target="_blank" rel="external">Kinect Adapter<br>Kit</a> from the Microsoft store. This will allow you to<br>plug your XBox One Kinect into your PC. The Kinect for Windows 2 SDK is<br>available from the <a href="http://www.microsoft.com/en-us/kinectforwindows/" target="_blank" rel="external">K4W2</a><br>website, though everything you need should automatically install when you<br>first plug your Kinect into your computer. You don’t even need Visual Studio<br>for this. Finally, you can <a href="http://unity3d.com/5" target="_blank" rel="external">download</a> Unity 5 from the<br>Unity website.</p>
+<p><a href="http://www.imaginativeuniversal.com/wp-
+content/uploads/linktounityplugin.png" target="_blank" rel="external"><img src="http://www.imaginativeuniversal.com/wp-
+content/uploads/linktounityplugin_thumb.png" alt="linktounityplugin"></a></p>
+<p>2. The Kinect 2 plugin for Unity is a bit hard to find. You can go to this<br>Kinect documentation <a href="http://www.microsoft.com/en-
+us/kinectforwindows/develop/downloads-docs.aspx" target="_blank" rel="external">page</a> and scroll half-way down to<br>find the link called Unity Pro Packages. Aternatively, here is a <a href="http://go.microsoft.com/fwlink/?LinkId=513177" target="_blank" rel="external">direct<br>link</a> to the most current<br>version of the plugin as of this writing.</p>
+<p><a href="http://www.imaginativeuniversal.com/wp-
+content/uploads/unitypluginfolder.png" target="_blank" rel="external"><img src="http://www.imaginativeuniversal.com/wp-
+content/uploads/unitypluginfolder_thumb.png" alt="unitypluginfolder"></a></p>
+<p>3. After you finish downloading the zip file (currently called<br>KinectForWindows_UnityPro_2.0.1410.zip), extract it to a known location. I<br>like to use $\Documents\Unity. Inside you will find three plugins as well as<br>two sample scenes. The three Kinect plugins are the basic one, a face<br>recognition plugin, and a gesture builder plugin, each wrapping functionality<br>from the Kinect 2 SDK.</p>
+<p><a href="http://www.imaginativeuniversal.com/wp-
+content/uploads/newunityproject.png" target="_blank" rel="external"><img src="http://www.imaginativeuniversal.com/wp-
+content/uploads/newunityproject_thumb.png" alt="newunityproject"></a></p>
+<p>4. Fire up Unity 5 and create a new project in your known folder. In my case,<br>I’m creating a project called “KinectUnityProject” in the $\Documents\Unity<br>folder where I extracted the Kinect plugins and related assets.</p>
+<p><a href="http://www.imaginativeuniversal.com/wp-
+content/uploads/import.png" target="_blank" rel="external"><img src="http://www.imaginativeuniversal.com/wp-
+content/uploads/import_thumb.png" alt="import"></a></p>
+<p>5. Now we will add the Kinect plugin into our new project. When the Unity IDE<br>opens, select Assets from the top menu and then select Import Package | Custom<br>Package …</p>
+<p><a href="http://www.imaginativeuniversal.com/wp-
+content/uploads/selectplugin.png" target="_blank" rel="external"><img src="http://www.imaginativeuniversal.com/wp-
+content/uploads/selectplugin_thumb.png" alt="selectplugin"></a></p>
+<p>6. Navigate to the folder where you extracted the KinectforWindows_Unity<br>components and select the Kinect2.0.xxxxx.unitypackage file. That’s our plugin<br>along with all the scripts needed to build a Kinect-enabled Unity 5<br>application. After clicking on “Open”, an additional dialog window will open<br>up in the Unity IDE called “Importing Package” with lots of files checked off.<br>Just click on the “Import” button at the lower right corner of the dialog to<br>finish the import process. Two new folders will now be added to your Project<br>window under the Assets folder called Plugins and Standard Assets. This is the<br>baseline configuration for any Kinect project in Unity.</p>
+<p><a href="http://www.imaginativeuniversal.com/wp-
+content/uploads/unitywarning.png" target="_blank" rel="external"><img src="http://www.imaginativeuniversal.com/wp-
+content/uploads/unitywarning_thumb.png" alt="unitywarning"></a></p>
+<p>7. Now we’ll get a Kinect with Unity project quickly going by simply copying<br>one of the sample projects provided by the Microsoft Kinect team. Go into file<br>explorer and copy the folder called “KinectView” out of the<br>KinectforWindows_Unity folder where you extracted the plugins and paste it<br>into the Assets directory in your project folder. Then return to the Unity 5<br>IDE. A warning message will pop up letting you know that there are<br>compatibility issues between the plugin and the newest version of Unity and<br>that files will automatically be updated. Go ahead and lie to the Unity IDE.<br>Click on “I Made a Backup.”</p>
+<p><a href="http://www.imaginativeuniversal.com/wp-
+content/uploads/added_assets.png" target="_blank" rel="external"><img src="http://www.imaginativeuniversal.com/wp-
+content/uploads/added_assets_thumb.png" alt="added_assets"></a></p>
+<p>8. A new folder has been added to your Project window under Assets called<br>KinectView. Select KinectView and then double click on the MainScene scene<br>contained inside it. This should open up your Kinect-enabled scene inside the<br>game window. Click on the single arrow near the top center of the IDE to see<br>your application in action. The Kinect will automatically turn on and you<br>should see a color image, an infrared image, a rendering of any bodies in the<br>scene and finally a point cloud simulation.</p>
+<p><a href="http://www.imaginativeuniversal.com/wp-
+content/uploads/allthemarbles.png" target="_blank" rel="external"><img src="http://www.imaginativeuniversal.com/wp-
+content/uploads/allthemarbles_thumb.png" alt="allthemarbles"></a></p>
+<p>9. To build the app, select File | Build &amp; Run from the top menu. Select<br>Windows as your target platform in the next dialog and click the Build &amp;<br>Run button at the lower right corner. Another dialog appears asking you to<br>select a location for your executable and a name. After selecting an<br>executable name, click on Save in order to reach the final dialog window. Just<br>accept the default configuration options for now and click on “Play!”.<br>Congratulations. You’ve just built your first Kinect-enabled Unity 5<br>application!</p>
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2016/05/11/UNITY 5 AND KINECT 2 INTEGRATION (unity5 和kinect2.0整合)/" class="archive-article-date">
+  	<time datetime="2016-05-10T16:00:00.000Z" itemprop="datePublished"><i class="icon-clock"></i>2016-05-11</time>
+</a>
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags"></i>
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Kinect/">Kinect</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/unity3D/">unity3D</a></li></ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+	<i class="icon-price-tags"></i>
+	<a class="article-category-link" href="/categories/Kinect/">Kinect</a>
+	</div>
+
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+  
+<nav id="article-nav">
+  
+    <a href="/2016/05/11/在unity3D 5.x中加入Kinect的骨骼追踪/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          在unity3D 5.x中加入Kinect的骨骼追踪
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2016/04/27/android  studio使用自定义签名文件/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">android  studio使用自定义签名文件</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+
+
+<div class="share_jia">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">Share to: &nbsp; </span>
+		<a class="jiathis_button_facebook"></a> 
+	    <a class="jiathis_button_twitter"></a>
+	    <a class="jiathis_button_plus"></a> 
+	    <a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+    <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="//v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="UNITY 5 AND KINECT 2 INTEGRATION (unity5 和kinect2.0整合)" data-title="UNITY 5 AND KINECT 2 INTEGRATION (unity5 和kinect2.0整合)" data-url="http://yoursite.com/2016/05/11/UNITY 5 AND KINECT 2 INTEGRATION (unity5 和kinect2.0整合)/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"litten-hexo"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+
+      </div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2016 orzangleli
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+</footer>
+    </div>
+    <script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: false,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: true,
+		root: "/",
+		innerArchive: true
+	}
+</script>
+
+<script src="/./main.js"></script>
+
+
+    
+<div class="tools-col">
+  <ul class="btn-wrap">
+    
+      <li class="chose" data-hook="tools-section-all"><span class="text">全部</span><i class="icon-book"></i></li>
+    
+    
+      <li data-hook="tools-section-tag"><span class="text">标签</span><i class="icon-price-tags"></i></li>
+    
+    
+    
+      <li data-hook="tools-section-me"><span class="text">我</span><i class="icon-smile"></i></li>
+    
+  </ul>
+  <div class="tools-wrap">
+    
+    	<section class="tools-section tools-section-all chose">
+    	</section>
+    
+
+    
+    	<section class="tools-section tools-section-tag">
+    			<div class="widget tagcloud" id="js-tagcloud">
+    				<a href="/tags/Arduino/" style="font-size: 10px;">Arduino</a> <a href="/tags/HTC-VIVE/" style="font-size: 15px;">HTC VIVE</a> <a href="/tags/Kinect/" style="font-size: 12.5px;">Kinect</a> <a href="/tags/Pyhton/" style="font-size: 10px;">Pyhton</a> <a href="/tags/Python/" style="font-size: 10px;">Python</a> <a href="/tags/Shader/" style="font-size: 12.5px;">Shader</a> <a href="/tags/android/" style="font-size: 20px;">android</a> <a href="/tags/api请求/" style="font-size: 10px;">api请求</a> <a href="/tags/unity3D/" style="font-size: 17.5px;">unity3D</a> <a href="/tags/其他/" style="font-size: 10px;">其他</a> <a href="/tags/面试/" style="font-size: 12.5px;">面试</a>
+    			</div>
+    	</section>
+    
+
+    
+
+    
+    	<section class="tools-section tools-section-me">
+  	  	
+  	  		<div class="aboutme-wrap" id="js-aboutme">可以通过下方微博或者邮箱联系我</div>
+  	  	
+    	</section>
+    
+  </div>
+  
+</div>
+    <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+  </div>
+</body>
+</html>
