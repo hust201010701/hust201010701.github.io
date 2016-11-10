@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" >
+  <link rel="dns-prefetch" href="http://yoursite.com">
+  <title>orzangleli</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="自己动手造轮子系列———实现『转转APP』Indicator 效果一.『转转APP』效果预览注意看Indicator指示器
+
+二.动作分析
+左边部分
+
+
+左边部分是一个白色的圆圈，圆圈中用红色字体显示当前页数，在ViewPager滑动时，白色圆圈绕Y轴旋转，在旋转180度时，即显示背面的时候，圆圈中字变成下一页的页码。
+
+右边部分
+
+
+右边部分比较简单，一个带缺口的椭圆，上面显示着总页数。
+三.各">
+<meta property="og:type" content="article">
+<meta property="og:title" content="orzangleli">
+<meta property="og:url" content="http://yoursite.com/2016/11/10/2016-11-19_转转Indicator/index.html">
+<meta property="og:site_name" content="orzangleli">
+<meta property="og:description" content="自己动手造轮子系列———实现『转转APP』Indicator 效果一.『转转APP』效果预览注意看Indicator指示器
+
+二.动作分析
+左边部分
+
+
+左边部分是一个白色的圆圈，圆圈中用红色字体显示当前页数，在ViewPager滑动时，白色圆圈绕Y轴旋转，在旋转180度时，即显示背面的时候，圆圈中字变成下一页的页码。
+
+右边部分
+
+
+右边部分比较简单，一个带缺口的椭圆，上面显示着总页数。
+三.各">
+<meta property="og:image" content="http://lxctest.qiniudn.com/2016-11-10_15:57:31_zhuanzhuan2.webp">
+<meta property="og:image" content="http://7xrrni.com1.z0.glb.clouddn.com/2016-11-10_19_59_20.png?imageView2/0/w/800">
+<meta property="og:image" content="http://7xrrni.com1.z0.glb.clouddn.com/2016-11-10_20_00_01.png?imageView2/0/w/800">
+<meta property="og:image" content="http://7xrrni.com1.z0.glb.clouddn.com/2016-11-10_21_15_24.png?imageView2/0/w/800">
+<meta property="og:image" content="http://7xrrni.com1.z0.glb.clouddn.com/2016-11-10_21_17_07.png?imageView2/0/w/800">
+<meta property="og:image" content="http://7xrrni.com1.z0.glb.clouddn.com/2016-11-10_21_24_40.png?imageView2/0/w/800">
+<meta property="og:updated_time" content="2016-11-10T14:00:17.771Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="orzangleli">
+<meta name="twitter:description" content="自己动手造轮子系列———实现『转转APP』Indicator 效果一.『转转APP』效果预览注意看Indicator指示器
+
+二.动作分析
+左边部分
+
+
+左边部分是一个白色的圆圈，圆圈中用红色字体显示当前页数，在ViewPager滑动时，白色圆圈绕Y轴旋转，在旋转180度时，即显示背面的时候，圆圈中字变成下一页的页码。
+
+右边部分
+
+
+右边部分比较简单，一个带缺口的椭圆，上面显示着总页数。
+三.各">
+<meta name="twitter:image" content="http://lxctest.qiniudn.com/2016-11-10_15:57:31_zhuanzhuan2.webp">
+  
+    <link rel="alternative" href="/atom.xml" title="orzangleli" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/assets/favicon.ico">
+  
+  <link rel="stylesheet" href="/main.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div class="left-col">
+      <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img src="/assets/avatar.gif" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">orzangleli</a></h1>
+		</hgroup>
+
+		
+		<p class="header-subtitle">活在梦里的程序员和设计师</p>
+		
+
+		<nav class="header-menu">
+			<ul>
+			
+				<li><a href="/">主页</a></li>
+	        
+				<li><a href="/chats">闲聊</a></li>
+	        
+			</ul>
+		</nav>
+		<nav class="header-smart-menu">
+	        
+    		
+    			
+    			<a class="js-smart-menu" data-idx="0" href="javascript:void(0)">所有文章</a>
+    			
+    			
+            
+    			
+    			<a class="js-smart-menu" data-idx="1" href="javascript:void(0)">标签</a>
+    			
+    			
+            
+    			
+            
+    			
+    			<a class="js-smart-menu" data-idx="2" href="javascript:void(0)">关于我</a>
+    			
+    			
+            
+		</nav>
+		<nav class="header-nav">
+			<div class="social">
+				
+					<a class="github" target="_blank" href="https://github.com/hust201010701" title="github">github</a>
+		        
+					<a class="weibo" target="_blank" href="http://weibo.com/androidjiqiaogonglue" title="weibo">weibo</a>
+		        
+					<a class="rss" target="_blank" href="/atom.xml" title="rss">rss</a>
+		        
+					<a class="mail" target="_blank" href="/orzangleli@163.com" title="mail">mail</a>
+		        
+			</div>
+		</nav>
+	</header>		
+</div>
+
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"><i class="icon-list"></i></div>
+  		<h1 class="header-author js-mobile-header hide">orzangleli</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				
+					<img src="/assets/avatar.gif" class="js-avatar">
+				
+			</div>
+			<hgroup>
+			  <h1 class="header-author">orzangleli</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">活在梦里的程序员和设计师</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/chats">闲聊</a></li>
+		        
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+						<a class="github" target="_blank" href="https://github.com/hust201010701" title="github">github</a>
+			        
+						<a class="weibo" target="_blank" href="http://weibo.com/androidjiqiaogonglue" title="weibo">weibo</a>
+			        
+						<a class="rss" target="_blank" href="/atom.xml" title="rss">rss</a>
+			        
+						<a class="mail" target="_blank" href="/orzangleli@163.com" title="mail">mail</a>
+			        
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+
+      <div class="body-wrap">
+        <article id="post-2016-11-19_转转Indicator" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="自己动手造轮子系列———实现『转转APP』Indicator-效果"><a href="#自己动手造轮子系列———实现『转转APP』Indicator-效果" class="headerlink" title="自己动手造轮子系列———实现『转转APP』Indicator 效果"></a>自己动手造轮子系列———实现『转转APP』Indicator 效果</h1><h2 id="一-『转转APP』效果预览"><a href="#一-『转转APP』效果预览" class="headerlink" title="一.『转转APP』效果预览"></a>一.『转转APP』效果预览</h2><p>注意看Indicator指示器</p>
+<p><img src="http://lxctest.qiniudn.com/2016-11-10_15:57:31_zhuanzhuan2.webp" alt=""></p>
+<h2 id="二-动作分析"><a href="#二-动作分析" class="headerlink" title="二.动作分析"></a>二.动作分析</h2><ol>
+<li>左边部分</li>
+</ol>
+<p><img src="http://7xrrni.com1.z0.glb.clouddn.com/2016-11-10_19_59_20.png?imageView2/0/w/800" alt=""></p>
+<p>左边部分是一个白色的圆圈，圆圈中用红色字体显示当前页数，在ViewPager滑动时，白色圆圈绕Y轴旋转，在旋转180度时，即显示背面的时候，圆圈中字变成下一页的页码。</p>
+<ol>
+<li>右边部分</li>
+</ol>
+<p><img src="http://7xrrni.com1.z0.glb.clouddn.com/2016-11-10_20_00_01.png?imageView2/0/w/800" alt=""></p>
+<p>右边部分比较简单，一个带缺口的椭圆，上面显示着总页数。</p>
+<h2 id="三-各个击破难点"><a href="#三-各个击破难点" class="headerlink" title="三.各个击破难点"></a>三.各个击破难点</h2><h3 id="1-用canvas绘制绕Y轴旋转"><a href="#1-用canvas绘制绕Y轴旋转" class="headerlink" title="1. 用canvas绘制绕Y轴旋转"></a>1. 用canvas绘制绕Y轴旋转</h3><p>Canvas 绘制图片时，如果是在绕Z轴旋转是比较简单，使用Matrix矩阵：</p>
+<pre><code>Matrix matrix = new Matrix();
+matrix.setRotate(angle);
+Bimtap newBitmap = Bitmap.createBitmap(oldBitmap,0,0,oldBitmap.getWidth(),
+    oldBitmap.getHeight(),matrix,true);
+</code></pre><p>但是这只能在绘制图片时进行旋转，如果要对一个整体旋转则无法做到，比如，上面转转的指示器坐标的圆圈，圆圈是一个圆，上面还有数字，要实现圆和数字一起旋转，所以无法通过上述方法完成。</p>
+<p>而且这个问题我在谷歌上搜索，也不太好表述，刚开始搜索「android canvas 3D旋转」，结果也不太相符，后来搜索「android canvas绕y轴 旋转」，才找到符合的。</p>
+<p>使用 Android.graphics.Camera 的 rotateY 接口实现绕 Y 轴旋转时矩阵的运算。</p>
+<p>首先声明camera </p>
+<pre><code>camera = new Camera();
+</code></pre><p>在Ondraw方法中，首先对canvas状态进行保存，使用的是<code>canvas.save()</code>,然后将camera状态保存，将camera旋转一个角度rotateAngle，在获取camera的矩阵赋值到matrix中，最后将camera状态恢复至旋转之前的状态。然后将matrix追加到当前canvas的矩阵中，使用的是concat方法，这时候整个画布相当于旋转了rotateAngle角度，画完圆之后再恢复至原来的状态。</p>
+<pre><code>canvas.save();
+Matrix matrix = new Matrix(); 
+camera.save();
+camera.rotateY(rotateAngle);
+camera.getMatrix(matrix);
+camera.restore();
+
+mPaint.setColor(textBackgroundColor);
+int centerX = diameter / 2;
+int centerY = diameter / 2;
+matrix.preTranslate(-centerX, -centerY);
+matrix.postTranslate(centerX, centerY);
+canvas.concat(matrix);
+
+canvas.drawCircle(diameter / 2, diameter / 2, diameter / 2, mPaint);
+
+canvas.restore();
+</code></pre><h3 id="2-canvas-drawText文字垂直居中"><a href="#2-canvas-drawText文字垂直居中" class="headerlink" title="2. canvas drawText文字垂直居中"></a>2. canvas drawText文字垂直居中</h3><p>这个问题，如果没有遇到还真不知道会出现这种问题，一般想象的，我设置画笔的gravity属性为Paint.Align.CENTER，在将文字的中点设置下不就ok了么，如下面的代码：</p>
+<pre><code>textPaint.setTextAlign(Paint.Align.CENTER);
+canvas.drawText(&quot;of &quot; + maxPage, rect.centerX(), rect.centerY(), textPaint);
+</code></pre><p>出现的效果，如图所示，发现文字是偏上：</p>
+<p><img src="http://7xrrni.com1.z0.glb.clouddn.com/2016-11-10_21_15_24.png?imageView2/0/w/800" alt=""></p>
+<p>这是怎么回事呢？其实我们设置的文字爱中心点处绘制，实际上，文字是以基准线为锚点进行绘制的，英文叫做baseline.</p>
+<p><img src="http://7xrrni.com1.z0.glb.clouddn.com/2016-11-10_21_17_07.png?imageView2/0/w/800" alt=""></p>
+<p>在维基百科中可以看到<a href="https://zh.wikipedia.org/wiki/%E5%9F%BA%E7%B7%9A" target="_blank" rel="external">基线</a>的解释：</p>
+<p><img src="http://7xrrni.com1.z0.glb.clouddn.com/2016-11-10_21_24_40.png?imageView2/0/w/800" alt=""></p>
+<p>所以我们如果想让文字居中，则需要将绘制点的Y坐标向下移动。</p>
+<p>基线到字体顶端的距离为top,基线到字体底端距离为bottom,则有以下等式：</p>
+<pre><code>(top + baseline)+ (bottom + baseline) / 2 = centenY() 
+</code></pre><p>那么经过计算就可以算出baseline的值，通过Paint.FontMetrics获取top和bottom值，代码如下：</p>
+<pre><code>//画文字
+Rect rect = new Rect(diameter, 0, (int) (diameter * 3.4f), diameter);//右边的背景图片的Rect
+Paint textPaint = new Paint();
+textPaint.setColor(Color.WHITE);
+textPaint.setTextSize((int) (diameter * 0.6f));
+textPaint.setStyle(Paint.Style.FILL);
+//该方法即为设置基线上那个点究竟是left,center,还是right  这里我设置为center
+textPaint.setTextAlign(Paint.Align.CENTER);
+
+Paint.FontMetrics fontMetrics = textPaint.getFontMetrics();
+float top = fontMetrics.top;//为基线到字体上边框的距离,即上图中的top
+float bottom = fontMetrics.bottom;//为基线到字体下边框的距离,即上图中的bottom
+int baseLineY = (int) (rect.centerY() - top / 2 - bottom / 2);//基线中间点的y轴计算公式
+canvas.drawText(&quot;of &quot; + maxPage, rect.centerX(), baseLineY, textPaint);
+</code></pre><h3 id="3-自动轮播"><a href="#3-自动轮播" class="headerlink" title="3. 自动轮播"></a>3. 自动轮播</h3><p>自动轮播，通过Handler+Timer即可。</p>
+<pre><code>//定时自动播放
+timer = new Timer();
+timer.schedule(new TimerTask() {
+    @Override
+    public void run() {
+        Message message = new Message();
+        message.what = 1;
+        if (mViewPager.getCurrentItem() == Integer.MAX_VALUE - 1) {
+            currentIndex = -1;
+        }
+        currentIndex = mViewPager.getCurrentItem();
+        message.arg1 = currentIndex + 1;
+        mHandler.sendMessage(message);
+    }
+},1000,2000);
+</code></pre><p>然后自定义Handler.</p>
+<pre><code>//定时轮播图片，需要在主线程里面修改 UI
+private Handler mHandler = new Handler() {
+    public void handleMessage(Message msg) {
+        switch (msg.what) {
+            case 1:
+                mViewPager.setCurrentItem(msg.arg1,true);
+        }
+    }
+};
+</code></pre><h2 id="四-代码实现"><a href="#四-代码实现" class="headerlink" title="四.代码实现"></a>四.代码实现</h2><p>代码在Github上，请不要吝啬Star噢。</p>
+<p><a href="https://github.com/hust201010701/RoateIndicatorViewDemo" target="_blank" rel="external">RotateIndicatorView</a></p>
+<h2 id="联系方式和建议"><a href="#联系方式和建议" class="headerlink" title="联系方式和建议"></a>联系方式和建议</h2><p>微博：orzangleli</p>
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2016/11/10/2016-11-19_转转Indicator/" class="archive-article-date">
+  	<time datetime="2016-11-10T14:02:24.863Z" itemprop="datePublished"><i class="icon-clock"></i>2016-11-10</time>
+</a>
+      
+      
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+  
+<nav id="article-nav">
+  
+  
+    <a href="/2016/11/10/2016-11-10_Python将Jpeg Png Gif转换为Webp格式/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title"></div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+
+
+<div class="share_jia">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">Share to: &nbsp; </span>
+		<a class="jiathis_button_facebook"></a> 
+	    <a class="jiathis_button_twitter"></a>
+	    <a class="jiathis_button_plus"></a> 
+	    <a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+    <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="//v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="2016-11-19_转转Indicator" data-title="" data-url="http://yoursite.com/2016/11/10/2016-11-19_转转Indicator/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"orzangleli"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+
+      </div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2016 orzangleli
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+</footer>
+    </div>
+    <script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: false,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: true,
+		root: "/",
+		innerArchive: true
+	}
+</script>
+
+<script src="/./main.js"></script>
+
+
+    
+<div class="tools-col">
+  <ul class="btn-wrap">
+    
+      <li class="chose" data-hook="tools-section-all"><span class="text">全部</span><i class="icon-book"></i></li>
+    
+    
+      <li data-hook="tools-section-tag"><span class="text">标签</span><i class="icon-price-tags"></i></li>
+    
+    
+    
+      <li data-hook="tools-section-me"><span class="text">我</span><i class="icon-smile"></i></li>
+    
+  </ul>
+  <div class="tools-wrap">
+    
+    	<section class="tools-section tools-section-all chose">
+    	</section>
+    
+
+    
+    	<section class="tools-section tools-section-tag">
+    			<div class="widget tagcloud" id="js-tagcloud">
+    				<a href="/tags/Arduino/" style="font-size: 10px;">Arduino</a> <a href="/tags/HTC-VIVE/" style="font-size: 15px;">HTC VIVE</a> <a href="/tags/Kinect/" style="font-size: 12.5px;">Kinect</a> <a href="/tags/Pyhton/" style="font-size: 10px;">Pyhton</a> <a href="/tags/Python/" style="font-size: 10px;">Python</a> <a href="/tags/Shader/" style="font-size: 12.5px;">Shader</a> <a href="/tags/android/" style="font-size: 20px;">android</a> <a href="/tags/api请求/" style="font-size: 10px;">api请求</a> <a href="/tags/unity3D/" style="font-size: 17.5px;">unity3D</a> <a href="/tags/其他/" style="font-size: 10px;">其他</a> <a href="/tags/面试/" style="font-size: 12.5px;">面试</a>
+    			</div>
+    	</section>
+    
+
+    
+
+    
+    	<section class="tools-section tools-section-me">
+  	  	
+  	  		<div class="aboutme-wrap" id="js-aboutme">我是orzangleli，可以关注我的微博~</div>
+  	  	
+    	</section>
+    
+  </div>
+  
+</div>
+    <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+  </div>
+</body>
+</html>
