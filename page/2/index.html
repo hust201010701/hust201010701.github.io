@@ -143,6 +143,131 @@
       <div class="body-wrap">
         
   
+    <article id="post-对java集合类的理解" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/09/14/对java集合类的理解/">对java集合类的理解</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="对java集合类的理解"><a href="#对java集合类的理解" class="headerlink" title="对java集合类的理解"></a>对java集合类的理解</h1><hr>
+<h2 id="1-ArrayList扩容策略"><a href="#1-ArrayList扩容策略" class="headerlink" title="1. ArrayList扩容策略"></a>1. ArrayList扩容策略</h2><p>这段时间，找工作，一方面是辛苦，另一方面也是收获，知道自己的哪些不足或者哪些技术没有完全弄清楚，是一个不错的检测自己的方式。</p>
+<blockquote>
+<p>-面试官问道：说下ArrayList和LinkedList的区别？</p>
+</blockquote>
+<p>首先这道题的答案我当时是知道的，我开始说ArrayList是动态数组，LinkedList是链表，然后面试官打断我：</p>
+<blockquote>
+<ul>
+<li>ArrayList是怎么实现动态数组的？</li>
+</ul>
+</blockquote>
+<p>&gt;</p>
+<p>当时就有点懵，实在想不起来了，我就按照我的想法说：</p>
+<blockquote>
+<ul>
+<li>里面用一个数组存数据，当新加的数据超出数组长度的时候，就新建一个数组长度多1的数组，然后把之前的数组复制过去，在添加新的数组。</li>
+</ul>
+</blockquote>
+<p>&gt;</p>
+<p>面试官又说</p>
+<blockquote>
+<ul>
+<li>那我有需要添加一个数据呢？继续增加1个长度在复制？</li>
+</ul>
+</blockquote>
+<p>&gt;</p>
+<p>面试过后，我就查阅ArrayList的源代码（jdk 1.8.0_101）：</p>
+<pre><code>@Override public boolean add(E object) {
+    Object[] a = array;
+    int s = size;
+    if (s == a.length) {
+        Object[] newArray = new Object[s +
+                (s &lt; (MIN_CAPACITY_INCREMENT / 2) ?
+                 MIN_CAPACITY_INCREMENT : s &gt;&gt; 1)];
+        System.arraycopy(a, 0, newArray, 0, s);
+        array = a = newArray;
+    }
+    a[s] = object;
+    size = s + 1;
+    modCount++;
+    return true;
+}
+</code></pre><p>具体解释下这段代码，在添加新元素时，首先判断当前容量是否超过MIN_CAPACITY_INCREMENT / 2 =<br>6，如果不超过6就直接把长度变为s+12,否则当容量大于6时，扩容为之前容量的1.5倍。再使用System.arraycopy复制数组，添加新元素。</p>
+<p>而在jdk1.7版本，扩容策略上略有不同：</p>
+<pre><code>private void grow(int minCapacity) {
+    // overflow-conscious code
+    int oldCapacity = elementData.length;
+    int newCapacity = oldCapacity + (oldCapacity &gt;&gt; 1);
+    if (newCapacity - minCapacity &lt; 0)
+        newCapacity = minCapacity;
+    if (newCapacity - MAX_ARRAY_SIZE &gt; 0)
+        newCapacity = hugeCapacity(minCapacity);
+    // minCapacity is usually close to size, so this is a win:
+    elementData = Arrays.copyOf(elementData, newCapacity);
+}
+</code></pre><p>扩容策略为新的数组长度是之前的1.5倍，然后再进行判断，如果当前新长度小于当前最小容量，数组长度就等于最小容量，如果新的长度长度大于最大长度，就返回hugeCapacity(minCapacity)。</p>
+<h2 id="2-ArrayList和Vector区别"><a href="#2-ArrayList和Vector区别" class="headerlink" title="2. ArrayList和Vector区别"></a>2. ArrayList和Vector区别</h2><p>ArrayList和Vector都是动态数组，不过二者的主要区别是Vector内部大部分方法使用syncchronized关键字同步，所以是线程安全的，而ArrayList则不是线程安全的。</p>
+<p>所以在单线程或者多线程但是不会同时访问同一个对象时可以使用ArrayList,速度快；多线程操作同一个对象的情况下使用Vector因为安全。</p>
+<p>另外，ArrayList和Vector在扩容策略上也有一点区别：</p>
+<blockquote>
+<ul>
+<li><p>ArrayList的策略上一段文字已经说明，基本可以概述为容量满时扩容为原来的1.5倍；</p>
+</li>
+<li><p>而Vector则是在容量满时扩容为原来的2倍。</p>
+</li>
+</ul>
+</blockquote>
+<p>&gt;</p>
+<p><em>注：CopyOnWriteArrayList是线程安全的ArrayList,一般来说可以替代Vector使用</em></p>
+<h2 id="3-ArrayList和LinkedList的区别"><a href="#3-ArrayList和LinkedList的区别" class="headerlink" title="3.ArrayList和LinkedList的区别"></a>3.ArrayList和LinkedList的区别</h2><p>ArrayList是线性表结构，而LinkedList是链表结构。<br>ArrayList内部由数组实现，数组可以由下标快速寻址，所以ArrayList的get和set速度很快。<br>LinkedList内部使用Node类包含上一个节点，下一个节点的指针和当前节点的值，所以对于LinkedList<br>使用add和remove速度很快，而get和set则需要一个遍历来寻址节点。</p>
+<p>LinkedList还可以实现队列，双向队列，栈等数据结构。</p>
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2016/09/14/对java集合类的理解/" class="archive-article-date">
+  	<time datetime="2016-09-13T16:00:00.000Z" itemprop="datePublished"><i class="icon-clock"></i>2016-09-14</time>
+</a>
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags"></i>
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/面试/">面试</a></li></ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+	<i class="icon-price-tags"></i>
+	<a class="article-category-link" href="/categories/面试/">面试</a>
+	</div>
+
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+
+
+  
     <article id="post-Android 自定义弹幕 View" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1478,111 +1603,6 @@ public static Snackbar make(@NonNull View view, @NonNull CharSequence text,@Dura
       
       <a href="/2016/07/14/Snackbar 使用详解及源码解析/" class="archive-article-date">
   	<time datetime="2016-07-13T16:00:00.000Z" itemprop="datePublished"><i class="icon-clock"></i>2016-07-14</time>
-</a>
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags"></i>
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/android/">android</a></li></ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-	<i class="icon-price-tags"></i>
-	<a class="article-category-link" href="/categories/android/">android</a>
-	</div>
-
-
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-Android 面试基础知识总结（原创）" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/07/12/Android 面试基础知识总结（原创）/">Android 面试基础知识总结（原创）</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="Android-基础知识总结"><a href="#Android-基础知识总结" class="headerlink" title="Android 基础知识总结"></a>Android 基础知识总结</h1><blockquote>
-<p>本文是orzangleli原创，转载请注明出处(<a href="http://www.orzangleli.com" target="_blank" rel="external">http://www.orzangleli.com</a>)。</p>
-</blockquote>
-<h2 id="1-Activity的理解"><a href="#1-Activity的理解" class="headerlink" title="1.Activity的理解"></a>1.Activity的理解</h2><p>在Android开发中Activity非常重要,在一个应用中,每一个显示的屏幕都是一个Activity.Activity是单独用于处理用户操作的，要使用Activity开发人员可以通过setContentView(View)<br>把UI放到activity创建的窗口中。一般来说，必须要实现的接口是onCreate(Bundle),这是初始化Activity的地方，一般在这里调用setContentView和findViewById<br>.</p>
-<p>每个Activity在定义的时候，还需要在AndroidManifest.xml文件中声明，Activity的生命周期分为<br>onCreate(),onStart(),onResume(),onPause(),onStop(),onDestory(),OnRestart()<br>,7个过程，具体这几个过程之间的转换过程如图所示。</p>
-<p><img src="http://hi.csdn.net/attachment/201109/1/0_1314838777He6C.gif" alt=""></p>
-<h2 id="2-Activity、View和Window-的理解"><a href="#2-Activity、View和Window-的理解" class="headerlink" title="2.Activity、View和Window 的理解"></a>2.Activity、View和Window 的理解</h2><ul>
-<li>Activity与View的区别</li>
-</ul>
-<p>1).<br>Activity是四大组件中唯一一个用来和用户进行交互的组件。可以说Activity就是android的视图层。(Android中四大组件：Activity,Service,BroadCast,Content<br>Provider).</p>
-<p>2). 如果再细化，Activity相当于视图层中的控制层，是用来控制和管理View的，真正用来显示和处理事件的实际上是View。</p>
-<p>3). 每个Activity内部都有一个Window对象，<br>Window对象包含了一个DecorView(实际上就是FrameLayout)，我们通过setContentView给Activity设置显示的View实际上都是加到了DecorView中。</p>
-<h2 id="3-Activity的四大LaunchMode"><a href="#3-Activity的四大LaunchMode" class="headerlink" title="3.Activity的四大LaunchMode"></a>3.Activity的四大LaunchMode</h2><ul>
-<li><strong>standard</strong> ———— 默认模式，可以不用写配置。在这个模式下，都会默认创建一个新的实例。因此，在这种模式下，可以有多个相同的实例，也允许多个相同Activity叠加。</li>
-<li><strong>singleTop</strong>————可以有多个实例，但是不允许多个相同Activity叠加。即，如果Activity在栈顶的时候，启动相同的Activity，不会创建新的实例，而会调用其onNewIntent方法。</li>
-<li><strong>singleTask</strong>————只有一个实例。在同一个应用程序中启动它的时候，若Activity不存在，则会在当前task创建一个新的实例，若存在，则会把task中在其之上的其它Activity destory掉并调用它的onNewIntent方法。 如果是在别的应用程序中启动它，则会新建一个task ，并在该task中启动这个Activity，singleTask允许别的Activity与其在一个task中共存，也就是说，如果我在这个singleTask的实例中再打开新的Activity，这个新的Activity还是会在singleTask的实例的task中。</li>
-<li><strong>singleInstance</strong>————只有一个实例，并且这个实例独立运行在一个task中，这个task只有这个实例，不允许有别的Activity存在。</li>
-</ul>
-<h2 id="4-View的绘制流程"><a href="#4-View的绘制流程" class="headerlink" title="4.View的绘制流程"></a>4.View的绘制流程</h2><p>Android的View绘制是从根节点（Activity是DecorView）开始，他是一个自上而下的过程。View的绘制经历三个过程：Measure、Layout、Draw。基本流程如下图：</p>
-<p><img src="http://www.orzangleli.com/wp-
-content/uploads/2016/07/20140318084318609.png" alt="20140318084318609"></p>
-<p>Measure是确定视图的大小，Layout是确定视图的位置，Draw是绘制视图。</p>
-<h2 id="5-Touch事件机制"><a href="#5-Touch事件机制" class="headerlink" title="5.Touch事件机制"></a>5.Touch事件机制</h2><p>1.Touch事件分发机制中有两个主角：ViewGroup和View,ViewGroup包含onInterceptTouchEvent,dispatchTouchEvent,onTouchEvent三个相关事件，而View只包含dispatchTouchEvent和onTouchEvent事件。</p>
-<p>2.触摸事件由Action_Down,Action_Move,Action_Up三个事件组成，Down和Up只有1个，Move可以为多个，也可以为0个。</p>
-<p>3.Activity内部包含一个ViewGroup，当Activity接收到触摸事件时，会分发Down事件给子ViewGroup和子View，如果子View处理了这个触摸事件，这个View的onTouchEvent会返回true.当ViewGroup的所有子View都不捕获Down事件时，ViewGroup会触发自身的onTouchEvent事件。</p>
-<p>4.onInterceptTouchEvent有两个作用：1.拦截Down事件的分发。2.中止Up和Move事件向目标View传递，使得目标View所在的ViewGroup捕获Up和Move事件。</p>
-<h2 id="6-Android动画原理"><a href="#6-Android动画原理" class="headerlink" title="6.Android动画原理"></a>6.Android动画原理</h2><p>Android平台提供两类动画：</p>
-<ol>
-<li>Tween动画，通过场景里的对象不断做图像变化产生动画效果，主要是指平移，旋转，缩放。</li>
-<li>Frame动画，通过顺序播放事先做好的图像，逐帧播放，类似与老式胶片电影的原理。</li>
-</ol>
-<p>Android动画可以在java代码中直接使用动画，也可以在anim目录下新建xml文件，然后在java代码中使用。Android中的动画是建立在View级别上的，其中View类有一个接口startAnimatoin来开始动画。</p>
-<h2 id="7-Handler和Looper理解"><a href="#7-Handler和Looper理解" class="headerlink" title="7.Handler和Looper理解"></a>7.Handler和Looper理解</h2><p><strong>Handler</strong> 是消息处理者，负责Message的发送和处理，需要实现handleMessage(Message msg) 方法对特定的消息进行处理。</p>
-<p><strong>Looper</strong> 是消息泵，不断地从MessageQueue中抽取消息。</p>
-<p><strong>MessageQueue</strong> 消息队列，用来存取handler发送过来的消息，并且Looper会从中不断抽取Message，一个MessageQueue对应一个Looper.</p>
-<p>三者之间的关系可以用下图表示：</p>
-<p><img src="http://i.imgur.com/LdgBDUC.jpg" alt=""></p>
-<h2 id="8-Android跨进程通信"><a href="#8-Android跨进程通信" class="headerlink" title="8.Android跨进程通信"></a>8.Android跨进程通信</h2><p>在android SDK中提供了4种用于跨进程通讯的方式。这4种方式正好对应于android系统中4种应用程序组件：Activity、Content<br>Provider、Broadcast和Service。</p>
-<ul>
-<li>其中Activity可以跨进程调用其他应用程序的Activity；</li>
-<li>Content Provider可以跨进程访问其他应用程序中的数据（以Cursor对象形式返回），当然，也可以对其他应用程序的数据进行增、删、改操作；</li>
-<li>Broadcast可以向android系统中所有应用程序发送广播，而需要跨进程通讯的应用程序可以监听这些广播；</li>
-<li>Service和Content Provider类似，也可以访问其他应用程序中的数据，但不同的是，Content Provider返回的是Cursor对象，而Service返回的是Java对象，这种可以跨进程通讯的服务叫AIDL服务（Android Interface Definition Language）。</li>
-</ul>
-<h2 id="9-Binder理解"><a href="#9-Binder理解" class="headerlink" title="9.Binder理解"></a>9.Binder理解</h2><ol>
-<li>binder用来做什么？用来实现不同进程之间的通信。</li>
-<li>Binder是什么？binder属于一个驱动，工作在linux层面，运行在内核态，它的操作完成是基于一段内存。所以我们开发的程序中对binder的使用都是通过系统的调用来完成的。</li>
-<li>binder是怎样实现进程通信的？我们来通过Binder的架构来了解它实现进程间通信（IPC）的过程。</li>
-</ol>
-<p>客户端是通过Binder驱动来调用服务端的相关服务。首先，在服务端创建一个Binder对象，然后相应在Binder驱动中创建一个Binder对象，接着客户端通过获取Binder驱动中Binder对象的引用来调用服务端的服务。在Binder机制中正是借着Binder驱动将不同进程间的组件bind（粘连）在一起，实现通信。</p>
-<p>##</p>
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      <a href="/2016/07/12/Android 面试基础知识总结（原创）/" class="archive-article-date">
-  	<time datetime="2016-07-11T16:00:00.000Z" itemprop="datePublished"><i class="icon-clock"></i>2016-07-12</time>
 </a>
       
 	<div class="article-tag tagcloud">

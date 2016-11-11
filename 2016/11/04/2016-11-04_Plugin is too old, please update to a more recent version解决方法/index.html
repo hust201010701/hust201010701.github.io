@@ -6,17 +6,29 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Tag: android | orzangleli</title>
+  <title>Plugin is too old, please update to a more recent version解决方法.md | orzangleli</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="华中科技大学 本科10级 硕士14级 努力学习中">
-<meta property="og:type" content="website">
-<meta property="og:title" content="orzangleli">
-<meta property="og:url" content="http://yoursite.com/tags/android/page/3/index.html">
+  <meta name="description" content="#Plugin is too old, please update to a more recent version问题解决方法
+Android Studio 报错：
+Plugin is too old, please update to a more recent version, or set ANDROID_DAILY_OVERRIDE environment variable to…
+网上">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Plugin is too old, please update to a more recent version解决方法.md">
+<meta property="og:url" content="http://yoursite.com/2016/11/04/2016-11-04_Plugin is too old, please update to a more recent version解决方法/index.html">
 <meta property="og:site_name" content="orzangleli">
-<meta property="og:description" content="华中科技大学 本科10级 硕士14级 努力学习中">
+<meta property="og:description" content="#Plugin is too old, please update to a more recent version问题解决方法
+Android Studio 报错：
+Plugin is too old, please update to a more recent version, or set ANDROID_DAILY_OVERRIDE environment variable to…
+网上">
+<meta property="og:image" content="http://lxctest.qiniudn.com/2016-11-04_11:34:36_1.png?imageView2/0/w/800">
+<meta property="og:updated_time" content="2016-11-11T14:48:11.076Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="orzangleli">
-<meta name="twitter:description" content="华中科技大学 本科10级 硕士14级 努力学习中">
+<meta name="twitter:title" content="Plugin is too old, please update to a more recent version解决方法.md">
+<meta name="twitter:description" content="#Plugin is too old, please update to a more recent version问题解决方法
+Android Studio 报错：
+Plugin is too old, please update to a more recent version, or set ANDROID_DAILY_OVERRIDE environment variable to…
+网上">
+<meta name="twitter:image" content="http://lxctest.qiniudn.com/2016-11-04_11:34:36_1.png?imageView2/0/w/800">
   
     <link rel="alternative" href="/atom.xml" title="orzangleli" type="application/atom+xml">
   
@@ -141,100 +153,137 @@
 </nav>
 
       <div class="body-wrap">
+        <article id="post-2016-11-04_Plugin is too old, please update to a more recent version解决方法" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
         
   
-  
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2016" class="archive-year">2016</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2016/03/16/使用jitpack.io 依赖github第三方库/" class="archive-article-date">
-  	<time datetime="2016-03-15T16:00:00.000Z" itemprop="datePublished"><i class="icon-clock"></i>2016-03-16</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2016/03/16/使用jitpack.io 依赖github第三方库/">使用jitpack.io 依赖github第三方库</a>
+    <h1 class="article-title" itemprop="name">
+      Plugin is too old, please update to a more recent version解决方法.md
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>#Plugin is too old, please update to a more recent version问题解决方法</p>
+<p>Android Studio 报错：</p>
+<p>Plugin is too old, please update to a more recent version, or set ANDROID_DAILY_OVERRIDE environment variable to…</p>
+<p>网上众说纷纭，但是实际上没有几个能用。<br>首先当然你可以把gradle版本调低，运行没问题，但是就不能体验到Instant Run等新功能，为了体验新功能，按照以下步骤进行。</p>
+<h2 id="1-修改Project的build-gradle中版本"><a href="#1-修改Project的build-gradle中版本" class="headerlink" title="1. 修改Project的build.gradle中版本"></a>1. 修改Project的build.gradle中版本</h2><p>打开build.gradle(Project:xxx),修改下面代码为</p>
+<p>修改前</p>
+<pre><code>classpath &apos;com.android.tools.build:gradle:1.3&apos;
+</code></pre><p>修改后</p>
+<pre><code>classpath &apos;com.android.tools.build:gradle:2.3.0-alpha1&apos;
+</code></pre><p>其中<code>2.3.0-alpha1</code>是查看网址<a href="https://jcenter.bintray.com/com/android/tools/build/gradle/" target="_blank" rel="external"></a>中的最新版本。</p>
+<h2 id="2-查看最新版本的gradle"><a href="#2-查看最新版本的gradle" class="headerlink" title="2. 查看最新版本的gradle"></a>2. 查看最新版本的gradle</h2><p>进入gralde下载网站： <a href="https://services.gradle.org/distributions/" target="_blank" rel="external">Gradle Distributions</a> </p>
+<p>如图所示：</p>
+<p><img src="http://lxctest.qiniudn.com/2016-11-04_11:34:36_1.png?imageView2/0/w/800" alt=""></p>
+<p>可以看到最新版是gradle-3.2-rc-2-all.zip</p>
+<h2 id="3-修改gradle-wrapper-properties"><a href="#3-修改gradle-wrapper-properties" class="headerlink" title="3.修改gradle-wrapper.properties"></a>3.修改gradle-wrapper.properties</h2><p>将gradle-wrapper.properties 中<code>distributionUrl</code>指向的内容修改为：</p>
+<pre><code>distributionUrl=https\://services.gradle.org/distributions/xxx
+</code></pre><p><code>xxx</code> 为你在官网看到的最新版的文件名字</p>
+<p>如：<br>    distributionUrl=https\://services.gradle.org/distributions/gradle-3.2-rc-2-all.zip</p>
+<p>现在就可以使用新版功能了，而且之后也看不到烦人的更新提示了。</p>
+<h2 id="4-等待gradle更新"><a href="#4-等待gradle更新" class="headerlink" title="4.等待gradle更新"></a>4.等待gradle更新</h2><p>如果更新后，提示需要安装插件等，按照提示安装即可，等待时间可能有点长，我上次等了10多分钟，但是下次不需要再等待了，而且可以正常使用Instant Run 了。</p>
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2016/11/04/2016-11-04_Plugin is too old, please update to a more recent version解决方法/" class="archive-article-date">
+  	<time datetime="2016-11-03T16:00:00.000Z" itemprop="datePublished"><i class="icon-clock"></i>2016-11-04</time>
+</a>
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags"></i>
 		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/android/">android</a></li></ul>
 	</div>
 
-          
+      
 	<div class="article-category tagcloud">
 	<i class="icon-price-tags"></i>
 	<a class="article-category-link" href="/categories/android/">android</a>
 	</div>
 
 
-        </div>
-        <div class="clearfix"></div>
-    </header>
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2016/03/16/NavigationView 设置头像  headlayout/" class="archive-article-date">
-  	<time datetime="2016-03-15T16:00:00.000Z" itemprop="datePublished"><i class="icon-clock"></i>2016-03-16</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2016/03/16/NavigationView 设置头像  headlayout/">NavigationView 设置头像  headlayout</a>
-    </h1>
-  
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags"></i>
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/android/">android</a></li></ul>
+  
+<nav id="article-nav">
+  
+    <a href="/2016/11/10/2016-11-19_转转Indicator/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          自己动手造轮子系列———实现『转转APP』Indicator 效果
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2016/11/03/Python实战_博客备份及格式转换/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Python 实用技巧————博客文档备份及格式转化</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+
+
+<div class="share_jia">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">Share to: &nbsp; </span>
+		<a class="jiathis_button_facebook"></a> 
+	    <a class="jiathis_button_twitter"></a>
+	    <a class="jiathis_button_plus"></a> 
+	    <a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+    <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
 	</div>
-
-          
-	<div class="article-category tagcloud">
-	<i class="icon-price-tags"></i>
-	<a class="article-category-link" href="/categories/android/">android</a>
-	</div>
+	<script type="text/javascript" src="//v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
 
 
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
 
-    
-    <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/tags/android/page/2/">&laquo; Prev</a><a class="page-number" href="/tags/android/">1</a><a class="page-number" href="/tags/android/page/2/">2</a><span class="page-number current">3</span>
-    </nav>
-  
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="2016-11-04_Plugin is too old, please update to a more recent version解决方法" data-title="Plugin is too old, please update to a more recent version解决方法.md" data-url="http://yoursite.com/2016/11/04/2016-11-04_Plugin is too old, please update to a more recent version解决方法/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"orzangleli"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
 
 
       </div>
@@ -257,9 +306,9 @@
 		mathjax: false,
 		animate: true,
 		isHome: false,
-		isPost: false,
+		isPost: true,
 		isArchive: false,
-		isTag: true,
+		isTag: false,
 		isCategory: false,
 		open_in_new: true,
 		root: "/",

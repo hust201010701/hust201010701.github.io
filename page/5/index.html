@@ -143,6 +143,150 @@
       <div class="body-wrap">
         
   
+    <article id="post-genymotion 安装后无法启动" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/03/23/genymotion 安装后无法启动/">genymotion 安装后无法启动</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>今天跟genymotion杠上了，我安装后打开提示我无法运行，气死我了。</p>
+<p><img src="http://www.orzangleli.com/wp-content/uploads/2016/03/q1.png" alt="q1"></p>
+<p>在网上搜索，看到了一大堆问题，现在把我的过程给演示一遍。</p>
+<p>首先安装genymotion 链接：<a href="http://pan.baidu.com/s/1hqXWV2G" target="_blank" rel="external">http://pan.baidu.com/s/1hqXWV2G</a> 密码：pbn5 安装完成后不可以运行，这时候，属性-<br>兼容性 修改为win7以外的就行。</p>
+<p><img src="http://www.orzangleli.com/wp-content/uploads/2016/03/q2.jpg" alt="q2"></p>
+<p>然后genymotion还是不能启动新的模拟器，单独在virtualbox中也是不行，出现了上图的错误，这个错误纠结了很久都没有搞好。</p>
+<p>最后把genymotion 自带的vitrualbox卸载 了，然后安装刚刚百度云里面的4.3.6版本的就可以了。</p>
+<p>附上一张完美运行图。PS :有时候会发现genymotion的标题栏超出的屏幕的边界，无法移动和关闭，这时候按住Alt+Space<br>然后按M键，再按住方向键上下调位置即可。</p>
+<hr>
+<p>2016年3月23日更新：另外可能遇到genymotion被墙的问题，在网站 <a href="http://www.xicidaili.com/wt/" target="_blank" rel="external">http://www.xicidaili.com/wt/</a><br>中找美国的节点，在设置里设置代理就可以成功登陆了。</p>
+<hr>
+<p><img src="http://www.orzangleli.com/wp-content/uploads/2016/03/q3.jpg" alt="q3"></p>
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2016/03/23/genymotion 安装后无法启动/" class="archive-article-date">
+  	<time datetime="2016-03-22T16:00:00.000Z" itemprop="datePublished"><i class="icon-clock"></i>2016-03-23</time>
+</a>
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags"></i>
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/android/">android</a></li></ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+	<i class="icon-price-tags"></i>
+	<a class="article-category-link" href="/categories/android/">android</a>
+	</div>
+
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-使用jitpack.io 依赖github第三方库" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/03/16/使用jitpack.io 依赖github第三方库/">使用jitpack.io 依赖github第三方库</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>github上有那么多好用的库，有些写的很详细，怎么在工程中引用依赖，有的则没有写。</p>
+<p>比如，我最近看的一个项目，<a href="https://github.com/tuesda/CircleRefreshLayout" target="_blank" rel="external">CircleRefreshLayout</a><br>，则没有写怎么依赖，而我又不想把它下载下来。</p>
+<p>这时候使用<a href="https://jitpack.io/" target="_blank" rel="external">jitpack.io</a> ，填入项目名称</p>
+<p><img src="http://www.orzangleli.com/wp-
+content/uploads/2016/03/QQ图片20160316163235.png" alt="QQ图片20160316163235"></p>
+<p>选择版本，一般是最后一个版本咯</p>
+<p><img src="http://www.orzangleli.com/wp-
+content/uploads/2016/03/QQ截图20160316163325-1-300x210.jpg" alt="QQ截图20160316163325"></p>
+<p>在自己的android<br>studio中添加这个依赖就可以了。中间我的工程出了个错，是说第三行错，因为引用的工程的mipmap下面也有一个ic_launcher，修改为mipmap的路径在gradle下就没有错了。</p>
+<pre><code>&lt;application android:allowBackup=&quot;true&quot;
+        android:label=&quot;@string/app_name&quot;
+        android:icon=&quot;@mipmap/ic_launcher&quot;
+        android:theme=&quot;@style/AppTheme&quot;&gt;
+
+        &lt;activity android:name=&quot;.MainActivity&quot;
+                  android:label=&quot;@string/app_name&quot;&gt;
+            &lt;intent-filter&gt;
+                &lt;action android:name=&quot;android.intent.action.MAIN&quot; /&gt;
+                &lt;category android:name=&quot;android.intent.category.LAUNCHER&quot; /&gt;
+            &lt;/intent-filter&gt;
+        &lt;/activity&gt;
+    &lt;/application&gt;
+</code></pre><p>最后效果：（genymotion + Gif 录制工具） 使用7牛传输来的，不知道为什么上传到wordpress就会出错</p>
+<p><img src="http://7xrrni.com1.z0.glb.clouddn.com/11111.gif" alt=""></p>
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2016/03/16/使用jitpack.io 依赖github第三方库/" class="archive-article-date">
+  	<time datetime="2016-03-15T16:00:00.000Z" itemprop="datePublished"><i class="icon-clock"></i>2016-03-16</time>
+</a>
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags"></i>
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/android/">android</a></li></ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+	<i class="icon-price-tags"></i>
+	<a class="article-category-link" href="/categories/android/">android</a>
+	</div>
+
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+
+
+  
     <article id="post-SwipeRefreshLayout  android 官方下拉刷新控件使用" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -328,84 +472,6 @@ content/uploads/2016/03/QQ图片20160316130436-169x300.png" alt="QQ图片2016031
     <div class="article-info article-info-index">
       
       <a href="/2016/03/16/NavigationView 设置头像  headlayout/" class="archive-article-date">
-  	<time datetime="2016-03-15T16:00:00.000Z" itemprop="datePublished"><i class="icon-clock"></i>2016-03-16</time>
-</a>
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags"></i>
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/android/">android</a></li></ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-	<i class="icon-price-tags"></i>
-	<a class="article-category-link" href="/categories/android/">android</a>
-	</div>
-
-
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-使用jitpack.io 依赖github第三方库" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/03/16/使用jitpack.io 依赖github第三方库/">使用jitpack.io 依赖github第三方库</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>github上有那么多好用的库，有些写的很详细，怎么在工程中引用依赖，有的则没有写。</p>
-<p>比如，我最近看的一个项目，<a href="https://github.com/tuesda/CircleRefreshLayout" target="_blank" rel="external">CircleRefreshLayout</a><br>，则没有写怎么依赖，而我又不想把它下载下来。</p>
-<p>这时候使用<a href="https://jitpack.io/" target="_blank" rel="external">jitpack.io</a> ，填入项目名称</p>
-<p><img src="http://www.orzangleli.com/wp-
-content/uploads/2016/03/QQ图片20160316163235.png" alt="QQ图片20160316163235"></p>
-<p>选择版本，一般是最后一个版本咯</p>
-<p><img src="http://www.orzangleli.com/wp-
-content/uploads/2016/03/QQ截图20160316163325-1-300x210.jpg" alt="QQ截图20160316163325"></p>
-<p>在自己的android<br>studio中添加这个依赖就可以了。中间我的工程出了个错，是说第三行错，因为引用的工程的mipmap下面也有一个ic_launcher，修改为mipmap的路径在gradle下就没有错了。</p>
-<pre><code>&lt;application android:allowBackup=&quot;true&quot;
-        android:label=&quot;@string/app_name&quot;
-        android:icon=&quot;@mipmap/ic_launcher&quot;
-        android:theme=&quot;@style/AppTheme&quot;&gt;
-
-        &lt;activity android:name=&quot;.MainActivity&quot;
-                  android:label=&quot;@string/app_name&quot;&gt;
-            &lt;intent-filter&gt;
-                &lt;action android:name=&quot;android.intent.action.MAIN&quot; /&gt;
-                &lt;category android:name=&quot;android.intent.category.LAUNCHER&quot; /&gt;
-            &lt;/intent-filter&gt;
-        &lt;/activity&gt;
-    &lt;/application&gt;
-</code></pre><p>最后效果：（genymotion + Gif 录制工具） 使用7牛传输来的，不知道为什么上传到wordpress就会出错</p>
-<p><img src="http://7xrrni.com1.z0.glb.clouddn.com/11111.gif" alt=""></p>
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      <a href="/2016/03/16/使用jitpack.io 依赖github第三方库/" class="archive-article-date">
   	<time datetime="2016-03-15T16:00:00.000Z" itemprop="datePublished"><i class="icon-clock"></i>2016-03-16</time>
 </a>
       

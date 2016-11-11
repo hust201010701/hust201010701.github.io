@@ -196,6 +196,50 @@ private Handler mHandler = new Handler() {
   </entry>
   
   <entry>
+    <title>Plugin is too old, please update to a more recent version解决方法.md</title>
+    <link href="http://yoursite.com/2016/11/04/2016-11-04_Plugin%20is%20too%20old,%20please%20update%20to%20a%20more%20recent%20version%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95/"/>
+    <id>http://yoursite.com/2016/11/04/2016-11-04_Plugin is too old, please update to a more recent version解决方法/</id>
+    <published>2016-11-03T16:00:00.000Z</published>
+    <updated>2016-11-11T14:48:11.076Z</updated>
+    
+    <content type="html"><![CDATA[<p>#Plugin is too old, please update to a more recent version问题解决方法</p>
+<p>Android Studio 报错：</p>
+<p>Plugin is too old, please update to a more recent version, or set ANDROID_DAILY_OVERRIDE environment variable to…</p>
+<p>网上众说纷纭，但是实际上没有几个能用。<br>首先当然你可以把gradle版本调低，运行没问题，但是就不能体验到Instant Run等新功能，为了体验新功能，按照以下步骤进行。</p>
+<h2 id="1-修改Project的build-gradle中版本"><a href="#1-修改Project的build-gradle中版本" class="headerlink" title="1. 修改Project的build.gradle中版本"></a>1. 修改Project的build.gradle中版本</h2><p>打开build.gradle(Project:xxx),修改下面代码为</p>
+<p>修改前</p>
+<pre><code>classpath &apos;com.android.tools.build:gradle:1.3&apos;
+</code></pre><p>修改后</p>
+<pre><code>classpath &apos;com.android.tools.build:gradle:2.3.0-alpha1&apos;
+</code></pre><p>其中<code>2.3.0-alpha1</code>是查看网址<a href="https://jcenter.bintray.com/com/android/tools/build/gradle/" target="_blank" rel="external"></a>中的最新版本。</p>
+<h2 id="2-查看最新版本的gradle"><a href="#2-查看最新版本的gradle" class="headerlink" title="2. 查看最新版本的gradle"></a>2. 查看最新版本的gradle</h2><p>进入gralde下载网站： <a href="https://services.gradle.org/distributions/" target="_blank" rel="external">Gradle Distributions</a> </p>
+<p>如图所示：</p>
+<p><img src="http://lxctest.qiniudn.com/2016-11-04_11:34:36_1.png?imageView2/0/w/800" alt=""></p>
+<p>可以看到最新版是gradle-3.2-rc-2-all.zip</p>
+<h2 id="3-修改gradle-wrapper-properties"><a href="#3-修改gradle-wrapper-properties" class="headerlink" title="3.修改gradle-wrapper.properties"></a>3.修改gradle-wrapper.properties</h2><p>将gradle-wrapper.properties 中<code>distributionUrl</code>指向的内容修改为：</p>
+<pre><code>distributionUrl=https\://services.gradle.org/distributions/xxx
+</code></pre><p><code>xxx</code> 为你在官网看到的最新版的文件名字</p>
+<p>如：<br>    distributionUrl=https\://services.gradle.org/distributions/gradle-3.2-rc-2-all.zip</p>
+<p>现在就可以使用新版功能了，而且之后也看不到烦人的更新提示了。</p>
+<h2 id="4-等待gradle更新"><a href="#4-等待gradle更新" class="headerlink" title="4.等待gradle更新"></a>4.等待gradle更新</h2><p>如果更新后，提示需要安装插件等，按照提示安装即可，等待时间可能有点长，我上次等了10多分钟，但是下次不需要再等待了，而且可以正常使用Instant Run 了。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;#Plugin is too old, please update to a more recent version问题解决方法&lt;/p&gt;
+&lt;p&gt;Android Studio 报错：&lt;/p&gt;
+&lt;p&gt;Plugin is too old, please update to a m
+    
+    </summary>
+    
+      <category term="android" scheme="http://yoursite.com/categories/android/"/>
+    
+    
+      <category term="android" scheme="http://yoursite.com/tags/android/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Python 实用技巧————博客文档备份及格式转化</title>
     <link href="http://yoursite.com/2016/11/03/Python%E5%AE%9E%E6%88%98_%E5%8D%9A%E5%AE%A2%E5%A4%87%E4%BB%BD%E5%8F%8A%E6%A0%BC%E5%BC%8F%E8%BD%AC%E6%8D%A2/"/>
     <id>http://yoursite.com/2016/11/03/Python实战_博客备份及格式转换/</id>
@@ -2027,80 +2071,6 @@ public static Snackbar make(@NonNull View view, @NonNull CharSequence text,@Dura
     <summary type="html">
     
       &lt;h1 id=&quot;Snackbar-使用详解及源码解析&quot;&gt;&lt;a href=&quot;#Snackbar-使用详解及源码解析&quot; class=&quot;headerlink&quot; title=&quot;Snackbar 使用详解及源码解析&quot;&gt;&lt;/a&gt;Snackbar 使用详解及源码解析&lt;/h1&gt;&lt;blockquo
-    
-    </summary>
-    
-      <category term="android" scheme="http://yoursite.com/categories/android/"/>
-    
-    
-      <category term="android" scheme="http://yoursite.com/tags/android/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Android 面试基础知识总结（原创）</title>
-    <link href="http://yoursite.com/2016/07/12/Android%20%E9%9D%A2%E8%AF%95%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93%EF%BC%88%E5%8E%9F%E5%88%9B%EF%BC%89/"/>
-    <id>http://yoursite.com/2016/07/12/Android 面试基础知识总结（原创）/</id>
-    <published>2016-07-11T16:00:00.000Z</published>
-    <updated>2016-11-03T11:19:51.636Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="Android-基础知识总结"><a href="#Android-基础知识总结" class="headerlink" title="Android 基础知识总结"></a>Android 基础知识总结</h1><blockquote>
-<p>本文是orzangleli原创，转载请注明出处(<a href="http://www.orzangleli.com" target="_blank" rel="external">http://www.orzangleli.com</a>)。</p>
-</blockquote>
-<h2 id="1-Activity的理解"><a href="#1-Activity的理解" class="headerlink" title="1.Activity的理解"></a>1.Activity的理解</h2><p>在Android开发中Activity非常重要,在一个应用中,每一个显示的屏幕都是一个Activity.Activity是单独用于处理用户操作的，要使用Activity开发人员可以通过setContentView(View)<br>把UI放到activity创建的窗口中。一般来说，必须要实现的接口是onCreate(Bundle),这是初始化Activity的地方，一般在这里调用setContentView和findViewById<br>.</p>
-<p>每个Activity在定义的时候，还需要在AndroidManifest.xml文件中声明，Activity的生命周期分为<br>onCreate(),onStart(),onResume(),onPause(),onStop(),onDestory(),OnRestart()<br>,7个过程，具体这几个过程之间的转换过程如图所示。</p>
-<p><img src="http://hi.csdn.net/attachment/201109/1/0_1314838777He6C.gif" alt=""></p>
-<h2 id="2-Activity、View和Window-的理解"><a href="#2-Activity、View和Window-的理解" class="headerlink" title="2.Activity、View和Window 的理解"></a>2.Activity、View和Window 的理解</h2><ul>
-<li>Activity与View的区别</li>
-</ul>
-<p>1).<br>Activity是四大组件中唯一一个用来和用户进行交互的组件。可以说Activity就是android的视图层。(Android中四大组件：Activity,Service,BroadCast,Content<br>Provider).</p>
-<p>2). 如果再细化，Activity相当于视图层中的控制层，是用来控制和管理View的，真正用来显示和处理事件的实际上是View。</p>
-<p>3). 每个Activity内部都有一个Window对象，<br>Window对象包含了一个DecorView(实际上就是FrameLayout)，我们通过setContentView给Activity设置显示的View实际上都是加到了DecorView中。</p>
-<h2 id="3-Activity的四大LaunchMode"><a href="#3-Activity的四大LaunchMode" class="headerlink" title="3.Activity的四大LaunchMode"></a>3.Activity的四大LaunchMode</h2><ul>
-<li><strong>standard</strong> ———— 默认模式，可以不用写配置。在这个模式下，都会默认创建一个新的实例。因此，在这种模式下，可以有多个相同的实例，也允许多个相同Activity叠加。</li>
-<li><strong>singleTop</strong>————可以有多个实例，但是不允许多个相同Activity叠加。即，如果Activity在栈顶的时候，启动相同的Activity，不会创建新的实例，而会调用其onNewIntent方法。</li>
-<li><strong>singleTask</strong>————只有一个实例。在同一个应用程序中启动它的时候，若Activity不存在，则会在当前task创建一个新的实例，若存在，则会把task中在其之上的其它Activity destory掉并调用它的onNewIntent方法。 如果是在别的应用程序中启动它，则会新建一个task ，并在该task中启动这个Activity，singleTask允许别的Activity与其在一个task中共存，也就是说，如果我在这个singleTask的实例中再打开新的Activity，这个新的Activity还是会在singleTask的实例的task中。</li>
-<li><strong>singleInstance</strong>————只有一个实例，并且这个实例独立运行在一个task中，这个task只有这个实例，不允许有别的Activity存在。</li>
-</ul>
-<h2 id="4-View的绘制流程"><a href="#4-View的绘制流程" class="headerlink" title="4.View的绘制流程"></a>4.View的绘制流程</h2><p>Android的View绘制是从根节点（Activity是DecorView）开始，他是一个自上而下的过程。View的绘制经历三个过程：Measure、Layout、Draw。基本流程如下图：</p>
-<p><img src="http://www.orzangleli.com/wp-
-content/uploads/2016/07/20140318084318609.png" alt="20140318084318609"></p>
-<p>Measure是确定视图的大小，Layout是确定视图的位置，Draw是绘制视图。</p>
-<h2 id="5-Touch事件机制"><a href="#5-Touch事件机制" class="headerlink" title="5.Touch事件机制"></a>5.Touch事件机制</h2><p>1.Touch事件分发机制中有两个主角：ViewGroup和View,ViewGroup包含onInterceptTouchEvent,dispatchTouchEvent,onTouchEvent三个相关事件，而View只包含dispatchTouchEvent和onTouchEvent事件。</p>
-<p>2.触摸事件由Action_Down,Action_Move,Action_Up三个事件组成，Down和Up只有1个，Move可以为多个，也可以为0个。</p>
-<p>3.Activity内部包含一个ViewGroup，当Activity接收到触摸事件时，会分发Down事件给子ViewGroup和子View，如果子View处理了这个触摸事件，这个View的onTouchEvent会返回true.当ViewGroup的所有子View都不捕获Down事件时，ViewGroup会触发自身的onTouchEvent事件。</p>
-<p>4.onInterceptTouchEvent有两个作用：1.拦截Down事件的分发。2.中止Up和Move事件向目标View传递，使得目标View所在的ViewGroup捕获Up和Move事件。</p>
-<h2 id="6-Android动画原理"><a href="#6-Android动画原理" class="headerlink" title="6.Android动画原理"></a>6.Android动画原理</h2><p>Android平台提供两类动画：</p>
-<ol>
-<li>Tween动画，通过场景里的对象不断做图像变化产生动画效果，主要是指平移，旋转，缩放。</li>
-<li>Frame动画，通过顺序播放事先做好的图像，逐帧播放，类似与老式胶片电影的原理。</li>
-</ol>
-<p>Android动画可以在java代码中直接使用动画，也可以在anim目录下新建xml文件，然后在java代码中使用。Android中的动画是建立在View级别上的，其中View类有一个接口startAnimatoin来开始动画。</p>
-<h2 id="7-Handler和Looper理解"><a href="#7-Handler和Looper理解" class="headerlink" title="7.Handler和Looper理解"></a>7.Handler和Looper理解</h2><p><strong>Handler</strong> 是消息处理者，负责Message的发送和处理，需要实现handleMessage(Message msg) 方法对特定的消息进行处理。</p>
-<p><strong>Looper</strong> 是消息泵，不断地从MessageQueue中抽取消息。</p>
-<p><strong>MessageQueue</strong> 消息队列，用来存取handler发送过来的消息，并且Looper会从中不断抽取Message，一个MessageQueue对应一个Looper.</p>
-<p>三者之间的关系可以用下图表示：</p>
-<p><img src="http://i.imgur.com/LdgBDUC.jpg" alt=""></p>
-<h2 id="8-Android跨进程通信"><a href="#8-Android跨进程通信" class="headerlink" title="8.Android跨进程通信"></a>8.Android跨进程通信</h2><p>在android SDK中提供了4种用于跨进程通讯的方式。这4种方式正好对应于android系统中4种应用程序组件：Activity、Content<br>Provider、Broadcast和Service。</p>
-<ul>
-<li>其中Activity可以跨进程调用其他应用程序的Activity；</li>
-<li>Content Provider可以跨进程访问其他应用程序中的数据（以Cursor对象形式返回），当然，也可以对其他应用程序的数据进行增、删、改操作；</li>
-<li>Broadcast可以向android系统中所有应用程序发送广播，而需要跨进程通讯的应用程序可以监听这些广播；</li>
-<li>Service和Content Provider类似，也可以访问其他应用程序中的数据，但不同的是，Content Provider返回的是Cursor对象，而Service返回的是Java对象，这种可以跨进程通讯的服务叫AIDL服务（Android Interface Definition Language）。</li>
-</ul>
-<h2 id="9-Binder理解"><a href="#9-Binder理解" class="headerlink" title="9.Binder理解"></a>9.Binder理解</h2><ol>
-<li>binder用来做什么？用来实现不同进程之间的通信。</li>
-<li>Binder是什么？binder属于一个驱动，工作在linux层面，运行在内核态，它的操作完成是基于一段内存。所以我们开发的程序中对binder的使用都是通过系统的调用来完成的。</li>
-<li>binder是怎样实现进程通信的？我们来通过Binder的架构来了解它实现进程间通信（IPC）的过程。</li>
-</ol>
-<p>客户端是通过Binder驱动来调用服务端的相关服务。首先，在服务端创建一个Binder对象，然后相应在Binder驱动中创建一个Binder对象，接着客户端通过获取Binder驱动中Binder对象的引用来调用服务端的服务。在Binder机制中正是借着Binder驱动将不同进程间的组件bind（粘连）在一起，实现通信。</p>
-<p>##</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;Android-基础知识总结&quot;&gt;&lt;a href=&quot;#Android-基础知识总结&quot; class=&quot;headerlink&quot; title=&quot;Android 基础知识总结&quot;&gt;&lt;/a&gt;Android 基础知识总结&lt;/h1&gt;&lt;blockquote&gt;
-&lt;p&gt;本文是orzang
     
     </summary>
     
