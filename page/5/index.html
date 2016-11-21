@@ -209,91 +209,6 @@
 
 
   
-    <article id="post-NavigationView 设置头像  headlayout" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/03/16/NavigationView 设置头像  headlayout/">NavigationView 设置头像  headlayout</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>这是android Meterial Design中的NavigationView ，这个配合DrawLayout 可以实现侧滑菜单的功能。</p>
-<p><img src="https://segmentfault.com/img/bVqWdx" alt=""></p>
-<p>之所以使用这个控件是因为他可以很方便的对菜单进行分类，很清晰。</p>
-<p>本来我想加入一个自己的head<br>部分，但是尝试了好久之后，发现NavigationView上面始终有个嘿嘿的部分，这个部分的高度应该正好等于状态栏的高度，后来我在网上查资料无意发现，原来google<br>早就帮我想好了，有一个属性，headlayout。 代码如下：</p>
-<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
-&lt;android.support.v4.widget.DrawerLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
-    xmlns:app=&quot;http://schemas.android.com/apk/res-auto&quot;
-    xmlns:tools=&quot;http://schemas.android.com/tools&quot;
-    android:id=&quot;@+id/drawer_layout&quot;
-    android:layout_width=&quot;match_parent&quot; android:layout_height=&quot;match_parent&quot;
-    tools:openDrawer=&quot;start&quot;
-    &gt;
-
-    &lt;include
-        layout=&quot;@layout/app_bar_main&quot;
-        android:layout_width=&quot;match_parent&quot;
-        android:layout_height=&quot;match_parent&quot; /&gt;
-
-    &lt;android.support.design.widget.NavigationView
-        android:id=&quot;@+id/nav_view&quot;
-        android:layout_width=&quot;240dp&quot;
-        android:layout_height=&quot;match_parent&quot;
-        android:layout_gravity=&quot;start&quot;
-        app:headerLayout=&quot;@layout/drawerlayout_me&quot;
-        app:menu=&quot;@menu/activity_main_drawer&quot;
-        /&gt;
-
-&lt;/android.support.v4.widget.DrawerLayout&gt;
-</code></pre><p>效果如下：</p>
-<p><img src="/wp-content/uploads/2016/03/20160315081239_12074.png" alt=""></p>
-<p>哈哈，这也是我的第一篇博客啦。呜啦啦。</p>
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      <a href="/2016/03/16/NavigationView 设置头像  headlayout/" class="archive-article-date">
-  	<time datetime="2016-03-15T16:00:00.000Z" itemprop="datePublished"><i class="icon-clock"></i>2016-03-16</time>
-</a>
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags"></i>
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/android/">android</a></li></ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-	<i class="icon-price-tags"></i>
-	<a class="article-category-link" href="/categories/android/">android</a>
-	</div>
-
-
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-
-
-  
     <article id="post-SwipeRefreshLayout  android 官方下拉刷新控件使用" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -394,6 +309,91 @@ content/uploads/2016/03/QQ图片20160316130436-169x300.png" alt="QQ图片2016031
     <div class="article-info article-info-index">
       
       <a href="/2016/03/16/SwipeRefreshLayout  android 官方下拉刷新控件使用/" class="archive-article-date">
+  	<time datetime="2016-03-15T16:00:00.000Z" itemprop="datePublished"><i class="icon-clock"></i>2016-03-16</time>
+</a>
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags"></i>
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/android/">android</a></li></ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+	<i class="icon-price-tags"></i>
+	<a class="article-category-link" href="/categories/android/">android</a>
+	</div>
+
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-NavigationView 设置头像  headlayout" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/03/16/NavigationView 设置头像  headlayout/">NavigationView 设置头像  headlayout</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>这是android Meterial Design中的NavigationView ，这个配合DrawLayout 可以实现侧滑菜单的功能。</p>
+<p><img src="https://segmentfault.com/img/bVqWdx" alt=""></p>
+<p>之所以使用这个控件是因为他可以很方便的对菜单进行分类，很清晰。</p>
+<p>本来我想加入一个自己的head<br>部分，但是尝试了好久之后，发现NavigationView上面始终有个嘿嘿的部分，这个部分的高度应该正好等于状态栏的高度，后来我在网上查资料无意发现，原来google<br>早就帮我想好了，有一个属性，headlayout。 代码如下：</p>
+<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;android.support.v4.widget.DrawerLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+    xmlns:app=&quot;http://schemas.android.com/apk/res-auto&quot;
+    xmlns:tools=&quot;http://schemas.android.com/tools&quot;
+    android:id=&quot;@+id/drawer_layout&quot;
+    android:layout_width=&quot;match_parent&quot; android:layout_height=&quot;match_parent&quot;
+    tools:openDrawer=&quot;start&quot;
+    &gt;
+
+    &lt;include
+        layout=&quot;@layout/app_bar_main&quot;
+        android:layout_width=&quot;match_parent&quot;
+        android:layout_height=&quot;match_parent&quot; /&gt;
+
+    &lt;android.support.design.widget.NavigationView
+        android:id=&quot;@+id/nav_view&quot;
+        android:layout_width=&quot;240dp&quot;
+        android:layout_height=&quot;match_parent&quot;
+        android:layout_gravity=&quot;start&quot;
+        app:headerLayout=&quot;@layout/drawerlayout_me&quot;
+        app:menu=&quot;@menu/activity_main_drawer&quot;
+        /&gt;
+
+&lt;/android.support.v4.widget.DrawerLayout&gt;
+</code></pre><p>效果如下：</p>
+<p><img src="/wp-content/uploads/2016/03/20160315081239_12074.png" alt=""></p>
+<p>哈哈，这也是我的第一篇博客啦。呜啦啦。</p>
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2016/03/16/NavigationView 设置头像  headlayout/" class="archive-article-date">
   	<time datetime="2016-03-15T16:00:00.000Z" itemprop="datePublished"><i class="icon-clock"></i>2016-03-16</time>
 </a>
       

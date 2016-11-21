@@ -200,12 +200,12 @@ private Handler mHandler = new Handler() {
     <link href="http://yoursite.com/2016/11/04/2016-11-04_Plugin%20is%20too%20old,%20please%20update%20to%20a%20more%20recent%20version%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95/"/>
     <id>http://yoursite.com/2016/11/04/2016-11-04_Plugin is too old, please update to a more recent version解决方法/</id>
     <published>2016-11-03T16:00:00.000Z</published>
-    <updated>2016-11-11T14:48:11.076Z</updated>
+    <updated>2016-11-21T14:59:11.970Z</updated>
     
     <content type="html"><![CDATA[<p>#Plugin is too old, please update to a more recent version问题解决方法</p>
 <p>Android Studio 报错：</p>
 <p>Plugin is too old, please update to a more recent version, or set ANDROID_DAILY_OVERRIDE environment variable to…</p>
-<p>网上众说纷纭，但是实际上没有几个能用。<br>首先当然你可以把gradle版本调低，运行没问题，但是就不能体验到Instant Run等新功能，为了体验新功能，按照以下步骤进行。</p>
+<p>网上众说纷纭，但是实际上没有几个能用。<br>首先当然你可以把gradle版本调低，运行没问题，但是就不能体验到Instant Run等新功能，为了体验新功能，按照以下步骤进行。<br>&lt;!–more—&gt;</p>
 <h2 id="1-修改Project的build-gradle中版本"><a href="#1-修改Project的build-gradle中版本" class="headerlink" title="1. 修改Project的build.gradle中版本"></a>1. 修改Project的build.gradle中版本</h2><p>打开build.gradle(Project:xxx),修改下面代码为</p>
 <p>修改前</p>
 <pre><code>classpath &apos;com.android.tools.build:gradle:1.3&apos;
