@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  
+  <title>侧护板装配VR系统技术细节.md | orzangleli | 活在梦里的程序员和设计师</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  <meta name="theme-color" content="#3F51B5">
+  
+  
+  <meta name="keywords" content="unity3D">
+  <meta name="description" content="#目录
+
+模型格式转化和处理
+装配流程设计
+动画设计
+第三方库（VRTK，DOTween）的使用
+交互方式设计
+
+##一.模型格式转化和处理在任意的VR系统都有大量的模型需求，我总结了以下两种模型获取方式：
+###1. 使用三维绘图软件绘制模型并转换格式以我常用的Catia为例，先绘制出模型，然后将模型转为CGR格式，注意一定要这个格式，经过我的测试，如果不是这个格式再接下来转换格式时会失败。
+#">
+<meta property="og:type" content="article">
+<meta property="og:title" content="侧护板装配VR系统技术细节.md">
+<meta property="og:url" content="http://www.orzangleli.com/2016/12/14/2016-12-14_侧护板装配VR系统技术细节/index.html">
+<meta property="og:site_name" content="orzangleli">
+<meta property="og:description" content="#目录
+
+模型格式转化和处理
+装配流程设计
+动画设计
+第三方库（VRTK，DOTween）的使用
+交互方式设计
+
+##一.模型格式转化和处理在任意的VR系统都有大量的模型需求，我总结了以下两种模型获取方式：
+###1. 使用三维绘图软件绘制模型并转换格式以我常用的Catia为例，先绘制出模型，然后将模型转为CGR格式，注意一定要这个格式，经过我的测试，如果不是这个格式再接下来转换格式时会失败。
+#">
+<meta property="og:image" content="http://7bvaky.com2.z0.glb.qiniucdn.com/2016-12-14_10_37_34_流程图.png">
+<meta property="og:image" content="http://7bvaky.com2.z0.glb.qiniucdn.com/2016-12-14_10_59_38_吊机结构.png">
+<meta property="og:image" content="http://7bvaky.com2.z0.glb.qiniucdn.com/2016-12-14_11_26_52_侧护板碰撞器.png">
+<meta property="og:image" content="http://7bvaky.com2.z0.glb.qiniucdn.com/2016-12-14_13_47_43_夹具.gif">
+<meta property="og:image" content="http://7bvaky.com2.z0.glb.qiniucdn.com/2016-12-14_14_35_51_VRTK_UI_Pointer.png">
+<meta property="og:image" content="http://7bvaky.com2.z0.glb.qiniucdn.com/2016-12-14_14_37_27_VRTK_ControllerEvents.png">
+<meta property="og:image" content="http://7bvaky.com2.z0.glb.qiniucdn.com/2016-12-14_14_51_22_显示器.gif">
+<meta property="og:image" content="http://7bvaky.com2.z0.glb.qiniucdn.com/2016-12-14_14_56_26_状态监测UI.png">
+<meta property="og:image" content="http://7bvaky.com2.z0.glb.qiniucdn.com/2016-12-14_15_16_34_手柄按键说明.png">
+<meta property="og:image" content="http://7bvaky.com2.z0.glb.qiniucdn.com/2016-12-14_15_51_08_按键方案2.png">
+<meta property="og:updated_time" content="2016-12-29T13:53:06.216Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="侧护板装配VR系统技术细节.md">
+<meta name="twitter:description" content="#目录
+
+模型格式转化和处理
+装配流程设计
+动画设计
+第三方库（VRTK，DOTween）的使用
+交互方式设计
+
+##一.模型格式转化和处理在任意的VR系统都有大量的模型需求，我总结了以下两种模型获取方式：
+###1. 使用三维绘图软件绘制模型并转换格式以我常用的Catia为例，先绘制出模型，然后将模型转为CGR格式，注意一定要这个格式，经过我的测试，如果不是这个格式再接下来转换格式时会失败。
+#">
+<meta name="twitter:image" content="http://7bvaky.com2.z0.glb.qiniucdn.com/2016-12-14_10_37_34_流程图.png">
+  
+    <link rel="alternative" href="/atom.xml" title="orzangleli" type="application/atom+xml">
+  
+  <link rel="shortcut icon" href="/assets/favicon.ico">
+  <link rel="stylesheet" href="/css/style.css?v=1.2.1">
+</head>
+
+<body>
+  <div id="loading" class="active"></div>
+
+  <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/assets/avatar.gif">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">orzangleli</h5>
+          <a href="mailto:orzangleli@163.com" title="orzangleli@163.com" class="mail">orzangleli@163.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/hust201010701" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="http://weibo.com/androidjiqiaogonglue" target="_blank" >
+                <i class="icon icon-lg icon-weibo"></i>
+                Weibo
+              </a>
+            </li>
+        
+      </ul>
+
+      <footer class="footer">
+  <p><a rel="license" target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0;vertical-align:middle;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAAAPCAMAAABEF7i9AAAAllBMVEUAAAD///+rsapERER3d3eIiIjMzMzu7u4iIiKUmZO6v7rKzsoODg4RERFVVVUNDQ0NDg0PEA8zMzNLTEtbXltmZmZydnF9gn2AgICPkI+ZmZmqqqq7u7vFxsXIzMgNDQwZGRkgICAhISEkJSMnKCcuMC4xMzE5Ozk7PTtBQkFCQkJDQ0Nna2eGhoaHh4ezuLLGysbd3d1wVGpAAAAA4UlEQVR42q2T1xqCMAyFk7QsBQeKA9x7j/d/OSm22CpX0nzcpA1/T05aAOuBVkMAScQFHLnEwoCo2f1TnQIGoVMewjZEjVFN4GH1Ue1Cn2jWqwfsOOj6wDwGvotsl/c8lv7KIq1eLOsT0HMFHMIE/RZyHnlphryT9zyV+8WH5e8yQw3wnQvgAFxPTKUVi555SHR/lOfLMgVTeDlSfN+TaoUsiTyeIm+bCkHvCA2FUKG48LDtYBZBknsYP/G8NTw0gaaHyuQf4H5pecrB/FYCT2sL9zAfy1Xyjou6L8X2W7YcLyBZCRtnq/zfAAAAAElFTkSuQmCC" /></a></p>
+  <p>orzangleli &copy; 2016</p>
+  <p>Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme
+  <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a></p>
+  <a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-2x icon-rss-square"></i></a>
+</footer>
+
+    </div>
+  </div>
+</aside>
+
+  <main id="main">
+    <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">侧护板装配VR系统技术细节.md</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container">
+        <h1 class="title">侧护板装配VR系统技术细节.md</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2016-12-13T16:00:00.000Z" itemprop="datePublished" class="page-time">
+  2016-12-14
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/unity3D/">unity3D</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#3-目前方案存在的问题"><span class="post-toc-number">1.</span> <span class="post-toc-text">3.目前方案存在的问题</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#4-潜在的解决方法"><span class="post-toc-number">2.</span> <span class="post-toc-text">4.潜在的解决方法</span></a></li></ol>
+        </nav>
+    </aside>
+    
+<article id="post-2016-12-14_侧护板装配VR系统技术细节" 
+  class="post-article article-type-post" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">侧护板装配VR系统技术细节.md</h1>
+        <div class="post-meta">
+            <time datetime="2016-12-13T16:00:00.000Z" itemprop="datePublished" class="post-time">
+  2016-12-14
+</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/unity3D/">unity3D</a></li></ul>
+
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>#目录</p>
+<ol>
+<li>模型格式转化和处理</li>
+<li>装配流程设计</li>
+<li>动画设计</li>
+<li>第三方库（VRTK，DOTween）的使用</li>
+<li>交互方式设计</li>
+</ol>
+<p>##一.模型格式转化和处理<br>在任意的VR系统都有大量的模型需求，我总结了以下两种模型获取方式：</p>
+<p>###1. 使用三维绘图软件绘制模型并转换格式<br>以我常用的Catia为例，先绘制出模型，然后将模型转为CGR格式，注意一定要这个格式，经过我的测试，如果不是这个格式再接下来转换格式时会失败。</p>
+<p>###2. 使用3Ds Max绘制模型<br>这需要会使用3Ds Max的人员来做，由于我们这边缺乏这样的人，所以一般使用3Ds Max的模型都是从网络上下载下来的。</p>
+<p>##二. 装配流程设计</p>
+<p>根据三维仿真视频，可以看出装配流程如下所示：</p>
+<p><img src="http://7bvaky.com2.z0.glb.qiniucdn.com/2016-12-14_10_37_34_流程图.png" alt="去"></p>
+<p>为了增强交互性，动画中人模型所做的事，将在VR系统中以第一人称的视角完成所有装配。</p>
+<p>##三. 动画设计<br>可以从动画中看出有几处机构的运动形式：</p>
+<ol>
+<li>吊机的控制</li>
+<li>侧护板的移动</li>
+<li>夹具的夹紧和松开动作</li>
+</ol>
+<p>这几种是比较典型的几种运动形式，针对不同的运动形式，需要进行不用的动画设计。</p>
+<p>###1. 吊机的控制<br>吊机的示意图如下：<br><img src="http://7bvaky.com2.z0.glb.qiniucdn.com/2016-12-14_10_59_38_吊机结构.png" alt=""></p>
+<p>吊机的控制，这个是最基本的，就是通Transform组件，对物体进行移动。只不过这些需要注意的是，不同方向的移动是针对不同物体的，例如，上下方向移动是挂钩的移动，而左右移动是电机的移动，前后的移动是横梁的移动。</p>
+<p>在程序，我定义了一个枚举类型，表示吊机目前的状态：</p>
+<pre><code>public enum State {UP,DOWN,FRONT,BACK,LEFT,RIGHT,IDLE};
+</code></pre><p>其中<code>IDLE</code>表示吊机静止状态。</p>
+<p><strong>需要注意的细节</strong></p>
+<p>这里有一个技术细节：连接电机和挂钩的『绳子』，它的长度是变化的，需要和挂钩保持同步。在VR系统中它并不是真正的绳子，而是一个圆柱体，绳子长度变化的时候，实际上是圆柱体沿竖直方向的scale值变化。另外，因为绳子总是从电机出发出，所以需要将圆柱体的锚点设置在电机处，否则绳子在变长到一定程度时，会看到绳子已经穿过了电机。</p>
+<p>###2. 侧护板的移动<br>相对来说，侧护板的移动不是一种『自主运动』，它是被吊机吊起来的，所以这种运动是不同于上述方法的处理。对于侧护板需要事先添加碰撞器，并添加脚本，碰撞器添加在挂带的中心位置，这样当挂钩碰到中心位置时，就能检测到。<br><img src="http://7bvaky.com2.z0.glb.qiniucdn.com/2016-12-14_11_26_52_侧护板碰撞器.png" alt=""><br>在检测到碰撞后，判断如果碰撞器如果是来自侧护板，就代表现在用户想使用挂钩将侧护板吊起来。在<code>OnTriggerEnter</code>中，将侧护板的parent设置为挂钩，这样侧护板就能够跟着挂钩移动了。</p>
+<pre><code>collider.transform.parent = this.transform;
+collider.transform.position = bornPlace.position;
+</code></pre><p>###3. 夹具的夹紧和松开动作<br>夹具的动作包括张开和闭合，动画如图所示：<br><img src="http://7bvaky.com2.z0.glb.qiniucdn.com/2016-12-14_13_47_43_夹具.gif" alt=""><br>夹具的动作很复杂，基本上无法通过脚本控制实现，所以，最好使用Unity中的Animation完成动画，而且夹具的动作张开和闭合是对称的，所以只需要完成闭合的动作就可以了，张开的动作可以将动画的播放速度调整为-1即可倒着播放。另外，在夹具闭合的时候，要把护板添加到夹具的两侧中，以达到夹具加紧侧护板的视觉效果。下面就是夹具闭合的代码：</p>
+<pre><code>public void bihe()
+{
+    AnimatorStateInfo info = animator.GetCurrentAnimatorStateInfo(0);
+    if ((info.IsName(&quot;jiaju_zhangkai&quot;) &amp;&amp; info.normalizedTime &gt;= 1) || info.IsName(&quot;idle&quot;))
+    {
+
+        //将左右护板添加到夹具中
+        Transform yeyazhijia = this.transform.parent;
+        Transform left_huban = yeyazhijia.FindChild(&quot;huban_guadai_left(Clone)&quot;);
+        Transform right_huban = yeyazhijia.FindChild(&quot;huban_guadai_right(Clone)&quot;);
+        Transform zuodangban = this.transform.FindChild(&quot;jiajuzhengti_copy/jiaju/zuodangban&quot;);
+        Transform youdangban = this.transform.FindChild(&quot;jiajuzhengti_copy/jiaju/youdangban&quot;);
+
+        if (Vector3.Distance(left_huban.position, zuodangban.position) &gt; Vector3.Distance(left_huban.position, youdangban.position))
+        {
+            normal = false;
+            if (left_huban != null)
+                left_huban.parent = youdangban;
+            if (right_huban != null)
+                right_huban.parent = zuodangban;
+        }
+        else
+        {
+            normal = true;
+            if (left_huban != null)
+                left_huban.parent = zuodangban;
+            if (right_huban != null)
+                right_huban.parent = youdangban;
+        }
+
+        animator.Play(&quot;jiaju_bihe&quot;);
+        biheButton.interactable = false;
+        zhangkaiButton.interactable = true;
+
+        //同时使碰撞器失效，防止在未松开之前拉上去
+        this.GetComponent&lt;Collider&gt;().enabled = false;
+        stepHint.text = &quot;夹紧操作完成，请点击菜单中的『夹具张开』按钮&quot;;
+    }
+}
+</code></pre><p>##四. 第三方库（VRTK，DOTween）的使用</p>
+<p>本VR系统中主要使用了两个第三方库：</p>
+<ul>
+<li><p><strong>VRTK</strong>    <em>这个工具包提供了很多Unity3d里的常用VR功能，如下（但并不局限于此）：</em></p>
+<ul>
+<li>带有通用别名的控制器按钮事件</li>
+<li>控制器世界指针（如激光指针）</li>
+<li>玩家传送</li>
+<li>用控制器抓取对象</li>
+<li>用控制器和对象交互</li>
+</ul>
+</li>
+<li><p><strong>DOTween</strong>  <em>DOTween是Unity中具有强大功能的动画插件</em></p>
+</li>
+</ul>
+<p>###1. VRTK的使用</p>
+<p>####1）. VRTK的安装<br>VRTK从Assets Store中下载，下载完成后导入即可。</p>
+<p>####2）. VRTK 射线的使用<br>在SteamVR包中[CameraRig]的Controller(right)上添加脚本VRTK_UI_Pointer,这是射线基本脚本，可以设置射线何时显示，比如按住按钮或者切换按钮或者一直显示等。</p>
+<p><img src="http://7bvaky.com2.z0.glb.qiniucdn.com/2016-12-14_14_35_51_VRTK_UI_Pointer.png" alt=""></p>
+<p>还需要添加<code>VRTK_Simple_Pointer</code>脚本，这是直线射线发射脚本，除此之外还可以使用 <code>VRTK_Bezier_Pointer</code><br>它是贝泽尔曲线脚本。要指定按钮按住之后发射射线，还需要添加<code>VRTK_Controller Events</code>脚本，可以设置按下哪个按钮后发出射线。</p>
+<p><img src="http://7bvaky.com2.z0.glb.qiniucdn.com/2016-12-14_14_37_27_VRTK_ControllerEvents.png" alt=""></p>
+<p>####3）. VRTK 中UI的使用</p>
+<p>VRTK中UI使用非常简单，只需要在普通的UGUI的Canvas上添加<code>VRTK_UI Canvas</code>脚本即可。</p>
+<p>###2. DOTween的使用</p>
+<p>DOTween十分强大，但是我在本系统中也只是使用到了其中的一部分功能。</p>
+<p>####1). 物体的移动<br>比如场景中，装配完成后，让生产线移动，实际上就是使用DOTween中的DOMove方法</p>
+<pre><code>go.transform.DOLocalMoveZ(go.transform.localPosition.z - 1200f, 60).SetEase(Ease.Linear);
+</code></pre><p>DOLocalMoveZ指的是在局部坐标系的Z轴方向上移动到go.transform.localPosition.z - 1200f这个位置，实际上就是向Z轴反方向移动1200，所用的时间是60秒，动画插值器使用的是线性插值。</p>
+<p>####2). 物体的缩放</p>
+<p>在菜单显示和关闭的时候，增加一个缩放的动画可以增强用户体验</p>
+<pre><code>toolbox.transform.DOScale(0.005f, 0.5f);
+</code></pre><p>这句代码的意思就是将菜单的大小放大到0.005,使用的时间是0.5秒。</p>
+<p>####3). 滚动数码管显示器</p>
+<p><img src="http://7bvaky.com2.z0.glb.qiniucdn.com/2016-12-14_14_51_22_显示器.gif" alt=""></p>
+<p>要实现以上效果，需要在Canvas下添加一个遮罩层(Image组件)，给遮罩层添加Mask脚本，并且给Image指定一个图片，这个图片就是指定的Mask的遮罩形状，这样在遮罩层以外的UI都不会显示了。</p>
+<p>要实现文字连续滚动，事先添加两个Text，如图所示，由于有Mask层存在，第二个是看不到的。</p>
+<p><img src="http://7bvaky.com2.z0.glb.qiniucdn.com/2016-12-14_14_56_26_状态监测UI.png" alt=""></p>
+<p>然后给这两个Text上添加脚本，让他们移动。</p>
+<pre><code>this.transform.DOLocalMoveX(this.transform.localPosition.x -1000f,5).SetEase(Ease.Linear).SetLoops(-1,LoopType.Restart);
+</code></pre><p>数码管的长度正好为1000，让两个文字一起在5秒中内向左移动1000，移动完成后重新启动动画(复位)，这样就实现了文字无限循环的滚动了。</p>
+<p>##五. 交互方式设计 </p>
+<p>系统做出来是给人使用的，交互设计也是十分重要，虽然目前我对本系统的交互设计上也有点意见，但是目前尚未找到更好的方案，下面将详细说明。</p>
+<p><img src="http://7bvaky.com2.z0.glb.qiniucdn.com/2016-12-14_15_16_34_手柄按键说明.png" alt=""></p>
+<p>###1. 左手手柄</p>
+<ul>
+<li>左手手柄的触摸板，轻触时显示控制吊机移动的菜单，滑动可以选择菜单，按下时将执行动作。</li>
+<li>左手手柄的Grip键(侧面的两个按钮)是旋转挂钩的方向的。</li>
+<li>Application键用来显示和隐藏手柄上的提示文字</li>
+</ul>
+<p>###2. 右手手柄</p>
+<ul>
+<li><p>触摸板按下时发出射线</p>
+<ul>
+<li>若发出的射线指向地面，松开触摸板即可瞬移到该位置</li>
+<li>若发出的射线指向UI界面，配合Trigger(扳机键)可以实现点击按钮的操作。</li>
+</ul>
+</li>
+<li><p>Grip键(侧面的两个按钮)是用于显示和关闭菜单的</p>
+</li>
+</ul>
+<h3 id="3-目前方案存在的问题"><a href="#3-目前方案存在的问题" class="headerlink" title="3.目前方案存在的问题"></a>3.目前方案存在的问题</h3><p>之前说过这个方案是有不足的，主要在于吊机的控制。吊机需要6个按钮来控制，分别是上下东西南北，如果要将这6个按钮显示在一起，就是上面的方案，可以看到无论怎么分布，使用无法保证东西南北的四个方向与真实的场景中的方向一致，所以在操作吊机时，不熟悉的使用者需要一直看着手柄进行操作。</p>
+<h3 id="4-潜在的解决方法"><a href="#4-潜在的解决方法" class="headerlink" title="4.潜在的解决方法"></a>4.潜在的解决方法</h3><p>####1). 分解菜单<br>在展会的时候，有人就提出了这个问题，后来我问他有什么好的建议，他说可以把东西南北做到左手手柄上，将上下两个按钮做到右手手柄上，这样右手手柄上发射射线的按钮就需要修改下了，不过这也是一种方案。</p>
+<p>####2). 将6等分菜单变为8等分菜单</p>
+<p>很简单的原理，示意图如下所示：</p>
+<p><img src="http://7bvaky.com2.z0.glb.qiniucdn.com/2016-12-14_15_51_08_按键方案2.png" alt=""></p>
+<p>至于哪种方案好，我暂时也没有办法判断，所以只好先全部记录下来了。</p>
+
+        </div>
+        
+        <blockquote class="post-copyright">
+    <div class="content">
+        所有原创文章版权归orzangleli所有，转载需声明：<a href="/2016/12/14/2016-12-14_侧护板装配VR系统技术细节/" target="_blank" rel="external">http://www.orzangleli.com/2016/12/14/2016-12-14_侧护板装配VR系统技术细节/</a>
+    </div>
+    <footer>
+        <a href="http://www.orzangleli.com">
+            <img src="/assets/avatar.gif" alt="orzangleli">
+            orzangleli
+        </a>
+    </footer>
+</blockquote>
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/unity3D/">unity3D</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <div class="tit">分享到：</div>
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.orzangleli.com/2016/12/14/2016-12-14_侧护板装配VR系统技术细节/&title=《侧护板装配VR系统技术细节.md》 — orzangleli&pic=http://www.orzangleli.com/assets/avatar.gif" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.orzangleli.com/2016/12/14/2016-12-14_侧护板装配VR系统技术细节/&title=《侧护板装配VR系统技术细节.md》 — orzangleli&source=华中科技大学 本科10级 硕士14级 一个热爱技术的宅~" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.orzangleli.com/2016/12/14/2016-12-14_侧护板装配VR系统技术细节/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《侧护板装配VR系统技术细节.md》 — orzangleli&url=http://www.orzangleli.com/2016/12/14/2016-12-14_侧护板装配VR系统技术细节/&via=http://www.orzangleli.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.orzangleli.com/2016/12/14/2016-12-14_侧护板装配VR系统技术细节/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>   
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2016/12/29/2016-12-29_2016年度总结/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">2016年度总结.md</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2016/12/13/2016-12-13_pyqt打包失败/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">pyqt打包失败.md</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+            
+    
+<div class="duoshuo" id="comments">
+	<div class="ds-thread" data-thread-key="2016-12-14_侧护板装配VR系统技术细节" data-title="侧护板装配VR系统技术细节.md" data-url="http://www.orzangleli.com/2016/12/14/2016-12-14_侧护板装配VR系统技术细节/"></div>
+</div>
+<script src="/js/embed.min.js?v=1.2.1"></script>
+<script src="//cdn.bootcss.com/marked/0.3.6/marked.min.js" async="async"></script>
+<script>
+var duoshuoQuery = {short_name:'orzangleli', theme: 'none'}
+</script>
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+  </main>
+  <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false }</script>
+
+
+
+<div class="global-share" id="globalShare">
+    <div class="tit">分享到：</div>
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.orzangleli.com/2016/12/14/2016-12-14_侧护板装配VR系统技术细节/&title=《侧护板装配VR系统技术细节.md》 — orzangleli&pic=http://www.orzangleli.com/assets/avatar.gif" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.orzangleli.com/2016/12/14/2016-12-14_侧护板装配VR系统技术细节/&title=《侧护板装配VR系统技术细节.md》 — orzangleli&source=华中科技大学 本科10级 硕士14级 一个热爱技术的宅~" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.orzangleli.com/2016/12/14/2016-12-14_侧护板装配VR系统技术细节/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《侧护板装配VR系统技术细节.md》 — orzangleli&url=http://www.orzangleli.com/2016/12/14/2016-12-14_侧护板装配VR系统技术细节/&via=http://www.orzangleli.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.orzangleli.com/2016/12/14/2016-12-14_侧护板装配VR系统技术细节/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="http://s.jiathis.com/qrcode.php?url=http://www.orzangleli.com/2016/12/14/2016-12-14_侧护板装配VR系统技术细节/" alt="微信分享二维码">
+</div>
+
+
+
+
+  <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script src="/js/main.min.js?v=1.2.1"></script>
+
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.2.1"></script>
+
+
+
+
+
+<script src="//s95.cnzz.com/z_stat.php?id=1260851403&web_id=1260851403"></script>
+
+
+
+
+
+</body>
+</html>

@@ -25,7 +25,7 @@ Android Studio 报错：
 Plugin is too old, please update to a more recent version, or set ANDROID_DAILY_OVERRIDE environment variable to…
 网上">
 <meta property="og:image" content="http://lxctest.qiniudn.com/2016-11-04_11:34:36_1.png?imageView2/0/w/800">
-<meta property="og:updated_time" content="2016-11-21T15:07:15.171Z">
+<meta property="og:updated_time" content="2016-12-29T13:49:35.250Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Plugin is too old, please update to a more recent version解决方法.md">
 <meta name="twitter:description" content="#Plugin is too old, please update to a more recent version问题解决方法
@@ -170,7 +170,7 @@ Plugin is too old, please update to a more recent version, or set ANDROID_DAILY_
     <aside class="post-widget">
         <nav class="post-toc-wrap" id="post-toc">
             <h4>TOC</h4>
-            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#1-修改Project的build-gradle中版本"><span class="post-toc-number">1.</span> <span class="post-toc-text">1. 修改Project的build.gradle中版本</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#2-查看最新版本的gradle"><span class="post-toc-number">2.</span> <span class="post-toc-text">2. 查看最新版本的gradle</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#3-修改gradle-wrapper-properties"><span class="post-toc-number">3.</span> <span class="post-toc-text">3.修改gradle-wrapper.properties</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#4-等待gradle更新"><span class="post-toc-number">4.</span> <span class="post-toc-text">4.等待gradle更新</span></a></li></ol>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#1-查看最新的gradle插件"><span class="post-toc-number">1.</span> <span class="post-toc-text">1. 查看最新的gradle插件</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#2-查看最新版本的gradle"><span class="post-toc-number">2.</span> <span class="post-toc-text">2. 查看最新版本的gradle</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#3-修改gradle-wrapper-properties"><span class="post-toc-number">3.</span> <span class="post-toc-text">3.修改gradle-wrapper.properties</span></a></li></ol>
         </nav>
     </aside>
     
@@ -194,14 +194,14 @@ Plugin is too old, please update to a more recent version, or set ANDROID_DAILY_
             <p>#Plugin is too old, please update to a more recent version问题解决方法</p>
 <p>Android Studio 报错：</p>
 <p>Plugin is too old, please update to a more recent version, or set ANDROID_DAILY_OVERRIDE environment variable to…</p>
-<p>网上众说纷纭，但是实际上没有几个能用。<br>首先当然你可以把gradle版本调低，运行没问题，但是就不能体验到Instant Run等新功能，为了体验新功能，按照以下步骤进行。<br><a id="more"></a> </p>
-<h2 id="1-修改Project的build-gradle中版本"><a href="#1-修改Project的build-gradle中版本" class="headerlink" title="1. 修改Project的build.gradle中版本"></a>1. 修改Project的build.gradle中版本</h2><p>打开build.gradle(Project:xxx),修改下面代码为</p>
+<p>网上众说纷纭，但是实际上没有几个能用。<br>首先当然你可以把gradle版本调低，运行没问题，但是就不能体验到Instant Run等新功能，为了体验新功能，按照以下步骤进行。</p>
+<h2 id="1-查看最新的gradle插件"><a href="#1-查看最新的gradle插件" class="headerlink" title="1. 查看最新的gradle插件"></a>1. 查看最新的gradle插件</h2><p>修改Project的build.gradle中版本<br><a href="https://bintray.com/android/android-tools/com.android.tools.build.gradle" target="_blank" rel="external">查看最新版本gradle插件</a></p>
+<p>打开build.gradle(Project:xxx),修改下面代码为</p>
 <p>修改前</p>
 <pre><code>classpath &apos;com.android.tools.build:gradle:1.3&apos;
 </code></pre><p>修改后</p>
-<pre><code>classpath &apos;com.android.tools.build:gradle:2.3.0-alpha1&apos;
-</code></pre><p>其中<code>2.3.0-alpha1</code>是查看网址<a href="https://jcenter.bintray.com/com/android/tools/build/gradle/" target="_blank" rel="external"></a>中的最新版本。</p>
-<h2 id="2-查看最新版本的gradle"><a href="#2-查看最新版本的gradle" class="headerlink" title="2. 查看最新版本的gradle"></a>2. 查看最新版本的gradle</h2><p>进入gralde下载网站： <a href="https://services.gradle.org/distributions/" target="_blank" rel="external">Gradle Distributions</a> </p>
+<pre><code>classpath &apos;com.android.tools.build:gradle:+&apos;
+</code></pre><h2 id="2-查看最新版本的gradle"><a href="#2-查看最新版本的gradle" class="headerlink" title="2. 查看最新版本的gradle"></a>2. 查看最新版本的gradle</h2><p>进入gralde下载网站： <a href="https://services.gradle.org/distributions/" target="_blank" rel="external">Gradle Distributions</a> </p>
 <p>如图所示：</p>
 <p><img src="http://lxctest.qiniudn.com/2016-11-04_11:34:36_1.png?imageView2/0/w/800" alt=""></p>
 <p>可以看到最新版是gradle-3.2-rc-2-all.zip</p>
@@ -210,7 +210,6 @@ Plugin is too old, please update to a more recent version, or set ANDROID_DAILY_
 </code></pre><p><code>xxx</code> 为你在官网看到的最新版的文件名字</p>
 <p>如：<br>    distributionUrl=https\://services.gradle.org/distributions/gradle-3.2-rc-2-all.zip</p>
 <p>现在就可以使用新版功能了，而且之后也看不到烦人的更新提示了。</p>
-<h2 id="4-等待gradle更新"><a href="#4-等待gradle更新" class="headerlink" title="4.等待gradle更新"></a>4.等待gradle更新</h2><p>如果更新后，提示需要安装插件等，按照提示安装即可，等待时间可能有点长，我上次等了10多分钟，但是下次不需要再等待了，而且可以正常使用Instant Run 了。</p>
 
         </div>
         
@@ -251,8 +250,7 @@ Plugin is too old, please update to a more recent version, or set ANDROID_DAILY_
         </a>
       </li>
       <li>
-        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.orzangleli.com/2016/11/04/2016-11-04_Plugin is too old, please update to a more recent version解决方法/&title=《Plugin is too old, please update to a more recent version解决方法.md》 — orzangleli&source=#Plugin is too old, please update to a more recent version问题解决方法
-Android Stud..." data-title=" QQ">
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.orzangleli.com/2016/11/04/2016-11-04_Plugin is too old, please update to a more recent version解决方法/&title=《Plugin is too old, please update to a more recent version解决方法.md》 — orzangleli&source=华中科技大学 本科10级 硕士14级 一个热爱技术的宅~" data-title=" QQ">
           <i class="icon icon-qq"></i>
         </a>
       </li>
@@ -290,9 +288,9 @@ Android Stud..." data-title=" QQ">
 <nav class="post-nav flex-row flex-justify-between">
   
     <div class="waves-block waves-effect prev">
-      <a href="/2016/11/10/2016-11-10_Python将Jpeg Png Gif转换为Webp格式/" id="post-prev" class="post-nav-link">
+      <a href="/2016/11/10/2016-11-19_转转Indicator/" id="post-prev" class="post-nav-link">
         <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
-        <h4 class="title">使用Python将Jpeg Png Gif 图片转换为 webp格式</h4>
+        <h4 class="title">自己动手造轮子系列———实现『转转APP』Indicator 效果</h4>
       </a>
     </div>
   
@@ -351,8 +349,7 @@ var BLOG = { ROOT: '/', SHARE: true, REWARD: false }</script>
         </a>
       </li>
       <li>
-        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.orzangleli.com/2016/11/04/2016-11-04_Plugin is too old, please update to a more recent version解决方法/&title=《Plugin is too old, please update to a more recent version解决方法.md》 — orzangleli&source=#Plugin is too old, please update to a more recent version问题解决方法
-Android Stud..." data-title=" QQ">
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.orzangleli.com/2016/11/04/2016-11-04_Plugin is too old, please update to a more recent version解决方法/&title=《Plugin is too old, please update to a more recent version解决方法.md》 — orzangleli&source=华中科技大学 本科10级 硕士14级 一个热爱技术的宅~" data-title=" QQ">
           <i class="icon icon-qq"></i>
         </a>
       </li>

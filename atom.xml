@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://www.orzangleli.com/"/>
-  <updated>2016-11-10T14:06:01.443Z</updated>
+  <updated>2016-12-29T13:54:16.030Z</updated>
   <id>http://www.orzangleli.com/</id>
   
   <author>
@@ -14,6 +14,397 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>2016年度总结.md</title>
+    <link href="http://www.orzangleli.com/2016/12/29/2016-12-29_2016%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/"/>
+    <id>http://www.orzangleli.com/2016/12/29/2016-12-29_2016年度总结/</id>
+    <published>2016-12-28T16:00:00.000Z</published>
+    <updated>2016-12-29T13:54:16.030Z</updated>
+    
+    <content type="html"><![CDATA[<p>#2016年度总结</p>
+<p>今年做了四件事：</p>
+<ol>
+<li><p>找工作</p>
+</li>
+<li><p>Android </p>
+</li>
+<li><p>Unity</p>
+</li>
+<li><p>Python</p>
+</li>
+</ol>
+<p>##1. 找工作</p>
+<p>今年9月份开始回的武汉找工作，到11月份回无锡，正好两个月时间。因为9月份就找到了比较合适的，所以找工作主要集中在9月份，10月份在武汉基本没怎么去面试，就在剩下的时间里开始了自学Python。</p>
+<p>一共找到以下几家公司的Offer,在我所在的学院里，既不算多的，也不算好的。</p>
+<ol>
+<li>斗鱼TV      <em>一家总部在武汉的视频直播公司，以前一家独大</em></li>
+<li>中兴   <em>面试的岗位是移动开发工程师，主要觉得没有发展前景</em></li>
+<li>58同城  <em>在北京，远，岗位挺好的，转转里的Android开发</em></li>
+<li>华信证券  <em>在上海，工资一般，但是android团队竟然只有4个人，感觉没有任何希望</em></li>
+<li>善行医疗  <em>在深圳，做医疗VR的，但是工资低</em></li>
+</ol>
+<p>以上几家公司，我选择了58同城，因为相对来说，它是技术上能够拿得有进步的，而且前景也比较好，虽然公司前景跟个人没啥根本利益关系，但是在一家有互联网氛围的公司学习工作也是一种好的体验。</p>
+<p>##2. Android </p>
+<p>今年基本上结束了前几年开发android的方式，前几年是利用老的技术不断去开发各种APP,然后上传到应用市场，拿去售卖，再获得广告收入。<br>改变的原因有两个：一方面，我认为加广告对用户体验有很大影响，不愿意使用广告；另一方面，这些广告的收入也是很微薄。所以我就没有必要去为了挣钱去做那些没有特殊意义，为了迎合别人的APP了，我要做我自己想做的APP，学自己想学的技术。</p>
+<p>今年Android方面的热门技术都有一些大致的了解：</p>
+<ul>
+<li>图片加载库： UIL,Picasso,Glide,Fresco.</li>
+<li>网络通信库： Volley,OkHttp,NoHttp</li>
+<li>MultiDex与热修复: 阿里的AndFix，QQ空间的HotFix,微信的Tinker（还没了解） </li>
+</ul>
+<p>###1. 开源控件</p>
+<p>自己也还写了几个开源控件，都上传都Github上了，Github上的图：</p>
+<p><img src="http://7bvaky.com2.z0.glb.qiniucdn.com/2016-12-29_10_27_34_github_contributions.png" alt=""></p>
+<p><strong>1.<a href="https://github.com/hust201010701/RoateIndicatorViewDemo" target="_blank" rel="external">RoateIndicatorViewDemo</a></strong></p>
+<p>高仿转转APP中的轮播图片的指示器</p>
+<p><img src="http://lxctest.qiniudn.com/2016-11-10_15:57:31_zhuanzhuan2.webp" alt=""></p>
+<p><strong>2.<a href="https://github.com/hust201010701/Danmu" target="_blank" rel="external">Danmu</a></strong></p>
+<p>弹幕控件，可以切换弹幕水平/竖直运动方向,可以控制弹幕正向/逆向运动</p>
+<p><img src="https://camo.githubusercontent.com/e8e079a4d259df8e4ee1eb7e468d397d457ab46b/687474703a2f2f377872726e692e636f6d312e7a302e676c622e636c6f7564646e2e636f6d2f53637265656e5265636f72645f323031362d30392d30352d31332d35332d31342e6d70345f313437333035353632392e6769663f696d61676556696577322f302f772f333630" alt=""></p>
+<p><strong>3. <a href="https://github.com/hust201010701/CouponView" target="_blank" rel="external">CouponView</a></strong></p>
+<p>卡券视图: CouponView 是一个继承自LinearLayout的布局View,边缘可以实现自动裁剪效果，所以用来做优惠券等视图效果很好。</p>
+<p><img src="http://i.imgur.com/pj4XTxr.png" width="30%" height="50%"></p>
+<p>###2. Android项目</p>
+<p><strong>1. Hust-Wuxi 考勤查询系统</strong></p>
+<p>因为官方的APP中，没有给考勤查询的功能，要查看考勤只能登陆网页，这很不方便，所以我通过分析网络请求找到了查询的API，然后自己写了一个客户端，用颜色标识考勤结果。</p>
+<p><img src="https://pic1.zhimg.com/78652eb3126dd1c2b754022639ed0bd8_b.png" width="30%" height="50%"><br><img src="https://pic4.zhimg.com/ac33ddfe75a3766aede7aa8d64d8b5a3_b.png" width="30%" height="50%"><br><img src="https://pic4.zhimg.com/ada77470d18574de8fc05cdbce17da77_b.png" width="30%" height="50%"></p>
+<p><strong>2. 校招宝</strong></p>
+<p>一款获取海投网上宣讲会数据的APP,自己利用Bmob增加了评论和收藏的功能。海投网API老是变，我这会写总结的时候，APP又挂了。</p>
+<p><strong>3. LOL视频宝</strong></p>
+<p>这款软件使用了Python爬虫获取多玩饭盒APP中LOL视频资源，然后存到LeanCloud云端数据库，android端再通过SDK获取云端数据库资源。还未发布，目前正在内测和修改中。</p>
+<p><img src="http://7bvaky.com2.z0.glb.qiniucdn.com/2016-12-29_10_54_28_lol1.png" width="30%" height="50%"></p>
+<p>主页</p>
+<p><img src="http://7bvaky.com2.z0.glb.qiniucdn.com/2016-12-29_10_54_28_lol2.png" width="30%" height="50%"></p>
+<p>关注页</p>
+<p><img src="http://7bvaky.com2.z0.glb.qiniucdn.com/2016-12-29_10_54_28_lol3.png" width="30%" height="50%"></p>
+<p>详情页</p>
+<p><img src="http://7bvaky.com2.z0.glb.qiniucdn.com/2016-12-29_10_54_28_lol4.png" width="30%" height="50%"></p>
+<p>下载页</p>
+<p><img src="http://7bvaky.com2.z0.glb.qiniucdn.com/2016-12-29_10_54_28_lol5.png" width="30%" height="50%"></p>
+<p>首页菜单</p>
+<p>##3. Unity3D##</p>
+<p>今年的主要任务也是Unity3D,本身是一款游戏引擎，我们拿来做工业VR应用也是可以的。<br>因为一直没有接到正式的项目，所以在探索与尝试加上导师的指示中做了以下几点工作：</p>
+<p><strong>1. TQ的发动机装配生产线的监控系统</strong></p>
+<p>因为没有传感器数据，自己根据动画生成了数据库，然后又根据这些数据来模拟车间机械结构动作，只是模型好像有点问题，播放起来有点卡。</p>
+<p><img src="http://7bvaky.com2.z0.glb.qiniucdn.com/2016-12-29_11_13_39_tq1.png" alt=""></p>
+<p><strong>2. 某起重机的模拟</strong></p>
+<p>这个做了两个项目，一个是在Oculus Rift Dk2下做的，因为oculus这款不带交互设备，只能通过目光中心选取物体，所以动画都是半自动的，点一个按钮，动画就会播放，不可以控制运动过程。</p>
+<p>后面Htc Vive眼镜到货了，就开始使用这款眼镜，自带定位器和控制器，所以利用了这个做了一个可以控制运动过程的系统，而且还单独配了一套使用LeapMotion的系统，可以用手直接操作VR场景中的物体。</p>
+<p><strong>3. 车床切削过程的VR模拟系统</strong></p>
+<p>选取了一款简单的车床，模拟车削加工过程。</p>
+<p><img src="http://7bvaky.com2.z0.glb.qiniucdn.com/2016-12-29_11_13_39_chexie.png" alt=""></p>
+<p><strong>4. 发动机侧护板装配VR系统</strong></p>
+<p>在VR系统中操作吊机完成侧护板的装配，还可以监控车间的状态参数。</p>
+<p><img src="http://7bvaky.com2.z0.glb.qiniucdn.com/2016-12-29_11_13_39_cehuban.png" alt=""></p>
+<p>##4. Python##</p>
+<p>有人说，人生苦短，我用Python. 真的，自从11月份开始学习Python来，我越来越认同这个观点。Python的强大第三方库，让我渐渐见识到一个新的世界。</p>
+<p><strong>1. 七牛文件上传器</strong></p>
+<p>利用七牛云，可以把电脑上的文件上传到云空间中，对于图片还可以自动生成Markdown格式外链，方便写博客的时候插入链接，我这篇文章用的就是自己的软件上传的图片。</p>
+<p><img src="http://ww1.sinaimg.cn/mw690/8cb58cc2gw1faq1vvmv5gj20vh0ho0y3.jpg" alt=""></p>
+<p><strong>2. 博客迁移爬虫</strong></p>
+<p>之前的博客在主机公园上，真的差，打开首页都要10几秒，后来用了Hexo+Github Pages.<br>要是一份份的复制粘贴之前的博客文章也是效率低，于是写了一个爬虫将博客文章，按照日期保存到本地。</p>
+<p><img src="http://7bvaky.com2.z0.glb.qiniucdn.com/2016-12-29_11_30_49_blogqianyi.png" alt=""></p>
+<p><strong>3. LOL视频宝的视频数据爬虫</strong></p>
+<p> 之前本来想在年前做一款新闻阅读APP的，至于为什么要改成做LOL视频咨询客户端，原因如下：</p>
+<blockquote>
+<p>因为我认为一款新闻客户端是否优秀不在于它交互方式或者UI多么炫酷，而在于新闻的内在质量和推荐算法，就算我能够爬到很多新闻源，也不能将它们堆砌的提交给用户，这是对用户不负责任，所以筛选算法和推荐算法很重要，出于能力问题，这一块我决定放弃。</p>
+<p>为什么我要做LOL视频合集，因为现在在PC上找不到完整的LOL分类，大都是零散的，混乱的，不便于用户使用；而目前APP上，我也只看到多玩饭盒做的还可以，有很详细的分类，但是仍然不够好，曾经因为一段时间主播跳槽，虎牙将主播封杀，该主播视频就没有，另一方面，它们这些APP永远在做加法，功能越来越臃肿，我作为LOL玩家，我只想关于LOL的新闻咨询或者视频，不想玩你的社区，不想看你的美女视频，我只想静静的看视频。</p>
+</blockquote>
+<p>所以宗旨是：给用户一个干净的，完整的LOL视频观看体验。</p>
+<p>利用Packet Capture和浏览器的F12功能，推理+解析了很久，终于剥离出查询的API.然后赶紧写了一个python把服务器中的视频资源存到数据库中。视频资源挺丰富，数据量有20k.</p>
+<p><img src="http://7bvaky.com2.z0.glb.qiniucdn.com/2016-12-29_11_30_49_shipinbao.png" alt=""></p>
+<p>##后记</p>
+<p>2016年，我主要的我就是四件事情，很惭愧，就做了一点微小的工作，谢谢大家。2017年，继续加油。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;#2016年度总结&lt;/p&gt;
+&lt;p&gt;今年做了四件事：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;找工作&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Android &lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Unity&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Python&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p
+    
+    </summary>
+    
+      <category term="未分类" scheme="http://www.orzangleli.com/categories/%E6%9C%AA%E5%88%86%E7%B1%BB/"/>
+    
+    
+      <category term="未分类" scheme="http://www.orzangleli.com/tags/%E6%9C%AA%E5%88%86%E7%B1%BB/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>侧护板装配VR系统技术细节.md</title>
+    <link href="http://www.orzangleli.com/2016/12/14/2016-12-14_%E4%BE%A7%E6%8A%A4%E6%9D%BF%E8%A3%85%E9%85%8DVR%E7%B3%BB%E7%BB%9F%E6%8A%80%E6%9C%AF%E7%BB%86%E8%8A%82/"/>
+    <id>http://www.orzangleli.com/2016/12/14/2016-12-14_侧护板装配VR系统技术细节/</id>
+    <published>2016-12-13T16:00:00.000Z</published>
+    <updated>2016-12-29T13:53:06.216Z</updated>
+    
+    <content type="html"><![CDATA[<p>#目录</p>
+<ol>
+<li>模型格式转化和处理</li>
+<li>装配流程设计</li>
+<li>动画设计</li>
+<li>第三方库（VRTK，DOTween）的使用</li>
+<li>交互方式设计</li>
+</ol>
+<p>##一.模型格式转化和处理<br>在任意的VR系统都有大量的模型需求，我总结了以下两种模型获取方式：</p>
+<p>###1. 使用三维绘图软件绘制模型并转换格式<br>以我常用的Catia为例，先绘制出模型，然后将模型转为CGR格式，注意一定要这个格式，经过我的测试，如果不是这个格式再接下来转换格式时会失败。</p>
+<p>###2. 使用3Ds Max绘制模型<br>这需要会使用3Ds Max的人员来做，由于我们这边缺乏这样的人，所以一般使用3Ds Max的模型都是从网络上下载下来的。</p>
+<p>##二. 装配流程设计</p>
+<p>根据三维仿真视频，可以看出装配流程如下所示：</p>
+<p><img src="http://7bvaky.com2.z0.glb.qiniucdn.com/2016-12-14_10_37_34_流程图.png" alt="去"></p>
+<p>为了增强交互性，动画中人模型所做的事，将在VR系统中以第一人称的视角完成所有装配。</p>
+<p>##三. 动画设计<br>可以从动画中看出有几处机构的运动形式：</p>
+<ol>
+<li>吊机的控制</li>
+<li>侧护板的移动</li>
+<li>夹具的夹紧和松开动作</li>
+</ol>
+<p>这几种是比较典型的几种运动形式，针对不同的运动形式，需要进行不用的动画设计。</p>
+<p>###1. 吊机的控制<br>吊机的示意图如下：<br><img src="http://7bvaky.com2.z0.glb.qiniucdn.com/2016-12-14_10_59_38_吊机结构.png" alt=""></p>
+<p>吊机的控制，这个是最基本的，就是通Transform组件，对物体进行移动。只不过这些需要注意的是，不同方向的移动是针对不同物体的，例如，上下方向移动是挂钩的移动，而左右移动是电机的移动，前后的移动是横梁的移动。</p>
+<p>在程序，我定义了一个枚举类型，表示吊机目前的状态：</p>
+<pre><code>public enum State {UP,DOWN,FRONT,BACK,LEFT,RIGHT,IDLE};
+</code></pre><p>其中<code>IDLE</code>表示吊机静止状态。</p>
+<p><strong>需要注意的细节</strong></p>
+<p>这里有一个技术细节：连接电机和挂钩的『绳子』，它的长度是变化的，需要和挂钩保持同步。在VR系统中它并不是真正的绳子，而是一个圆柱体，绳子长度变化的时候，实际上是圆柱体沿竖直方向的scale值变化。另外，因为绳子总是从电机出发出，所以需要将圆柱体的锚点设置在电机处，否则绳子在变长到一定程度时，会看到绳子已经穿过了电机。</p>
+<p>###2. 侧护板的移动<br>相对来说，侧护板的移动不是一种『自主运动』，它是被吊机吊起来的，所以这种运动是不同于上述方法的处理。对于侧护板需要事先添加碰撞器，并添加脚本，碰撞器添加在挂带的中心位置，这样当挂钩碰到中心位置时，就能检测到。<br><img src="http://7bvaky.com2.z0.glb.qiniucdn.com/2016-12-14_11_26_52_侧护板碰撞器.png" alt=""><br>在检测到碰撞后，判断如果碰撞器如果是来自侧护板，就代表现在用户想使用挂钩将侧护板吊起来。在<code>OnTriggerEnter</code>中，将侧护板的parent设置为挂钩，这样侧护板就能够跟着挂钩移动了。</p>
+<pre><code>collider.transform.parent = this.transform;
+collider.transform.position = bornPlace.position;
+</code></pre><p>###3. 夹具的夹紧和松开动作<br>夹具的动作包括张开和闭合，动画如图所示：<br><img src="http://7bvaky.com2.z0.glb.qiniucdn.com/2016-12-14_13_47_43_夹具.gif" alt=""><br>夹具的动作很复杂，基本上无法通过脚本控制实现，所以，最好使用Unity中的Animation完成动画，而且夹具的动作张开和闭合是对称的，所以只需要完成闭合的动作就可以了，张开的动作可以将动画的播放速度调整为-1即可倒着播放。另外，在夹具闭合的时候，要把护板添加到夹具的两侧中，以达到夹具加紧侧护板的视觉效果。下面就是夹具闭合的代码：</p>
+<pre><code>public void bihe()
+{
+    AnimatorStateInfo info = animator.GetCurrentAnimatorStateInfo(0);
+    if ((info.IsName(&quot;jiaju_zhangkai&quot;) &amp;&amp; info.normalizedTime &gt;= 1) || info.IsName(&quot;idle&quot;))
+    {
+
+        //将左右护板添加到夹具中
+        Transform yeyazhijia = this.transform.parent;
+        Transform left_huban = yeyazhijia.FindChild(&quot;huban_guadai_left(Clone)&quot;);
+        Transform right_huban = yeyazhijia.FindChild(&quot;huban_guadai_right(Clone)&quot;);
+        Transform zuodangban = this.transform.FindChild(&quot;jiajuzhengti_copy/jiaju/zuodangban&quot;);
+        Transform youdangban = this.transform.FindChild(&quot;jiajuzhengti_copy/jiaju/youdangban&quot;);
+
+        if (Vector3.Distance(left_huban.position, zuodangban.position) &gt; Vector3.Distance(left_huban.position, youdangban.position))
+        {
+            normal = false;
+            if (left_huban != null)
+                left_huban.parent = youdangban;
+            if (right_huban != null)
+                right_huban.parent = zuodangban;
+        }
+        else
+        {
+            normal = true;
+            if (left_huban != null)
+                left_huban.parent = zuodangban;
+            if (right_huban != null)
+                right_huban.parent = youdangban;
+        }
+
+        animator.Play(&quot;jiaju_bihe&quot;);
+        biheButton.interactable = false;
+        zhangkaiButton.interactable = true;
+
+        //同时使碰撞器失效，防止在未松开之前拉上去
+        this.GetComponent&lt;Collider&gt;().enabled = false;
+        stepHint.text = &quot;夹紧操作完成，请点击菜单中的『夹具张开』按钮&quot;;
+    }
+}
+</code></pre><p>##四. 第三方库（VRTK，DOTween）的使用</p>
+<p>本VR系统中主要使用了两个第三方库：</p>
+<ul>
+<li><p><strong>VRTK</strong>    <em>这个工具包提供了很多Unity3d里的常用VR功能，如下（但并不局限于此）：</em></p>
+<ul>
+<li>带有通用别名的控制器按钮事件</li>
+<li>控制器世界指针（如激光指针）</li>
+<li>玩家传送</li>
+<li>用控制器抓取对象</li>
+<li>用控制器和对象交互</li>
+</ul>
+</li>
+<li><p><strong>DOTween</strong>  <em>DOTween是Unity中具有强大功能的动画插件</em></p>
+</li>
+</ul>
+<p>###1. VRTK的使用</p>
+<p>####1）. VRTK的安装<br>VRTK从Assets Store中下载，下载完成后导入即可。</p>
+<p>####2）. VRTK 射线的使用<br>在SteamVR包中[CameraRig]的Controller(right)上添加脚本VRTK_UI_Pointer,这是射线基本脚本，可以设置射线何时显示，比如按住按钮或者切换按钮或者一直显示等。</p>
+<p><img src="http://7bvaky.com2.z0.glb.qiniucdn.com/2016-12-14_14_35_51_VRTK_UI_Pointer.png" alt=""></p>
+<p>还需要添加<code>VRTK_Simple_Pointer</code>脚本，这是直线射线发射脚本，除此之外还可以使用 <code>VRTK_Bezier_Pointer</code><br>它是贝泽尔曲线脚本。要指定按钮按住之后发射射线，还需要添加<code>VRTK_Controller Events</code>脚本，可以设置按下哪个按钮后发出射线。</p>
+<p><img src="http://7bvaky.com2.z0.glb.qiniucdn.com/2016-12-14_14_37_27_VRTK_ControllerEvents.png" alt=""></p>
+<p>####3）. VRTK 中UI的使用</p>
+<p>VRTK中UI使用非常简单，只需要在普通的UGUI的Canvas上添加<code>VRTK_UI Canvas</code>脚本即可。</p>
+<p>###2. DOTween的使用</p>
+<p>DOTween十分强大，但是我在本系统中也只是使用到了其中的一部分功能。</p>
+<p>####1). 物体的移动<br>比如场景中，装配完成后，让生产线移动，实际上就是使用DOTween中的DOMove方法</p>
+<pre><code>go.transform.DOLocalMoveZ(go.transform.localPosition.z - 1200f, 60).SetEase(Ease.Linear);
+</code></pre><p>DOLocalMoveZ指的是在局部坐标系的Z轴方向上移动到go.transform.localPosition.z - 1200f这个位置，实际上就是向Z轴反方向移动1200，所用的时间是60秒，动画插值器使用的是线性插值。</p>
+<p>####2). 物体的缩放</p>
+<p>在菜单显示和关闭的时候，增加一个缩放的动画可以增强用户体验</p>
+<pre><code>toolbox.transform.DOScale(0.005f, 0.5f);
+</code></pre><p>这句代码的意思就是将菜单的大小放大到0.005,使用的时间是0.5秒。</p>
+<p>####3). 滚动数码管显示器</p>
+<p><img src="http://7bvaky.com2.z0.glb.qiniucdn.com/2016-12-14_14_51_22_显示器.gif" alt=""></p>
+<p>要实现以上效果，需要在Canvas下添加一个遮罩层(Image组件)，给遮罩层添加Mask脚本，并且给Image指定一个图片，这个图片就是指定的Mask的遮罩形状，这样在遮罩层以外的UI都不会显示了。</p>
+<p>要实现文字连续滚动，事先添加两个Text，如图所示，由于有Mask层存在，第二个是看不到的。</p>
+<p><img src="http://7bvaky.com2.z0.glb.qiniucdn.com/2016-12-14_14_56_26_状态监测UI.png" alt=""></p>
+<p>然后给这两个Text上添加脚本，让他们移动。</p>
+<pre><code>this.transform.DOLocalMoveX(this.transform.localPosition.x -1000f,5).SetEase(Ease.Linear).SetLoops(-1,LoopType.Restart);
+</code></pre><p>数码管的长度正好为1000，让两个文字一起在5秒中内向左移动1000，移动完成后重新启动动画(复位)，这样就实现了文字无限循环的滚动了。</p>
+<p>##五. 交互方式设计 </p>
+<p>系统做出来是给人使用的，交互设计也是十分重要，虽然目前我对本系统的交互设计上也有点意见，但是目前尚未找到更好的方案，下面将详细说明。</p>
+<p><img src="http://7bvaky.com2.z0.glb.qiniucdn.com/2016-12-14_15_16_34_手柄按键说明.png" alt=""></p>
+<p>###1. 左手手柄</p>
+<ul>
+<li>左手手柄的触摸板，轻触时显示控制吊机移动的菜单，滑动可以选择菜单，按下时将执行动作。</li>
+<li>左手手柄的Grip键(侧面的两个按钮)是旋转挂钩的方向的。</li>
+<li>Application键用来显示和隐藏手柄上的提示文字</li>
+</ul>
+<p>###2. 右手手柄</p>
+<ul>
+<li><p>触摸板按下时发出射线</p>
+<ul>
+<li>若发出的射线指向地面，松开触摸板即可瞬移到该位置</li>
+<li>若发出的射线指向UI界面，配合Trigger(扳机键)可以实现点击按钮的操作。</li>
+</ul>
+</li>
+<li><p>Grip键(侧面的两个按钮)是用于显示和关闭菜单的</p>
+</li>
+</ul>
+<h3 id="3-目前方案存在的问题"><a href="#3-目前方案存在的问题" class="headerlink" title="3.目前方案存在的问题"></a>3.目前方案存在的问题</h3><p>之前说过这个方案是有不足的，主要在于吊机的控制。吊机需要6个按钮来控制，分别是上下东西南北，如果要将这6个按钮显示在一起，就是上面的方案，可以看到无论怎么分布，使用无法保证东西南北的四个方向与真实的场景中的方向一致，所以在操作吊机时，不熟悉的使用者需要一直看着手柄进行操作。</p>
+<h3 id="4-潜在的解决方法"><a href="#4-潜在的解决方法" class="headerlink" title="4.潜在的解决方法"></a>4.潜在的解决方法</h3><p>####1). 分解菜单<br>在展会的时候，有人就提出了这个问题，后来我问他有什么好的建议，他说可以把东西南北做到左手手柄上，将上下两个按钮做到右手手柄上，这样右手手柄上发射射线的按钮就需要修改下了，不过这也是一种方案。</p>
+<p>####2). 将6等分菜单变为8等分菜单</p>
+<p>很简单的原理，示意图如下所示：</p>
+<p><img src="http://7bvaky.com2.z0.glb.qiniucdn.com/2016-12-14_15_51_08_按键方案2.png" alt=""></p>
+<p>至于哪种方案好，我暂时也没有办法判断，所以只好先全部记录下来了。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;#目录&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;模型格式转化和处理&lt;/li&gt;
+&lt;li&gt;装配流程设计&lt;/li&gt;
+&lt;li&gt;动画设计&lt;/li&gt;
+&lt;li&gt;第三方库（VRTK，DOTween）的使用&lt;/li&gt;
+&lt;li&gt;交互方式设计&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;##一.模型格式转化和处理&lt;br&gt;在任
+    
+    </summary>
+    
+      <category term="unity3D" scheme="http://www.orzangleli.com/categories/unity3D/"/>
+    
+    
+      <category term="unity3D" scheme="http://www.orzangleli.com/tags/unity3D/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>pyqt打包失败.md</title>
+    <link href="http://www.orzangleli.com/2016/12/13/2016-12-13_pyqt%E6%89%93%E5%8C%85%E5%A4%B1%E8%B4%A5/"/>
+    <id>http://www.orzangleli.com/2016/12/13/2016-12-13_pyqt打包失败/</id>
+    <published>2016-12-12T16:00:00.000Z</published>
+    <updated>2016-12-29T13:51:57.927Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="pyqt-打包失败-出现pyi-rth-qt4plugins-找不到的问题"><a href="#pyqt-打包失败-出现pyi-rth-qt4plugins-找不到的问题" class="headerlink" title="pyqt 打包失败 出现pyi_rth_qt4plugins 找不到的问题"></a>pyqt 打包失败 出现pyi_rth_qt4plugins 找不到的问题</h1><ol>
+<li><p>pyqt5的位数和系统位数要一致。</p>
+</li>
+<li><p>pyqt版本为：PyQt GPL v5.4.1 for Pythonv3.4(x64)</p>
+</li>
+</ol>
+<p>环境截图：</p>
+<p><img src="http://7bvaky.com2.z0.glb.qiniucdn.com/2016-12-29_09_59_32_python环境截图.png" alt=""></p>
+<p>使用下面的语句进行打包：<br>pyinstaller –hidden-import queue -F -w MainWindow.py</p>
+<p>后来由出现QtCore可以找到，但是QtWidgets找不到，但是不知道怎么回事，重新打包了n次后就自动好了，不知道是不是之前设置的环境变量要过一会才会生效，设置的环境变量就是QtCore,QtGui,QtWidgets三个dll文件。</p>
+<p>在管理员模式下运行命令行，进行PyInstaller安装</p>
+<p>加上这句话：<br>    from PyQt5 import *<br>这句话才是精髓，不加就不能运行，加了就可以。。。额！</p>
+<p>C:\Users\Administrator\AppData\Roaming\pyinstaller\bincache00_py34_64bit\qt5gui.dll 可能是去这个目录找那个dll，然后没找到。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;pyqt-打包失败-出现pyi-rth-qt4plugins-找不到的问题&quot;&gt;&lt;a href=&quot;#pyqt-打包失败-出现pyi-rth-qt4plugins-找不到的问题&quot; class=&quot;headerlink&quot; title=&quot;pyqt 打包失败 出现pyi_rt
+    
+    </summary>
+    
+      <category term="python" scheme="http://www.orzangleli.com/categories/python/"/>
+    
+    
+      <category term="python" scheme="http://www.orzangleli.com/tags/python/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>使用Python将Jpeg Png Gif 图片转换为 webp格式</title>
+    <link href="http://www.orzangleli.com/2016/11/10/2016-11-10_Python%E5%B0%86Jpeg%20Png%20Gif%E8%BD%AC%E6%8D%A2%E4%B8%BAWebp%E6%A0%BC%E5%BC%8F/"/>
+    <id>http://www.orzangleli.com/2016/11/10/2016-11-10_Python将Jpeg Png Gif转换为Webp格式/</id>
+    <published>2016-11-09T16:00:00.000Z</published>
+    <updated>2016-11-10T14:05:29.034Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="使用Python将Jpeg-Png-Gif-图片转换为-webp格式"><a href="#使用Python将Jpeg-Png-Gif-图片转换为-webp格式" class="headerlink" title="使用Python将Jpeg Png Gif 图片转换为 webp格式"></a>使用Python将Jpeg Png Gif 图片转换为 webp格式</h1><h2 id="一-动机"><a href="#一-动机" class="headerlink" title="一.动机"></a>一.动机</h2><p>因为webp的优良特性：</p>
+<ul>
+<li><p>占空间小，节省带宽</p>
+</li>
+<li><p>总体加载速度快</p>
+</li>
+</ul>
+<p>这里有详细的介绍： 摘自 <a href="https://zh.wikipedia.org/wiki/WebP" target="_blank" rel="external">维基百科-WebP词条</a></p>
+<p>WebP（发音weppy）[6][7]，是一种同时提供了有损压缩与无损压缩（可逆压缩）的图片文件格式[8]，派生自视频编码格式VP8[9]，被认为是WebM多媒体格式的姊妹项目，是由Google在购买On2 Technologies后发展出来[10]，以BSD授权条款发布。[11]<br>WebP最初在2010年发布，目标是减少文件大小，但达到和JPEG格式相同的图片质量，希望能够减少图片档在网络上的发送时间。 [12]2011年11月8日，Google开始让WebP支持无损压缩和透明色（alpha通道）的功能，而在2012年8月16日的参考实做libwebp 0.2.0中正式支持[13][14]。根据Google较早的测试，WebP的无损压缩比网络上找到的PNG档少了45％的文件大小，即使这些PNG档在使用pngcrush和PNGOUT处理过，WebP还是可以减少28％的文件大小[15]。<br>WebP支持的像素最大数量是16383x16383。有损压缩的WebP仅支持8-bit的YUV 4:2:0格式。而无损压缩（可逆压缩）的WebP支持VP8L编码与8-bit之ARGB色彩空间。又无论是有损或无损压缩皆支持Alpha透明通道、ICC色彩配置、XMP诠释数据。<br>WebP有静态与动态两种模式。动态WebP（Animated WebP）支持有损与无损压缩、ICC色彩配置、XMP诠释数据、Alpha透明通道。而无损压缩的动态WebP亦支持8-bit之ARGB色彩空间。</p>
+<h2 id="二-方案实验"><a href="#二-方案实验" class="headerlink" title="二. 方案实验"></a>二. 方案实验</h2><h3 id="1-使用PIL-转换格式"><a href="#1-使用PIL-转换格式" class="headerlink" title="1. 使用PIL 转换格式"></a>1. 使用PIL 转换格式</h3><p>首先指出，PIL转换在大部分情况下都能起到很好的效果，比如讲jpeg转为webp，节省空间约90%。<br>首先安装PIL模块</p>
+<pre><code>pip install pillow
+</code></pre><p>然后在程序中 <code>localfile</code> 为图片路径</p>
+<pre><code>im = Image.open(localfile)
+f,ext = os.path.splitext(localfile.split(&quot;/&quot;)[-1])
+webp_path = &quot;%s.webp&quot;%f
+im.convert(&apos;RGB&apos;).save(webp_path, &quot;webp&quot;)
+</code></pre><p>这里需要注意需要将图片先转化为RGB模式，否则报错</p>
+<pre><code>cannot write mode P as WEBP
+</code></pre><p>现在，是时候说下PIL「失效」的情况了。</p>
+<ol>
+<li>将动图转为gif时，转化过程没有报错，但是打开后，只保存了第一帧的图片，变成了静态图。</li>
+<li>将 gif 转为 webp格式时，同样也只保存了第一帧。</li>
+</ol>
+<p>第一种情况我没有测试，但是在stackoverflow上可以看到有人提问过： <a href="http://stackoverflow.com/questions/24688802/saving-an-animated-gif-in-pillow" target="_blank" rel="external">Saving an animated GIF in Pillow</a> 。回答者是建议使用gifmaker 模块进行处理gif.</p>
+<p>第二张情况，我遇到了，所以可以证实。</p>
+<p>通过搜索，在官网上看到<a href="https://developers.google.com/speed/webp/docs/gif2webp" target="_blank" rel="external">gif2webp</a>,证明官网给出了gif转webp的解决方案，那我们就下载适合自己版本的库<a href="https://storage.googleapis.com/downloads.webmproject.org/releases/webp/index.html" target="_blank" rel="external"></a>.<br>解压后，将bin 目录下的 gif2webp.exe 复制到 工作目录下。接下来，我们使用它来转化格式。</p>
+<h3 id="2-使用gif2webp-exe转化格式"><a href="#2-使用gif2webp-exe转化格式" class="headerlink" title="2. 使用gif2webp.exe转化格式"></a>2. 使用gif2webp.exe转化格式</h3><p>根据官网给的文档<a href="https://developers.google.com/speed/webp/docs/gif2webp" target="_blank" rel="external">gif2webp</a>，我们可以很方便的使用下面的语句来实现：</p>
+<pre><code>f,ext = os.path.splitext(localfile.split(&quot;/&quot;)[-1])
+webp_path = &quot;%s.webp&quot;%f
+os.system(&quot;gif2webp.exe &quot;+ localfile + &quot; -quiet &quot; + &quot; -o &quot; + f + &quot;.webp&quot;)
+</code></pre><p>这里可能会提示：</p>
+<pre><code>GIF decode warning: invalid background color index. Assuming white background.
+</code></pre><p>转换过程持续好几秒，请耐心等待，转化完成后，工作目录下多一个webp文件.</p>
+<h2 id="三-效果比较"><a href="#三-效果比较" class="headerlink" title="三.效果比较"></a>三.效果比较</h2><center>左边是gif格式的               右边是webp格式</center>
+
+
+<p><img src="http://i.imgur.com/aFTWeSK.gif" alt="">   <img src="http://lxctest.qiniudn.com/2016-11-10_15:57:31_zhuanzhuan2.webp" alt=""></p>
+<p>你的肉眼能看出区别么？</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;使用Python将Jpeg-Png-Gif-图片转换为-webp格式&quot;&gt;&lt;a href=&quot;#使用Python将Jpeg-Png-Gif-图片转换为-webp格式&quot; class=&quot;headerlink&quot; title=&quot;使用Python将Jpeg Png Gif 图片
+    
+    </summary>
+    
+      <category term="python" scheme="http://www.orzangleli.com/categories/python/"/>
+    
+    
+      <category term="python" scheme="http://www.orzangleli.com/tags/python/"/>
+    
+  </entry>
   
   <entry>
     <title>自己动手造轮子系列———实现『转转APP』Indicator 效果</title>
@@ -136,83 +527,23 @@ private Handler mHandler = new Handler() {
   </entry>
   
   <entry>
-    <title>使用Python将Jpeg Png Gif 图片转换为 webp格式</title>
-    <link href="http://www.orzangleli.com/2016/11/10/2016-11-10_Python%E5%B0%86Jpeg%20Png%20Gif%E8%BD%AC%E6%8D%A2%E4%B8%BAWebp%E6%A0%BC%E5%BC%8F/"/>
-    <id>http://www.orzangleli.com/2016/11/10/2016-11-10_Python将Jpeg Png Gif转换为Webp格式/</id>
-    <published>2016-11-09T16:00:00.000Z</published>
-    <updated>2016-11-10T14:05:29.034Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="使用Python将Jpeg-Png-Gif-图片转换为-webp格式"><a href="#使用Python将Jpeg-Png-Gif-图片转换为-webp格式" class="headerlink" title="使用Python将Jpeg Png Gif 图片转换为 webp格式"></a>使用Python将Jpeg Png Gif 图片转换为 webp格式</h1><h2 id="一-动机"><a href="#一-动机" class="headerlink" title="一.动机"></a>一.动机</h2><p>因为webp的优良特性：</p>
-<ul>
-<li><p>占空间小，节省带宽</p>
-</li>
-<li><p>总体加载速度快</p>
-</li>
-</ul>
-<p>这里有详细的介绍： 摘自 <a href="https://zh.wikipedia.org/wiki/WebP" target="_blank" rel="external">维基百科-WebP词条</a></p>
-<p>WebP（发音weppy）[6][7]，是一种同时提供了有损压缩与无损压缩（可逆压缩）的图片文件格式[8]，派生自视频编码格式VP8[9]，被认为是WebM多媒体格式的姊妹项目，是由Google在购买On2 Technologies后发展出来[10]，以BSD授权条款发布。[11]<br>WebP最初在2010年发布，目标是减少文件大小，但达到和JPEG格式相同的图片质量，希望能够减少图片档在网络上的发送时间。 [12]2011年11月8日，Google开始让WebP支持无损压缩和透明色（alpha通道）的功能，而在2012年8月16日的参考实做libwebp 0.2.0中正式支持[13][14]。根据Google较早的测试，WebP的无损压缩比网络上找到的PNG档少了45％的文件大小，即使这些PNG档在使用pngcrush和PNGOUT处理过，WebP还是可以减少28％的文件大小[15]。<br>WebP支持的像素最大数量是16383x16383。有损压缩的WebP仅支持8-bit的YUV 4:2:0格式。而无损压缩（可逆压缩）的WebP支持VP8L编码与8-bit之ARGB色彩空间。又无论是有损或无损压缩皆支持Alpha透明通道、ICC色彩配置、XMP诠释数据。<br>WebP有静态与动态两种模式。动态WebP（Animated WebP）支持有损与无损压缩、ICC色彩配置、XMP诠释数据、Alpha透明通道。而无损压缩的动态WebP亦支持8-bit之ARGB色彩空间。</p>
-<h2 id="二-方案实验"><a href="#二-方案实验" class="headerlink" title="二. 方案实验"></a>二. 方案实验</h2><h3 id="1-使用PIL-转换格式"><a href="#1-使用PIL-转换格式" class="headerlink" title="1. 使用PIL 转换格式"></a>1. 使用PIL 转换格式</h3><p>首先指出，PIL转换在大部分情况下都能起到很好的效果，比如讲jpeg转为webp，节省空间约90%。<br>首先安装PIL模块</p>
-<pre><code>pip install pillow
-</code></pre><p>然后在程序中 <code>localfile</code> 为图片路径</p>
-<pre><code>im = Image.open(localfile)
-f,ext = os.path.splitext(localfile.split(&quot;/&quot;)[-1])
-webp_path = &quot;%s.webp&quot;%f
-im.convert(&apos;RGB&apos;).save(webp_path, &quot;webp&quot;)
-</code></pre><p>这里需要注意需要将图片先转化为RGB模式，否则报错</p>
-<pre><code>cannot write mode P as WEBP
-</code></pre><p>现在，是时候说下PIL「失效」的情况了。</p>
-<ol>
-<li>将动图转为gif时，转化过程没有报错，但是打开后，只保存了第一帧的图片，变成了静态图。</li>
-<li>将 gif 转为 webp格式时，同样也只保存了第一帧。</li>
-</ol>
-<p>第一种情况我没有测试，但是在stackoverflow上可以看到有人提问过： <a href="http://stackoverflow.com/questions/24688802/saving-an-animated-gif-in-pillow" target="_blank" rel="external">Saving an animated GIF in Pillow</a> 。回答者是建议使用gifmaker 模块进行处理gif.</p>
-<p>第二张情况，我遇到了，所以可以证实。</p>
-<p>通过搜索，在官网上看到<a href="https://developers.google.com/speed/webp/docs/gif2webp" target="_blank" rel="external">gif2webp</a>,证明官网给出了gif转webp的解决方案，那我们就下载适合自己版本的库<a href="https://storage.googleapis.com/downloads.webmproject.org/releases/webp/index.html" target="_blank" rel="external"></a>.<br>解压后，将bin 目录下的 gif2webp.exe 复制到 工作目录下。接下来，我们使用它来转化格式。</p>
-<h3 id="2-使用gif2webp-exe转化格式"><a href="#2-使用gif2webp-exe转化格式" class="headerlink" title="2. 使用gif2webp.exe转化格式"></a>2. 使用gif2webp.exe转化格式</h3><p>根据官网给的文档<a href="https://developers.google.com/speed/webp/docs/gif2webp" target="_blank" rel="external">gif2webp</a>，我们可以很方便的使用下面的语句来实现：</p>
-<pre><code>f,ext = os.path.splitext(localfile.split(&quot;/&quot;)[-1])
-webp_path = &quot;%s.webp&quot;%f
-os.system(&quot;gif2webp.exe &quot;+ localfile + &quot; -quiet &quot; + &quot; -o &quot; + f + &quot;.webp&quot;)
-</code></pre><p>这里可能会提示：</p>
-<pre><code>GIF decode warning: invalid background color index. Assuming white background.
-</code></pre><p>转换过程持续好几秒，请耐心等待，转化完成后，工作目录下多一个webp文件.</p>
-<h2 id="三-效果比较"><a href="#三-效果比较" class="headerlink" title="三.效果比较"></a>三.效果比较</h2><center>左边是gif格式的               右边是webp格式</center>
-
-
-<p><img src="http://i.imgur.com/aFTWeSK.gif" alt="">   <img src="http://lxctest.qiniudn.com/2016-11-10_15:57:31_zhuanzhuan2.webp" alt=""></p>
-<p>你的肉眼能看出区别么？</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;使用Python将Jpeg-Png-Gif-图片转换为-webp格式&quot;&gt;&lt;a href=&quot;#使用Python将Jpeg-Png-Gif-图片转换为-webp格式&quot; class=&quot;headerlink&quot; title=&quot;使用Python将Jpeg Png Gif 图片
-    
-    </summary>
-    
-      <category term="python" scheme="http://www.orzangleli.com/categories/python/"/>
-    
-    
-      <category term="python" scheme="http://www.orzangleli.com/tags/python/"/>
-    
-  </entry>
-  
-  <entry>
     <title>Plugin is too old, please update to a more recent version解决方法.md</title>
     <link href="http://www.orzangleli.com/2016/11/04/2016-11-04_Plugin%20is%20too%20old,%20please%20update%20to%20a%20more%20recent%20version%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95/"/>
     <id>http://www.orzangleli.com/2016/11/04/2016-11-04_Plugin is too old, please update to a more recent version解决方法/</id>
     <published>2016-11-03T16:00:00.000Z</published>
-    <updated>2016-11-21T15:07:15.171Z</updated>
+    <updated>2016-12-29T13:49:35.250Z</updated>
     
     <content type="html"><![CDATA[<p>#Plugin is too old, please update to a more recent version问题解决方法</p>
 <p>Android Studio 报错：</p>
 <p>Plugin is too old, please update to a more recent version, or set ANDROID_DAILY_OVERRIDE environment variable to…</p>
-<p>网上众说纷纭，但是实际上没有几个能用。<br>首先当然你可以把gradle版本调低，运行没问题，但是就不能体验到Instant Run等新功能，为了体验新功能，按照以下步骤进行。<br><a id="more"></a> </p>
-<h2 id="1-修改Project的build-gradle中版本"><a href="#1-修改Project的build-gradle中版本" class="headerlink" title="1. 修改Project的build.gradle中版本"></a>1. 修改Project的build.gradle中版本</h2><p>打开build.gradle(Project:xxx),修改下面代码为</p>
+<p>网上众说纷纭，但是实际上没有几个能用。<br>首先当然你可以把gradle版本调低，运行没问题，但是就不能体验到Instant Run等新功能，为了体验新功能，按照以下步骤进行。</p>
+<h2 id="1-查看最新的gradle插件"><a href="#1-查看最新的gradle插件" class="headerlink" title="1. 查看最新的gradle插件"></a>1. 查看最新的gradle插件</h2><p>修改Project的build.gradle中版本<br><a href="https://bintray.com/android/android-tools/com.android.tools.build.gradle" target="_blank" rel="external">查看最新版本gradle插件</a></p>
+<p>打开build.gradle(Project:xxx),修改下面代码为</p>
 <p>修改前</p>
 <pre><code>classpath &apos;com.android.tools.build:gradle:1.3&apos;
 </code></pre><p>修改后</p>
-<pre><code>classpath &apos;com.android.tools.build:gradle:2.3.0-alpha1&apos;
-</code></pre><p>其中<code>2.3.0-alpha1</code>是查看网址<a href="https://jcenter.bintray.com/com/android/tools/build/gradle/" target="_blank" rel="external"></a>中的最新版本。</p>
-<h2 id="2-查看最新版本的gradle"><a href="#2-查看最新版本的gradle" class="headerlink" title="2. 查看最新版本的gradle"></a>2. 查看最新版本的gradle</h2><p>进入gralde下载网站： <a href="https://services.gradle.org/distributions/" target="_blank" rel="external">Gradle Distributions</a> </p>
+<pre><code>classpath &apos;com.android.tools.build:gradle:+&apos;
+</code></pre><h2 id="2-查看最新版本的gradle"><a href="#2-查看最新版本的gradle" class="headerlink" title="2. 查看最新版本的gradle"></a>2. 查看最新版本的gradle</h2><p>进入gralde下载网站： <a href="https://services.gradle.org/distributions/" target="_blank" rel="external">Gradle Distributions</a> </p>
 <p>如图所示：</p>
 <p><img src="http://lxctest.qiniudn.com/2016-11-04_11:34:36_1.png?imageView2/0/w/800" alt=""></p>
 <p>可以看到最新版是gradle-3.2-rc-2-all.zip</p>
@@ -221,15 +552,13 @@ os.system(&quot;gif2webp.exe &quot;+ localfile + &quot; -quiet &quot; + &quot; -
 </code></pre><p><code>xxx</code> 为你在官网看到的最新版的文件名字</p>
 <p>如：<br>    distributionUrl=https\://services.gradle.org/distributions/gradle-3.2-rc-2-all.zip</p>
 <p>现在就可以使用新版功能了，而且之后也看不到烦人的更新提示了。</p>
-<h2 id="4-等待gradle更新"><a href="#4-等待gradle更新" class="headerlink" title="4.等待gradle更新"></a>4.等待gradle更新</h2><p>如果更新后，提示需要安装插件等，按照提示安装即可，等待时间可能有点长，我上次等了10多分钟，但是下次不需要再等待了，而且可以正常使用Instant Run 了。</p>
 ]]></content>
     
     <summary type="html">
     
       &lt;p&gt;#Plugin is too old, please update to a more recent version问题解决方法&lt;/p&gt;
 &lt;p&gt;Android Studio 报错：&lt;/p&gt;
-&lt;p&gt;Plugin is too old, please update to a more recent version, or set ANDROID_DAILY_OVERRIDE environment variable to…&lt;/p&gt;
-&lt;p&gt;网上众说纷纭，但是实际上没有几个能用。&lt;br&gt;首先当然你可以把gradle版本调低，运行没问题，但是就不能体验到Instant Run等新功能，为了体验新功能，按照以下步骤进行。&lt;br&gt;
+&lt;p&gt;Plugin is too old, please update to a m
     
     </summary>
     
@@ -1542,9 +1871,9 @@ content/up
       <category term="HTC VIVE" scheme="http://www.orzangleli.com/categories/HTC-VIVE/"/>
     
     
-      <category term="HTC VIVE" scheme="http://www.orzangleli.com/tags/HTC-VIVE/"/>
-    
       <category term="unity3D" scheme="http://www.orzangleli.com/tags/unity3D/"/>
+    
+      <category term="HTC VIVE" scheme="http://www.orzangleli.com/tags/HTC-VIVE/"/>
     
   </entry>
   
@@ -1750,328 +2079,6 @@ compile &apos;com.orzangleli.coupon:coupon:1.0.1&apos;
     
       &lt;p&gt;自己做了一个卡券视图，可以自定义裁边效果.&lt;/p&gt;
 &lt;h1 id=&quot;Android-CouponView-卡券视图&quot;&gt;&lt;a href=&quot;#Android-CouponView-卡券视图&quot; class=&quot;headerlink&quot; title=&quot;Android CouponVie
-    
-    </summary>
-    
-      <category term="android" scheme="http://www.orzangleli.com/categories/android/"/>
-    
-    
-      <category term="android" scheme="http://www.orzangleli.com/tags/android/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>AppBarLayout 下Toolbar 在RecyclerView下实现滑动隐藏</title>
-    <link href="http://www.orzangleli.com/2016/07/25/AppBarLayout%20%E4%B8%8BToolbar%20%E5%9C%A8RecyclerView%E4%B8%8B%E5%AE%9E%E7%8E%B0%E6%BB%91%E5%8A%A8%E9%9A%90%E8%97%8F/"/>
-    <id>http://www.orzangleli.com/2016/07/25/AppBarLayout 下Toolbar 在RecyclerView下实现滑动隐藏/</id>
-    <published>2016-07-24T16:00:00.000Z</published>
-    <updated>2016-11-03T11:19:52.066Z</updated>
-    
-    <content type="html"><![CDATA[<p>今天介绍的是AppBarLayout 下Toolbar<br>在RecyclerView下实现滑动隐藏,目前网络上也存在一部分Toolbar在RecyclerView下隐藏的博文，但是是没有突出在AppBarLayout的布局下。</p>
-<p>首先是main_activity.xml的代码中AppBarLayout部分：</p>
-<pre><code>&lt;android.support.design.widget.AppBarLayout
-        android:id=&quot;@+id/appBarLayout&quot;
-        android:layout_height=&quot;wrap_content&quot;
-        android:layout_width=&quot;match_parent&quot;
-        android:theme=&quot;@style/AppTheme.AppBarOverlay&quot;&gt;
-
-        &lt;android.support.v7.widget.Toolbar
-            android:id=&quot;@+id/toolbar&quot;
-            android:layout_width=&quot;match_parent&quot;
-            android:layout_height=&quot;?attr/actionBarSize&quot;
-            android:background=&quot;?attr/colorPrimary&quot;
-            app:popupTheme=&quot;@style/AppTheme.PopupOverlay&quot; /&gt;
-
-    &lt;/android.support.design.widget.AppBarLayout&gt;
-</code></pre><p>滑动隐藏需要重写RecyclerView滑动监听：</p>
-<pre><code>public abstract class RecyclerViewScrollListener extends  RecyclerView.OnScrollListener    {
-
-    private static final int SCROLL_DISTANCE = 50;
-    private int totalScrollDistance;
-    private boolean isShow = true;
-
-    @Override public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-        super.onScrollStateChanged(recyclerView, newState);
-    }
-    @Override public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-        super.onScrolled(recyclerView, dx, dy);
-
-        int firstVisableItem = ((StaggeredGridLayoutManager) recyclerView.getLayoutManager()).findFirstCompletelyVisibleItemPositions(null)[0];
-        //当第一个item存在界面上时就不触发隐藏、显示操作
-        if(firstVisableItem==0) {
-            return;
-        } if ((dy &gt; 0 &amp;&amp; isShow) || (dy &lt; 0 &amp;&amp; !isShow)) {
-            totalScrollDistance += dy;
-        } if (totalScrollDistance &gt; SCROLL_DISTANCE &amp;&amp; isShow) {
-            hide();
-            isShow = false;
-            totalScrollDistance = 0;
-        } else if (totalScrollDistance &lt; -SCROLL_DISTANCE &amp;&amp; !isShow) {
-            show();
-            isShow = true;
-            totalScrollDistance = 0;
-        } }
-    public abstract void hide(); public abstract void show();
-}
-</code></pre><p>然后绑定监听器：</p>
-<pre><code>recyclerView.setOnScrollListener(new RecyclerViewScrollListener() {
-    @Override
-    public void hide() {
-        ViewPropertyAnimator animator = appBarLayout.animate().translationY(-toolbar.getHeight()).setInterpolator(new AccelerateInterpolator(2));
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                appBarLayout.setVisibility(View.GONE);
-            }
-        },animator.getDuration());
-    }
-
-    @Override
-    public void show() {
-        appBarLayout.setVisibility(View.VISIBLE);
-        appBarLayout.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2));
-    }
-});
-</code></pre><p>重点在这里，使用动画将appBarLayout向上移动，然后在移动结束后，设置隐藏，而显示的时候，直接显示再向下滑动动画。</p>
-<p>效果如图： <a href="http://i.imgur.com/zUY99su.gif" target="_blank" rel="external">http://i.imgur.com/zUY99su.gif</a></p>
-<hr>
-<p>2016年7月25日更新：</p>
-<p>这里提供另一种思路：</p>
-<p>之前之所以要在标题栏滑动到上面之后，设置隐藏是因为标题栏只滑到状态栏那里，所以我们可以让他在多滑一点。  </p>
-<pre><code>ViewPropertyAnimator animator = appBarLayout.animate().translationY(-toolbar.getHeight()-statusBarHeight).setInterpolator(new AccelerateInterpolator(2));
-</code></pre><p>状态栏的高度获取使用下面的代码：</p>
-<pre><code>Rect rectangle= new Rect();
-Window window= getWindow();
-window.getDecorView().getWindowVisibleDisplayFrame(rectangle);
-int statusBarHeight= rectangle.top;
-</code></pre>]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;今天介绍的是AppBarLayout 下Toolbar&lt;br&gt;在RecyclerView下实现滑动隐藏,目前网络上也存在一部分Toolbar在RecyclerView下隐藏的博文，但是是没有突出在AppBarLayout的布局下。&lt;/p&gt;
-&lt;p&gt;首先是main_activi
-    
-    </summary>
-    
-      <category term="android" scheme="http://www.orzangleli.com/categories/android/"/>
-    
-    
-      <category term="android" scheme="http://www.orzangleli.com/tags/android/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Android 动态设置状态栏颜色</title>
-    <link href="http://www.orzangleli.com/2016/07/24/Android%20%E5%8A%A8%E6%80%81%E8%AE%BE%E7%BD%AE%E7%8A%B6%E6%80%81%E6%A0%8F%E9%A2%9C%E8%89%B2/"/>
-    <id>http://www.orzangleli.com/2016/07/24/Android 动态设置状态栏颜色/</id>
-    <published>2016-07-23T16:00:00.000Z</published>
-    <updated>2016-11-03T11:19:51.758Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="Android-动态设置状态栏颜色"><a href="#Android-动态设置状态栏颜色" class="headerlink" title="Android 动态设置状态栏颜色"></a>Android 动态设置状态栏颜色</h1><p>直接代码：</p>
-<pre><code>window = this.getWindow();
-//取消设置透明状态栏,使 ContentView 内容不再覆盖状态栏
-window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-//需要设置这个 flag 才能调用 setStatusBarColor 来设置状态栏颜色
-window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-//设置状态栏颜色
-window.setStatusBarColor(Color.parseColor(&quot;#3F51B5&quot;));
-</code></pre>]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;Android-动态设置状态栏颜色&quot;&gt;&lt;a href=&quot;#Android-动态设置状态栏颜色&quot; class=&quot;headerlink&quot; title=&quot;Android 动态设置状态栏颜色&quot;&gt;&lt;/a&gt;Android 动态设置状态栏颜色&lt;/h1&gt;&lt;p&gt;直接代码：&lt;/p&gt;
-
-    
-    </summary>
-    
-      <category term="android" scheme="http://www.orzangleli.com/categories/android/"/>
-    
-    
-      <category term="android" scheme="http://www.orzangleli.com/tags/android/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Snackbar 使用详解及源码解析</title>
-    <link href="http://www.orzangleli.com/2016/07/14/Snackbar%20%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3%E5%8F%8A%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/"/>
-    <id>http://www.orzangleli.com/2016/07/14/Snackbar 使用详解及源码解析/</id>
-    <published>2016-07-13T16:00:00.000Z</published>
-    <updated>2016-11-03T11:19:51.752Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="Snackbar-使用详解及源码解析"><a href="#Snackbar-使用详解及源码解析" class="headerlink" title="Snackbar 使用详解及源码解析"></a>Snackbar 使用详解及源码解析</h1><blockquote>
-<p>本文全部内容为orzangleli原创，未经允许禁止转载。</p>
-</blockquote>
-<p><em>简介：本文将详细介绍Snackbar的使用方法，源码解析以及如何不修改源码的情况下完成Snackbar的顶部显示。</em></p>
-<h2 id="1-什么是Snackbar"><a href="#1-什么是Snackbar" class="headerlink" title="1. 什么是Snackbar?"></a>1. 什么是Snackbar?</h2><p>官网上是这么解释Snackbar的功能和特点：</p>
-<blockquote>
-<p>Snackbars provide lightweight feedback about an operation. They show a brief<br>message at the bottom of the screen on mobile and lower left on larger<br>devices. Snackbars appear above all other elements on screen and only one can<br>be displayed at a time.</p>
-</blockquote>
-<p>&gt;</p>
-<blockquote>
-<p>They automatically disappear after a timeout or after user interaction<br>elsewhere on the screen, particularly after interactions that summon a new<br>surface or activity. Snackbars can be swiped off screen.</p>
-</blockquote>
-<p>&gt;</p>
-<blockquote>
-<p>Snackbars can contain an action which is set via setAction(CharSequence,<br>android.view.View.OnClickListener).</p>
-</blockquote>
-<p>&gt;</p>
-<blockquote>
-<p>To be notified when a snackbar has been shown or dismissed, you can provide<br>a Snackbar.Callback via setCallback(Callback).</p>
-</blockquote>
-<p>Snackbar是一个轻量级的交互反馈控件，可以在手机的屏幕下方或者更大设备（例如平板）的左下方显示一个简短的信息，Snackbar会显示在所有元素之上，而且只持续一段时间。</p>
-<p>它们会在超时或者用户与交互屏幕其他地方交互后自动消失，特别是在和一个新的surface和activity交互之后。Sanckbar可以被滑动移除屏幕。</p>
-<p>为了知道何时snackbar已经被显示或者关闭，你可以通过setCallback(Callback)提供一个Snackbar.Callback（反馈）。</p>
-<p>一般意义上，Snackbar的效果如图所示（图片摘自<a href="http://blog.csdn.net/jdsjlzx/article/details/46892363" target="_blank" rel="external">博客</a>）。</p>
-<p><img src="http://img.blog.csdn.net/20150114103321515" alt=""></p>
-<h2 id="2-怎么使用Snackbar"><a href="#2-怎么使用Snackbar" class="headerlink" title="2. 怎么使用Snackbar"></a>2. 怎么使用Snackbar</h2><h3 id="1-常量"><a href="#1-常量" class="headerlink" title="1). 常量"></a>1). 常量</h3><p><em>int</em> <strong>LENGTH_INDEFINITE</strong> 无限期的显示snackbar (这里只是说不会自动消失，用户仍可通过右滑移除)</p>
-<p><em>int</em> <strong>LENGTH_LONG</strong> 长时间的显示snackbar (类似于Toast)</p>
-<p><em>int</em> <strong>LENGTH_SHORT</strong> 短时间的显示snackbar (类似于Toast)</p>
-<h3 id="2-内部类"><a href="#2-内部类" class="headerlink" title="2). 内部类"></a>2). 内部类</h3><p>Snackbar.Callback是Snackbar的内部类，这个类有两个方法需要重写，<code>onDismissed</code> 和 <code>onShown</code><br>，下面的例子一看就明白：</p>
-<pre><code>snackbar.setCallback(new Snackbar.Callback() {
-    @Override
-    public void onDismissed(Snackbar snackbar, int event) {
-        super.onDismissed(snackbar, event);
-        Toast.makeText(MainActivity.this,&quot;通过Callback监听到snackbar消失&quot;,Toast.LENGTH_SHORT).show();
-    }
-    @Override
-    public void onShown(Snackbar snackbar) {
-        super.onShown(snackbar);
-        Toast.makeText(MainActivity.this,&quot;通过Callback监听到snackbar显示&quot;,Toast.LENGTH_SHORT).show();
-    }
-});
-</code></pre><h3 id="3-公开方法"><a href="#3-公开方法" class="headerlink" title="3). 公开方法"></a>3). 公开方法</h3><p><img src="http://i.imgur.com/XzhgXE4.png" alt=""></p>
-<p>重点说下几个方法： 1.<code>make(View view, CharSequence text, int duration)</code> 和 <code>make(View
-view, int resId, int duration)</code> 实际上是两种初始化Snackbar的方法，只不过第二种使用的是text的id而已。</p>
-<p>2.<code>setAction(CharSequence text, View.OnClickListener listener)</code><br>是给Snackbar增加一个动作按钮，按钮的响应用过OnClickListenr重写。最典型的用途是，在用户完成一个操作时，Snackbar提示用户操作成功，按钮显示撤销操作。</p>
-<p>3.<code>setActionTextColor(int color)</code> 动作按钮的文本颜色可以设置，默认的颜色是主题的colorAccent颜色。</p>
-<h3 id="4）-使用Snackbar"><a href="#4）-使用Snackbar" class="headerlink" title="4）.使用Snackbar"></a>4）.使用Snackbar</h3><p>使用SnackBar非常简单，代码如下：</p>
-<pre><code>Snackbar snackbar = Snackbar.make(view, &quot;张三：今天晚上干嘛？&quot;, Snackbar.LENGTH_LONG)
-    .setAction(&quot;关闭&quot;, new View.OnClickListener()
-    {
-        @Override
-        public void onClick(View v) {
-
-        }
-    });
-</code></pre><h2 id="4-阅读源码并自定义Snackbar"><a href="#4-阅读源码并自定义Snackbar" class="headerlink" title="4.阅读源码并自定义Snackbar"></a>4.阅读源码并自定义Snackbar</h2><h3 id="1）-右滑的说明"><a href="#1）-右滑的说明" class="headerlink" title="1）. 右滑的说明"></a>1）. 右滑的说明</h3><blockquote>
-<p>补充说明下：Snackbar 只能在CoordinatorLayout布局下才能执行右滑删除，在其他布局下右滑手势无效。这一点可以从下面代码中得到解释。</p>
-</blockquote>
-<p>在使用make方法构造Snackbar时，会调用下面的方法：</p>
-<pre><code>@NonNull
-public static Snackbar make(@NonNull View view, @NonNull CharSequence text,@Duration int duration) {
-    Snackbar snackbar = new Snackbar(findSuitableParent(view));
-    snackbar.setText(text);
-    snackbar.setDuration(duration);
-    return snackbar;
-}
-</code></pre><p>其中<code>findSuitableParent(view)</code>是一个寻找父布局的方法，它会在寻找到CoordinatorLayout或者id为android.R.id.content的FrameLayout时停止寻找，否则就返回默认的布局。</p>
-<pre><code>private static ViewGroup findSuitableParent(View view) {
-    ViewGroup fallback = null;
-    do {
-        if (view instanceof CoordinatorLayout) {
-            // We&apos;ve found a CoordinatorLayout, use it
-            return (ViewGroup) view;
-        } else if (view instanceof FrameLayout) {
-            if (view.getId() == android.R.id.content) {
-                // If we&apos;ve hit the decor content view, then we didn&apos;t find a CoL in the
-                // hierarchy, so use it.
-                return (ViewGroup) view;
-            } else {
-                // It&apos;s not the content view but we&apos;ll use it as our fallback
-                fallback = (ViewGroup) view;
-            }
-        }
-
-        if (view != null) {
-            // Else, we will loop and crawl up the view hierarchy and try to find a parent
-            final ViewParent parent = view.getParent();
-            view = parent instanceof View ? (View) parent : null;
-        }
-    } while (view != null);
-
-    // If we reach here then we didn&apos;t find a CoL or a suitable content view so we&apos;ll fallback
-    return fallback;
-}
-</code></pre><p>而且监听右滑操作的Behavior是继承自SwipeDismissBehavior，而SwipeDismissBehavior继承自CoordinatorLayout.Behavior，所以只有在CoordinatorLayout布局下的Snackbar才能被监听到右滑事件。</p>
-<h3 id="2）-自定义Snackbar"><a href="#2）-自定义Snackbar" class="headerlink" title="2）.自定义Snackbar"></a>2）.自定义Snackbar</h3><p>看源码后会发现Snackbar预留出的接口方法太少了，不足以满足日常需求，现在我就几个常见的需求做单独说明。</p>
-<h4 id="a-Snackbar顶部显示"><a href="#a-Snackbar顶部显示" class="headerlink" title="a. Snackbar顶部显示"></a>a. Snackbar顶部显示</h4><pre><code>//顶部显示Snackbar
-    button1.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            Snackbar snackbar = Snackbar.make(v, &quot;张三：今天晚上干嘛？&quot;, Snackbar.LENGTH_LONG)
-                    .setAction(&quot;关闭&quot;, new View.OnClickListener()
-                    {
-                        @Override
-                        public void onClick(View v) {
-
-                        }
-                    });
-            CoordinatorLayout.LayoutParams ly = new CoordinatorLayout.LayoutParams(FrameLayout.LayoutParams.FILL_PARENT,200);
-            ly .gravity = Gravity.TOP;
-            snackbar.getView().setLayoutParams(ly);
-
-            snackbar.show();
-        }
-    });
-</code></pre><h4 id="b-修改Snackbar背景颜色和文字颜色"><a href="#b-修改Snackbar背景颜色和文字颜色" class="headerlink" title="b.修改Snackbar背景颜色和文字颜色"></a>b.修改Snackbar背景颜色和文字颜色</h4><pre><code>//修改Snackbar背景颜色和文字颜色
-    button2.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            Snackbar snackbar = Snackbar.make(v, &quot;张三：今天晚上干嘛？&quot;, Snackbar.LENGTH_LONG)
-                    .setAction(&quot;关闭&quot;, new View.OnClickListener()
-                    {
-                        @Override
-                        public void onClick(View v) {
-
-                        }
-                    });
-            //设置动作按钮文本颜色
-            snackbar.setActionTextColor(Color.BLACK);
-            //设置背景颜色
-            snackbar.getView().setBackgroundColor(Color.WHITE);
-
-            Snackbar.SnackbarLayout snackbarLayout = (Snackbar.SnackbarLayout)snackbar.getView();
-            //设置消息文本字体颜色
-            ((TextView)snackbarLayout.findViewById(R.id.snackbar_text)).setTextColor(Color.BLACK);
-            //同理可以对动作按钮进行相关设置
-            //((Button)snackbarLayout.findViewById(R.id.snackbar_action)).setBackgroundResource(R.mipmap.ic_launcher);
-            snackbar.show();
-        }
-    });
-</code></pre><h4 id="c-增加内容到Snackbar"><a href="#c-增加内容到Snackbar" class="headerlink" title="c.增加内容到Snackbar"></a>c.增加内容到Snackbar</h4><pre><code>//增加内容到Snackbar
-    button3.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            Snackbar snackbar = Snackbar.make(v, &quot;张三：今天晚上干嘛？&quot;, Snackbar.LENGTH_LONG)
-                    .setAction(&quot;关闭&quot;, new View.OnClickListener()
-                    {
-                        @Override
-                        public void onClick(View v) {
-
-                        }
-                    });
-            View add_view = LayoutInflater.from(v.getContext()).inflate(R.layout.custom_layout
-                    , null);
-
-            LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            p.gravity = Gravity.CENTER_VERTICAL; //数字表示新加的布局在SnackBar中的位置，从0开始,取决于你SnackBar里面有多少个子View
-
-            Snackbar.SnackbarLayout snackbarLayout = (Snackbar.SnackbarLayout)snackbar.getView();
-            snackbarLayout.addView(add_view, 0, p);
-
-
-            snackbar.show();
-        }
-    });
-</code></pre><p>效果图如图所示。</p>
-<p><img src="http://www.orzangleli.com/wp-content/uploads/2016/07/demo.gif" alt="demo"></p>
-<h2 id="写在最后"><a href="#写在最后" class="headerlink" title="写在最后"></a>写在最后</h2><p>本文使用的代码在github上可以获取到，地址：</p>
-<p><a href="https://github.com/hust201010701/SnackbarCustomUsage/" target="_blank" rel="external">https://github.com/hust201010701/SnackbarCustomUsage/</a></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;Snackbar-使用详解及源码解析&quot;&gt;&lt;a href=&quot;#Snackbar-使用详解及源码解析&quot; class=&quot;headerlink&quot; title=&quot;Snackbar 使用详解及源码解析&quot;&gt;&lt;/a&gt;Snackbar 使用详解及源码解析&lt;/h1&gt;&lt;blockquo
     
     </summary>
     
