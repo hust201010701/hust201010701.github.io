@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://www.orzangleli.com/"/>
-  <updated>2017-01-10T14:12:03.524Z</updated>
+  <updated>2017-01-14T14:58:08.727Z</updated>
   <id>http://www.orzangleli.com/</id>
   
   <author>
@@ -14,6 +14,825 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>第七篇 Retrofit 2——在OkHttp Interceptor中管理请求头</title>
+    <link href="http://www.orzangleli.com/2017/01/13/2017-01-13_%5B%E8%B7%9Forzangleli%E4%B8%80%E8%B5%B7%E5%AD%A6Retrofit2%5D%20%20%E7%AC%AC%E4%B8%83%E7%AF%87%20Retrofit%202%E2%80%94%E2%80%94%E5%9C%A8OkHttp%20Interceptor%E4%B8%AD%E7%AE%A1%E7%90%86%E8%AF%B7%E6%B1%82%E5%A4%B4/"/>
+    <id>http://www.orzangleli.com/2017/01/13/2017-01-13_[跟orzangleli一起学Retrofit2]  第七篇 Retrofit 2——在OkHttp Interceptor中管理请求头/</id>
+    <published>2017-01-12T16:00:00.000Z</published>
+    <updated>2017-01-14T14:58:08.727Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="7-跟orzangleli一起学Retrofit2-第七篇-Retrofit-2——在OkHttp-Interceptor中管理请求头"><a href="#7-跟orzangleli一起学Retrofit2-第七篇-Retrofit-2——在OkHttp-Interceptor中管理请求头" class="headerlink" title="7. [跟orzangleli一起学Retrofit2]  第七篇 Retrofit 2——在OkHttp Interceptor中管理请求头"></a>7. [跟orzangleli一起学Retrofit2]  第七篇 Retrofit 2——在OkHttp Interceptor中管理请求头</h1><p><strong>目录</strong></p>
+<!-- MarkdownTOC -->
+<ul>
+<li><a href="#一、-添加请求头">一、 添加请求头</a><ul>
+<li><a href="#11-如何覆盖请求头字段">1.1 如何覆盖请求头字段</a></li>
+<li><a href="#12-如何不覆盖请求头字段">1.2 如何不覆盖请求头字段</a></li>
+</ul>
+</li>
+<li><a href="#二、-小福利请带走">二、 小福利请带走</a></li>
+<li><a href="#三、-在github中实战">三、 在Github中实战</a></li>
+</ul>
+<!-- /MarkdownTOC -->
+<p>前面的教程中你已经学了Retrofit中怎么添加请求头。本文就是专门揪出用Retrofit 2和OkHttp interceptor（拦截器） 添加请求头的细节的。<code>Interceptor拦截器</code>在静态地修改请求上，是一种非常好的的方法。什么意思，直白地说，就是拦截器可以修改请求，但是它的修改相当于是一次性的，不能动态修改。</p>
+<h2 id="一、-添加请求头"><a href="#一、-添加请求头" class="headerlink" title="一、 添加请求头"></a>一、 添加请求头</h2><p>常用的添加请求头的例子就是用<code>Authorization</code>字段来认证。如果你需要在每一次请求都是用这个认证的请求头字段，你可以在<code>interceptor（拦截器）</code>中添加这些信息。这样你就不用给每个客户端的请求都添加<code>@Header</code>注解了。</p>
+<p>OkHttp 的拦截器提供两种方式添加请求头中的字段及其对应的值。你可以直接覆盖已存在的字段，也可以不检查是否这个字段已经存在都直接添加。接下来，我们就来看看这两种情况。</p>
+<h3 id="1-1-如何覆盖请求头字段"><a href="#1-1-如何覆盖请求头字段" class="headerlink" title="1.1 如何覆盖请求头字段"></a>1.1 如何覆盖请求头字段</h3><p>在OkHttp 拦截器的帮助下，你可以拦截HTTP的请求，对这个请求进行一些定制化处理并操作实际请求。请求的builder 对象有一个<code>.header(key, val)</code>方法，它可以把字段添加到请求中区，如果这个字段<code>key</code>已经存在，那就直接覆盖之前的值。</p>
+<pre><code>OkHttpClient.Builder httpClient = new OkHttpClient.Builder();  
+httpClient.addInterceptor(new Interceptor() {  
+    @Override
+    public Response intercept(Interceptor.Chain chain) throws IOException {
+        Request original = chain.request();
+
+        // Request customization: add request headers
+        Request.Builder requestBuilder = original.newBuilder()
+                .header(&quot;Authorization&quot;, &quot;auth-value&quot;); // &lt;-- this is the important line
+
+        Request request = requestBuilder.build();
+        return chain.proceed(request);
+    }
+});
+
+OkHttpClient client = httpClient.build();  
+</code></pre><p>Retrofit ，尤其是OkHttp允许你添加对同一个<code>key</code>字段添加多个值。<code>.header()</code>方法会替换掉所有已存在的相同<code>key</code>的字段。像上面的代码片段中，每个<code>Authorization</code>中请求字段都会被更新（如果之前已经定义多次的话），他们之前的字段的值就会变成<code>auth-value</code>。</p>
+<h3 id="1-2-如何不覆盖请求头字段"><a href="#1-2-如何不覆盖请求头字段" class="headerlink" title="1.2 如何不覆盖请求头字段"></a>1.2 如何不覆盖请求头字段</h3><p>的确存在用同一个字段的key,但是value不相同的情况。比如，我们来看看这个字段<code>Cache-Control</code>,这个字段用于指定所有缓存机制在整个请求/响应链中必须服从的指令。Http 1.1协议规定，同一个key的多重value的字段是允许的，它们和逗号分隔的列表是一样的。</p>
+<p>什么意思？</p>
+<pre><code>Cache-Control: no-cache  
+Cache-Control: no-store  
+</code></pre><p>上面这段和下面这段作用一样：</p>
+<pre><code>Cache-Control: no-cache, no-store  
+</code></pre><p>使用Retrofit 2和OkHttp 的拦截器，你可以添加对同一个key添加多重value。用到的方法就是<code>.addHeader</code>。</p>
+<p>下面的这个例子就是添加多个同一个key添加多重value的字段：</p>
+<pre><code>OkHttpClient.Builder httpClient = new OkHttpClient.Builder();  
+httpClient.addInterceptor(new Interceptor() {  
+    @Override
+    public Response intercept(Interceptor.Chain chain) throws IOException {
+        Request original = chain.request();
+
+        // Request customization: add request headers
+        Request.Builder requestBuilder = original.newBuilder()
+                    .addHeader(&quot;Cache-Control&quot;, &quot;no-cache&quot;)
+                    .addHeader(&quot;Cache-Control&quot;, &quot;no-store&quot;);
+
+        Request request = requestBuilder.build();
+        return chain.proceed(request);
+    }
+});
+
+OkHttpClient client = httpClient.build();  
+</code></pre><h2 id="二、-小福利请带走"><a href="#二、-小福利请带走" class="headerlink" title="二、 小福利请带走"></a>二、 小福利请带走</h2><p><strong>注意</strong>这里的“见微知著”的差别：</p>
+<ul>
+<li><code>.header(key, val)</code>: 会覆盖之前已经存在的<code>key</code>字段的值</li>
+<li><code>.addHeader(key, val)</code>: 不会覆盖，它会继续添加</li>
+</ul>
+<h2 id="三、-在Github中实战"><a href="#三、-在Github中实战" class="headerlink" title="三、 在Github中实战"></a>三、 在Github中实战</h2><p>本节内容由于要求能够在请求头中添加<code>同一个key添加多重value</code>的字段，但是我没有在Github中找到合适的API,如果各位读者找到了，可以通知我，我将会补上实战案例。</p>
+<p>Enjoy Coding! 如果在阅读本教程的过程中有任何疑问或者需要帮助，可以随时在微博上联系我，我的微博是 <a href="http://weibo.com/androidjiqiaogonglue" target="_blank" rel="external">@orzanglei</a>。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;7-跟orzangleli一起学Retrofit2-第七篇-Retrofit-2——在OkHttp-Interceptor中管理请求头&quot;&gt;&lt;a href=&quot;#7-跟orzangleli一起学Retrofit2-第七篇-Retrofit-2——在OkHttp-Int
+    
+    </summary>
+    
+      <category term="Retrofit教程" scheme="http://www.orzangleli.com/categories/Retrofit%E6%95%99%E7%A8%8B/"/>
+    
+    
+      <category term="android" scheme="http://www.orzangleli.com/tags/android/"/>
+    
+      <category term="Retrofit" scheme="http://www.orzangleli.com/tags/Retrofit/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>第六篇 Retrofit中添加自定义请求头</title>
+    <link href="http://www.orzangleli.com/2017/01/13/2017-01-13_%5B%E8%B7%9Forzangleli%E4%B8%80%E8%B5%B7%E5%AD%A6Retrofit2%5D%20%20%E7%AC%AC%E5%85%AD%E7%AF%87%20Retrofit%E4%B8%AD%E6%B7%BB%E5%8A%A0%E8%87%AA%E5%AE%9A%E4%B9%89%E8%AF%B7%E6%B1%82%E5%A4%B4/"/>
+    <id>http://www.orzangleli.com/2017/01/13/2017-01-13_[跟orzangleli一起学Retrofit2]  第六篇 Retrofit中添加自定义请求头/</id>
+    <published>2017-01-12T16:00:00.000Z</published>
+    <updated>2017-01-14T14:58:11.213Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="6-跟orzangleli一起学Retrofit2-第六篇-Retrofit中添加自定义请求头"><a href="#6-跟orzangleli一起学Retrofit2-第六篇-Retrofit中添加自定义请求头" class="headerlink" title="6. [跟orzangleli一起学Retrofit2]  第六篇 Retrofit中添加自定义请求头"></a>6. [跟orzangleli一起学Retrofit2]  第六篇 Retrofit中添加自定义请求头</h1><p><strong>目录</strong><br><!-- MarkdownTOC --></p>
+<ul>
+<li><a href="#一、-定义自定义请求头">一、 定义自定义请求头</a><ul>
+<li><a href="#11-静态请求头">1.1 静态请求头</a></li>
+<li><a href="#12-动态请求头">1.2 动态请求头</a></li>
+<li><a href="#retrofit-2中覆盖已存在的请求头">Retrofit 2中覆盖已存在的请求头</a></li>
+</ul>
+</li>
+<li><a href="#二、-在github中实战">二、 在Github中实战</a><ul>
+<li><a href="#31-创建评论">3.1 创建评论</a></li>
+</ul>
+</li>
+</ul>
+<!-- /MarkdownTOC -->
+<p>本文将为你展示如何在接口内部通过<code>@Header</code>注解添加自定义请求头，以及通过拦截请求添加自定义请求头。</p>
+<h2 id="一、-定义自定义请求头"><a href="#一、-定义自定义请求头" class="headerlink" title="一、 定义自定义请求头"></a>一、 定义自定义请求头</h2><p>Retrofit提供两种方式定义HTTP请求头：静态和动态方式。静态请求头在发送不同请求时不能改变。请求头的键值对在接口方法上是固定不变的。</p>
+<p>相反地，动态的请求头可以对每一个请求单独设置。</p>
+<h3 id="1-1-静态请求头"><a href="#1-1-静态请求头" class="headerlink" title="1.1 静态请求头"></a>1.1 静态请求头</h3><p>添加静态请求头第一步要做的事是定义请求头，用注解的形式把请求头中的内容添加到你的API方法上。每次调用这个方法的请求都会自动的添加定义好的请求头。注解可以用键值的对构成的字符串的形式或者字符串数组的形式定义。现在来看看两个具体的请求头定义步骤：</p>
+<pre><code>public interface UserService {  
+    @Headers(&quot;Cache-Control: max-age=640000&quot;)
+    @GET(&quot;/tasks&quot;)
+    Call&lt;List&lt;Task&gt;&gt; getTasks();
+}
+</code></pre><p>这个例子将键值对定义成静态请求头。当然，你也可以把很多组键值对包裹在花括号<code>{}</code>中作为请求头。就像下面这样：</p>
+<pre><code>public interface UserService {  
+    @Headers({
+        &quot;Accept: application/vnd.yourapi.v1.full+json&quot;,
+        &quot;User-Agent: Your-App-Name&quot;
+    })
+    @GET(&quot;/tasks/{task_id}&quot;)
+    Call&lt;Task&gt; getTask(@Path(&quot;task_id&quot;) long taskId);
+}
+</code></pre><p>除此之外，你还可以通过Retrofit中<code>RequestInterceptor</code> 的<code>intercept</code>方法（需要自行实现<code>Interceptor</code>接口）定义静态请求头。</p>
+<p>在Retrofit 2中，你需要拦截OkHttp提供的网络层请求。</p>
+<pre><code>OkHttpClient.Builder httpClient = new OkHttpClient.Builder();  
+httpClient.addInterceptor(new Interceptor() {  
+    @Override
+    public Response intercept(Interceptor.Chain chain) throws IOException {
+        Request original = chain.request();
+
+        Request request = original.newBuilder()
+            .header(&quot;User-Agent&quot;, &quot;Your-App-Name&quot;)
+            .header(&quot;Accept&quot;, &quot;application/vnd.yourapi.v1.full+json&quot;)
+            .method(original.method(), original.body())
+            .build();
+
+        return chain.proceed(request);
+    }
+}
+
+OkHttpClient client = httpClient.build();  
+Retrofit retrofit = new Retrofit.Builder()  
+    .baseUrl(API_BASE_URL)
+    .addConverterFactory(GsonConverterFactory.create())
+    .client(client)
+    .build();
+</code></pre><p>如你所见，上面的代码分别设置了<code>User-Agent</code>和<code>Accept</code>的内容。这些值会传递到Retrofit中所有使用这个<code>Interceptor</code> 发出的请求。</p>
+<h3 id="1-2-动态请求头"><a href="#1-2-动态请求头" class="headerlink" title="1.2 动态请求头"></a>1.2 动态请求头</h3><p>想要定制化程度高点就需要使用动态请求头了。动态请求头像参数一样传递到方法中。给定的参数值将会在请求被执行钱被Retrofit映射到请求头中。看个小栗子吧：</p>
+<pre><code>public interface UserService {  
+    @GET(&quot;/tasks&quot;)
+    Call&lt;List&lt;Task&gt;&gt; getTasks(@Header(&quot;Content-Range&quot;) String contentRange);
+}
+</code></pre><p>看到没，动态请求头中，你可以为不同的请求传递不同的参数。上面这段代码就是传递动态的<code>Content-Range</code> 到请求头中。</p>
+<h3 id="Retrofit-2中覆盖已存在的请求头"><a href="#Retrofit-2中覆盖已存在的请求头" class="headerlink" title="Retrofit 2中覆盖已存在的请求头"></a>Retrofit 2中覆盖已存在的请求头</h3><p>与Retrofit v1版本不同，Retrofit 2中可以覆盖已存在的请求头字段（言下之意就是Retrofit不支持覆盖）。你可以在传递到OkHttp的client对象中的<code>Interceptor</code>的接口实现中完成对这些字段的覆盖。<code>Request.Builder</code>提供两种添加请求头的方法：</p>
+<ol>
+<li><code>.header(key, value)</code>： 如果请求头中已经存在这个字段的话就覆盖</li>
+<li><code>.addHeader(key, value)</code>: 即使请求头中已经存在这个字段，也是照样添加，这样请求头中某个字段可能有多个值</li>
+</ol>
+<h2 id="二、-在Github中实战"><a href="#二、-在Github中实战" class="headerlink" title="二、 在Github中实战"></a>二、 在Github中实战</h2><p>在<a href="http://www.orzangleli.com/">5. [跟orzangleli一起学Retrofit2]  第五篇 在Retrofit的请求主体中发送对象</a>的Github实战中，我们在请求主体中发送评论，之前采用的认证方式是添加查询参数token,其实除了这种认证方式，我们还可以在请求头中添加token信息,下面我们就使用这种方法来发表评论。</p>
+<h3 id="3-1-创建评论"><a href="#3-1-创建评论" class="headerlink" title="3.1 创建评论"></a>3.1 创建评论</h3><p>为了与第五篇文章的实验不冲突，我新建了一个<a href="https://gist.github.com/hust201010701/6582fb0808c585fddb5808b547bfbebf" target="_blank" rel="external">Gist片段</a>。</p>
+<p>这里简单说明下，在请求中添加token的格式是：</p>
+<pre><code>Authorization: token OAUTH-TOKEN
+</code></pre><p>这样，我们简单修改下GithubClient接口：</p>
+<pre><code>public interface GithubClient {
+    @POST(&quot;/gists/{gist_id}/comments&quot;)
+    Call&lt;ResponseBody&gt; commentGist(
+      @Path(&quot;gist_id&quot;) String gist_id,
+      @Body GistComment comment,
+      @Header(&quot;Authorization&quot;) String token
+    );
+
+    class GistComment{
+        String body;
+        public GistComment(String body) {
+            this.body = body;
+        }
+    }
+}
+</code></pre><p>然后把MainActivity.java中的Gist_id修改成<code>6582fb0808c585fddb5808b547bfbebf</code>,并且修改下<code>commentGist</code>中的参数：</p>
+<pre><code>public class MainActivity extends AppCompatActivity {
+    private final static String TAG = &quot;ILearnRetrofit&quot;;
+    private final String Gist_id = &quot;6582fb0808c585fddb5808b547bfbebf&quot;;
+    private final String Github_Token = &quot;xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx&quot;;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        Utils.init(this);
+
+        GithubClient client = ServiceGenerator.createService(GithubClient.class);
+        GithubClient.GistComment comment = new GithubClient.GistComment(&quot;这是Retrofit 2在请求头中使用token认证发出来的评论，发送人是orzangleli&quot;); // 可以把我的id orzangleli 修改成你自己的
+        Call&lt;ResponseBody&gt; call = client.commentGist(Gist_id, comment, &quot; token &quot;+Github_Token);
+        call.enqueue(new Callback&lt;ResponseBody&gt;() {
+            @Override
+            public void onResponse(Call&lt;ResponseBody&gt; call, Response&lt;ResponseBody&gt; response) {
+                if (response.isSuccessful())
+                    i(TAG, &quot;评论成功：&quot; + response.raw());
+                else
+                    i(TAG, &quot;评论失败：&quot; + response.errorBody());
+            }
+
+            @Override
+            public void onFailure(Call&lt;ResponseBody&gt; call, Throwable t) {
+                i(TAG, &quot;评论失败：&quot; + t.getMessage());
+            }
+        });
+
+    }
+}
+</code></pre><p>代码中的Github_Token 需要换成你自己的，可以看这篇教程<strong>[Retrofit 2 番外篇]将Github作为Retrofit的测试对象</strong>,因为它只显示一次，所以记住将这个token保存在本地，以后的教程会经常用到这个token。</p>
+<p>最后，你可以到<a href="https://gist.github.com/hust201010701/6582fb0808c585fddb5808b547bfbebf" target="_blank" rel="external">https://gist.github.com/hust201010701/6582fb0808c585fddb5808b547bfbebf</a>中看看，你的评论是否正常的发出了。</p>
+<p>我的已经成功了：</p>
+<p><img src="http://7bvaky.com2.z0.glb.qiniucdn.com/2017-01-13_13_56_05_请求头中token认证.png" alt=""></p>
+<blockquote>
+<p>本教程所有源码参见此网页：[留白]</p>
+</blockquote>
+<p>Enjoy Coding! 如果在阅读本教程的过程中有任何疑问或者需要帮助，可以随时在微博上联系我，我的微博是 <a href="http://weibo.com/androidjiqiaogonglue" target="_blank" rel="external">@orzanglei</a>。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;6-跟orzangleli一起学Retrofit2-第六篇-Retrofit中添加自定义请求头&quot;&gt;&lt;a href=&quot;#6-跟orzangleli一起学Retrofit2-第六篇-Retrofit中添加自定义请求头&quot; class=&quot;headerlink&quot; title
+    
+    </summary>
+    
+      <category term="Retrofit教程" scheme="http://www.orzangleli.com/categories/Retrofit%E6%95%99%E7%A8%8B/"/>
+    
+    
+      <category term="android" scheme="http://www.orzangleli.com/tags/android/"/>
+    
+      <category term="Retrofit" scheme="http://www.orzangleli.com/tags/Retrofit/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>第四篇__同步和异步请求</title>
+    <link href="http://www.orzangleli.com/2017/01/12/2017-01-12_%5B%E8%B7%9Forzangleli%E4%B8%80%E8%B5%B7%E5%AD%A6Retrofit2%5D%20%20%E7%AC%AC%E5%9B%9B%E7%AF%87__%E5%90%8C%E6%AD%A5%E5%92%8C%E5%BC%82%E6%AD%A5%E8%AF%B7%E6%B1%82/"/>
+    <id>http://www.orzangleli.com/2017/01/12/2017-01-12_[跟orzangleli一起学Retrofit2]  第四篇__同步和异步请求/</id>
+    <published>2017-01-11T16:00:00.000Z</published>
+    <updated>2017-01-14T14:58:11.109Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="4-Retrofit-2的同步和异步请求"><a href="#4-Retrofit-2的同步和异步请求" class="headerlink" title="4. Retrofit 2的同步和异步请求"></a>4. Retrofit 2的同步和异步请求</h1><!-- MarkdownTOC -->
+<ul>
+<li><a href="#同步请求">同步请求</a></li>
+<li><a href="#同步请求获取数据">同步请求获取数据</a></li>
+<li><a href="#异步请求">异步请求</a></li>
+<li><a href="#异步请求获取数据">异步请求获取数据</a></li>
+<li><a href="#获取原始http响应数据">获取原始HTTP响应数据</a></li>
+</ul>
+<!-- /MarkdownTOC -->
+<p>之前的文章，我们带你学习了在web服务或者API请求中Retrofit要设置的东西。本文将给你展示如何通过同步或异步的方式完成真实的请求。</p>
+<p>Retrofit支持同步和异步的方式执行请求。从使用者的观点来看，这两种方式的不同之处在于：</p>
+<ul>
+<li>同步——使用者通过单个线程调用服务；该线程发送请求，在服务运行时阻塞，并且等待响应。</li>
+<li>异步——使用者通过两个线程调用服务；一个线程发送请求，而另一个单独的线程接收响应。</li>
+</ul>
+<h2 id="同步请求"><a href="#同步请求" class="headerlink" title="同步请求"></a>同步请求</h2><p>同步请求和异步请求在Retrofit 2中，在声明客户端（Client）的时候并没有区别，这与Retrofit 1.9不同，Retrofit 1.9是通过修改返回类型和方法参数来声明同步请求。</p>
+<p>下面这个例子，当执行<code>getTasks</code> 时期望获取一组Task类型的链表。</p>
+<pre><code>public interface TaskService {  
+    @GET(&quot;/tasks&quot;)
+    Call&lt;List&lt;Task&gt;&gt; getTasks();
+}
+</code></pre><p>在Retrofit 2中，每个请求都被一个<code>Call</code>对象包裹。实际上，同步或者异步请求是用后面创建的<code>call</code>对象使用特定的方法用不同方式执行的。但是，在定义接口上，Retrofit 2的同步请求和异步请求没有区别。</p>
+<p>同步请求是执行在主线程上的。这就意味着UI线程会在请求执行的时候阻塞，在此期间，用户的交互操作无法响应。</p>
+<blockquote>
+<p>警告： 同步请求可能会导致Android 4.0+的系统的APP 的崩溃。将会产生<code>NetworkOnMainThreadException</code>错误。</p>
+</blockquote>
+<p>同步方法能够直接返回数据，因为网络请求操作阻塞了所有其他的操作。<br>对于非UI线程，你需要在自己建的单独线程中执行请求。这就意味着，你可以在等待网络响应的过程中继续与APP进行交互。</p>
+<h2 id="同步请求获取数据"><a href="#同步请求获取数据" class="headerlink" title="同步请求获取数据"></a>同步请求获取数据</h2><p>现在来看看同步请求的实战操作。我们就假设你已经对前面几篇文章介绍的<code>ServiceGenerator</code>很熟悉了，下面的代码片段就阐述了同步请求的做法。</p>
+<pre><code>TaskService taskService = ServiceGenerator.createService(TaskService.class);  
+Call&lt;List&lt;Task&gt;&gt; call = taskService.getTasks();  
+List&lt;Task&gt;&gt; tasks = call.execute().body(); 
+</code></pre><p>Retrofit 2中通过<code>call</code>对象调用<code>.execute()</code>方法，将在执行同步请求。可以通过在响应对象上执行<code>.body()</code>方法获取反序列化的响应内容。</p>
+<h2 id="异步请求"><a href="#异步请求" class="headerlink" title="异步请求"></a>异步请求</h2><p>除了同步请求，Retrofit对异步请求的支持也属于开箱即用（直白点就是用起来很简单）。Retrofit 2在定义接口上，同步和异步是没有区别的，这一点之前说过了。</p>
+<pre><code>public interface TaskService {  
+    @GET(&quot;/tasks&quot;)
+    Call&lt;List&lt;Task&gt;&gt; getTasks();
+}
+</code></pre><p>异步请求中Retrofit 是在单独的线程中执行和处理网络请求的。一般来说使用<code>Callback</code>类，用它来映射你定义好的返回类型。我们的例子就是返回一组<code>Task</code>类型的链表，这一点在<code>Callback</code>内部就会自动映射好的。</p>
+<h2 id="异步请求获取数据"><a href="#异步请求获取数据" class="headerlink" title="异步请求获取数据"></a>异步请求获取数据</h2><p>使用异步请求，你需要实现<code>Callback</code>的两个回调方法：<code>onResponse</code>和<code>onFailure</code>。当从服务类中调用异步请求<code>getTask()</code>方法时，你需要实现一个新的<code>Callback</code>接口，并且定义你需要在请求完成时要做的处理。下面的代码片段就简要说明了一个典型的实现方法。</p>
+<pre><code>TaskService taskService = ServiceGenerator.createService(TaskService.class);  
+Call&lt;List&lt;Task&gt;&gt; call = taskService.getTasks();  
+call.enqueue(new Callback&lt;List&lt;Task&gt;&gt;() {  
+    @Override
+    public void onResponse(Call&lt;List&lt;Task&gt;&gt; call, Response&lt;List&lt;Task&gt;&gt; response) {
+        if (response.isSuccessful()) {
+            // 执行成功
+        } else {
+            // 响应错误，没有权限访问？
+        }
+    }
+
+    @Override
+    public void onFailure(Call&lt;List&lt;Task&gt;&gt; call, Throwable t) {
+        // 出错了（如网络没有连接）
+        Log.d(&quot;Error&quot;, t.getMessage());
+    }
+}
+</code></pre><h2 id="获取原始HTTP响应数据"><a href="#获取原始HTTP响应数据" class="headerlink" title="获取原始HTTP响应数据"></a>获取原始HTTP响应数据</h2><p>在Retrofit 2中，获取原始响应数据的方式可以在异步的请求中获取。异步请求的回调方法<code>onResponse()</code>中可以获取<code>Response</code>类型的原始响应对象。具体看代码：</p>
+<pre><code>call.enqueue(new Callback&lt;List&lt;Task&gt;&gt;() {  
+    @Override
+    public void onResponse(Call&lt;List&lt;Task&gt;&gt; call, Response&lt;List&lt;Task&gt;&gt; response) {
+        // 获取原始响应对象
+        Response raw = response.raw();
+    }
+
+    @Override
+    public void onFailure(Call&lt;List&lt;Task&gt;&gt; call, Throwable t) {}
+}
+</code></pre><p>Happy coding! 如果你在阅读本教程中有任何困难或者需要帮助，随时可以在微博上联系我，我的微博是<a href="http://weibo.com/androidjiqiaogonglue" target="_blank" rel="external">@orzangleli</a>。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;4-Retrofit-2的同步和异步请求&quot;&gt;&lt;a href=&quot;#4-Retrofit-2的同步和异步请求&quot; class=&quot;headerlink&quot; title=&quot;4. Retrofit 2的同步和异步请求&quot;&gt;&lt;/a&gt;4. Retrofit 2的同步和异步请求&lt;/h1
+    
+    </summary>
+    
+      <category term="Retrofit教程" scheme="http://www.orzangleli.com/categories/Retrofit%E6%95%99%E7%A8%8B/"/>
+    
+    
+      <category term="android" scheme="http://www.orzangleli.com/tags/android/"/>
+    
+      <category term="Retrofit" scheme="http://www.orzangleli.com/tags/Retrofit/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>第五篇 在Retrofit的请求主体中发送对象</title>
+    <link href="http://www.orzangleli.com/2017/01/12/2017-01-12_%5B%E8%B7%9Forzangleli%E4%B8%80%E8%B5%B7%E5%AD%A6Retrofit2%5D%20%20%E7%AC%AC%E4%BA%94%E7%AF%87%20%E5%9C%A8Retrofit%E7%9A%84%E8%AF%B7%E6%B1%82%E4%B8%BB%E4%BD%93%E4%B8%AD%E5%8F%91%E9%80%81%E5%AF%B9%E8%B1%A1/"/>
+    <id>http://www.orzangleli.com/2017/01/12/2017-01-12_[跟orzangleli一起学Retrofit2]  第五篇 在Retrofit的请求主体中发送对象/</id>
+    <published>2017-01-11T16:00:00.000Z</published>
+    <updated>2017-01-14T14:58:11.161Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="5-跟orzangleli一起学Retrofit2-第五篇-在Retrofit的请求主体中发送对象"><a href="#5-跟orzangleli一起学Retrofit2-第五篇-在Retrofit的请求主体中发送对象" class="headerlink" title="5. [跟orzangleli一起学Retrofit2]  第五篇 在Retrofit的请求主体中发送对象"></a>5. [跟orzangleli一起学Retrofit2]  第五篇 在Retrofit的请求主体中发送对象</h1><p><strong>目录</strong><br><!-- MarkdownTOC --></p>
+<ul>
+<li><a href="#一、-在请求主体中发送对象">一、 在请求主体中发送对象</a></li>
+<li><a href="#二、-举个栗子">二、 举个栗子</a></li>
+<li><a href="#三、-在github中实战">三、 在Github中实战</a><ul>
+<li><a href="#31-创建评论">3.1 创建评论</a></li>
+</ul>
+</li>
+</ul>
+<!-- /MarkdownTOC -->
+<h2 id="一、-在请求主体中发送对象"><a href="#一、-在请求主体中发送对象" class="headerlink" title="一、 在请求主体中发送对象"></a>一、 在请求主体中发送对象</h2><p>Retrofit能够在请求主体中发送对象，通过使用<code>@Body</code>注解将这些对象指定为HTTP请求主体的内容。相对于之前的版本来说，Retrofit 2中 <code>@Body</code>功能并没有发生变化。</p>
+<pre><code>public interface TaskService {  
+    @POST(&quot;/tasks&quot;)
+    Call&lt;Task&gt; createTask(@Body Task task);
+}
+</code></pre><p>事先定义好的<code>Retrofit</code>的转换器（如Gson）将会把传入的对象<code>task</code>映射成JSON格式，最终以请求主体的名义发送到你的服务器上。</p>
+<h2 id="二、-举个栗子"><a href="#二、-举个栗子" class="headerlink" title="二、 举个栗子"></a>二、 举个栗子</h2><p>看个具体的例子吧。</p>
+<pre><code>public class Task {  
+    private long id;
+    private String text;
+
+    public Task(long id, String text) {
+        this.id = id;
+        this.text = text;
+    }
+}
+</code></pre><p>初始化一个<code>Task</code>对象，然后对它的<code>id</code>和<code>text</code>赋值。这样，当你把这个<code>Task</code>对象传给service类的时候，对象的变量名和值会被转化为JSON格式。</p>
+<pre><code>Task task = new Task(1, &quot;my task title&quot;);  
+Call&lt;Task&gt; call = taskService.createTask(task);  
+call.enqueue(new Callback&lt;Task&gt;() {});  
+</code></pre><p>调用service中<code>createTask</code>方法，将会把<code>task</code>中的属性转化为JSON格式。<code>task</code>转化后的JSON格式内容像下面这样：</p>
+<pre><code>{
+    &quot;id&quot;: 1,
+    &quot;text&quot;: &quot;my task title&quot;
+}
+</code></pre><h2 id="三、-在Github中实战"><a href="#三、-在Github中实战" class="headerlink" title="三、 在Github中实战"></a>三、 在Github中实战</h2><p>本次我们选用Github中的gist作为操作对象，关于gist是什么，可以参考<a href="http://group.jobbole.com/9655/" target="_blank" rel="external">http://group.jobbole.com/9655/</a>,Github的gist官网是<a href="https://gist.github.com/" target="_blank" rel="external">https://gist.github.com/</a>。</p>
+<p>当然，gist并不是私有的，别人也是可以访问的，所以你们没有必要再自己创建一个gist片段，可以直接使用我的<a href="https://gist.github.com/hust201010701/04793d3d5b53e43d2f6a71b7c3103ea4" target="_blank" rel="external">https://gist.github.com/hust201010701/04793d3d5b53e43d2f6a71b7c3103ea4</a>。其中<code>04793d3d5b53e43d2f6a71b7c3103ea4</code>为gist的id.</p>
+<p>因为本节我们我要实战的是<code>在Retrofit的请求主体中发送对象</code>，所以HTTP的请求方式很明显应该为<code>POST</code>,从Github中关于Gist的API<a href="https://developer.github.com/v3/gists/comments/" target="_blank" rel="external">https://developer.github.com/v3/gists/comments/</a>中，选取 <code>Create a comment</code> 创建一个评论作为我们的目标。</p>
+<h3 id="3-1-创建评论"><a href="#3-1-创建评论" class="headerlink" title="3.1 创建评论"></a>3.1 创建评论</h3><p>API是这样： <code>POST /gists/:gist_id/comments</code><br>参数表：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center"><strong>名称</strong></th>
+<th style="text-align:center"><strong>类型</strong></th>
+<th style="text-align:center"><strong>描述</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">body</td>
+<td style="text-align:center">string</td>
+<td style="text-align:center">必需，评论内容</td>
+</tr>
+</tbody>
+</table>
+<p>这里这说明下，涉及到Github的API，所有请求的基本地址都是： <code>https://api.github.com</code>。地址中的:gist_id就是我们想要访问的gist的id，对本例就是<code>04793d3d5b53e43d2f6a71b7c3103ea4</code>。 下面我们来试试牛刀吧~</p>
+<p>首先是Github请求客户端接口，<code>GistComment</code>为封装好的评论类，发出评论的方法<code>commentGist</code>使用POST方式，url中<code>{gist_id}</code>是动态的可以修改的Gist片段的id,<code>@Query(&quot;access_token&quot;)</code>则表示发表评论时所需要的token参数：</p>
+<pre><code>public interface GithubClient {
+    @POST(&quot;/gists/{gist_id}/comments&quot;)
+    Call&lt;ResponseBody&gt; commentGist(
+      @Path(&quot;gist_id&quot;) String gist_id,
+      @Body GistComment comment,
+      @Query(&quot;access_token&quot;) String token
+    );
+
+    class GistComment{
+        String body;
+
+        public GistComment(String body) {
+            this.body = body;
+        }
+    }
+}
+</code></pre><p>在MainActivity中调用的代码如下所示：</p>
+<pre><code>public class MainActivity extends AppCompatActivity {
+    private final static String TAG = &quot;ILearnRetrofit&quot;;
+    private final String Gist_id = &quot;04793d3d5b53e43d2f6a71b7c3103ea4&quot;;
+    private final String Github_Token = &quot;xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx&quot;;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        Utils.init(this);
+
+        GithubClient client = ServiceGenerator.createService(GithubClient.class);
+        GithubClient.GistComment comment = new GithubClient.GistComment(&quot;这是Retrofit 2程序发出来的，发送人是orzangleli&quot;); // 可以把我的id orzangleli 修改成你自己的
+        Call&lt;ResponseBody&gt; call = client.commentGist(Gist_id, comment, Github_Token);
+        call.enqueue(new Callback&lt;ResponseBody&gt;() {
+            @Override
+            public void onResponse(Call&lt;ResponseBody&gt; call, Response&lt;ResponseBody&gt; response) {
+                if (response.isSuccessful())
+                    i(TAG, &quot;评论成功：&quot; + response.raw());
+                else
+                    i(TAG, &quot;评论失败：&quot; + response.errorBody());
+            }
+
+            @Override
+            public void onFailure(Call&lt;ResponseBody&gt; call, Throwable t) {
+                i(TAG, &quot;评论失败：&quot; + t.getMessage());
+            }
+        });
+
+    }
+}
+</code></pre><p>代码中的Github_Token 需要换成你自己的，可以看这篇教程<strong>[Retrofit 2 番外篇]将Github作为Retrofit的测试对象</strong>,因为它只显示一次，所以记住将这个token保存在本地，以后的教程会经常用到这个token。</p>
+<p>最后，你可以到<a href="https://gist.github.com/hust201010701/04793d3d5b53e43d2f6a71b7c3103ea4" target="_blank" rel="external">https://gist.github.com/hust201010701/04793d3d5b53e43d2f6a71b7c3103ea4</a>中看看，你的评论是否正常的发出了。</p>
+<p>我的已经成功了：</p>
+<p><img src="http://7bvaky.com2.z0.glb.qiniucdn.com/2017-01-13_13_56_05_请求主体中发送对象.png" alt=""></p>
+<blockquote>
+<p>本教程所有源码参见此网页：[留白]</p>
+</blockquote>
+<p>Enjoy Coding! 如果在阅读本教程的过程中有任何疑问或者需要帮助，可以随时在微博上联系我，我的微博是 <a href="http://weibo.com/androidjiqiaogonglue" target="_blank" rel="external">@orzanglei</a>。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;5-跟orzangleli一起学Retrofit2-第五篇-在Retrofit的请求主体中发送对象&quot;&gt;&lt;a href=&quot;#5-跟orzangleli一起学Retrofit2-第五篇-在Retrofit的请求主体中发送对象&quot; class=&quot;headerlink&quot; t
+    
+    </summary>
+    
+      <category term="Retrofit教程" scheme="http://www.orzangleli.com/categories/Retrofit%E6%95%99%E7%A8%8B/"/>
+    
+    
+      <category term="android" scheme="http://www.orzangleli.com/tags/android/"/>
+    
+      <category term="Retrofit" scheme="http://www.orzangleli.com/tags/Retrofit/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>第二篇__API描述的基础知识</title>
+    <link href="http://www.orzangleli.com/2017/01/11/2017-01-11_%5B%E8%B7%9Forzangleli%E4%B8%80%E8%B5%B7%E5%AD%A6Retrofit2%5D%20%20%E7%AC%AC%E4%BA%8C%E7%AF%87__API%E6%8F%8F%E8%BF%B0%E7%9A%84%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/"/>
+    <id>http://www.orzangleli.com/2017/01/11/2017-01-11_[跟orzangleli一起学Retrofit2]  第二篇__API描述的基础知识/</id>
+    <published>2017-01-10T16:00:00.000Z</published>
+    <updated>2017-01-14T14:58:10.987Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="2-Retrofit-2-—API描述基础知识"><a href="#2-Retrofit-2-—API描述基础知识" class="headerlink" title="2. Retrofit 2 —API描述基础知识"></a>2. Retrofit 2 —API描述基础知识</h1><p><strong>目录</strong></p>
+<!-- MarkdownTOC -->
+<ul>
+<li><a href="#如何描述api">如何描述API</a><ul>
+<li><a href="#http-请求方式">HTTP 请求方式</a></li>
+<li><a href="#http资源位置">HTTP资源位置</a></li>
+<li><a href="#方法名和返回类型">方法名和返回类型</a></li>
+<li><a href="#路径参数">路径参数</a></li>
+<li><a href="#查询参数">查询参数</a></li>
+</ul>
+</li>
+<li><a href="#下节预告">下节预告</a></li>
+</ul>
+<!-- /MarkdownTOC -->
+<p>在上一节Retrofit入门教程中，你已经完成对Github网站的第一次请求了。希望你对Retrofit更多功能的试验仍保持热情。本节教程中你将学会Retrofit中描述API的更多细节。</p>
+<h2 id="如何描述API"><a href="#如何描述API" class="headerlink" title="如何描述API"></a>如何描述API</h2><p>正如你第一节学到的，我们描述Retrofit所有的请求都是通过接口完成的。在第一个案例中，我们就展示一点点的功能，如下：</p>
+<pre><code>public interface GitHubClient {  
+    @GET(&quot;/users/{user}/repos&quot;)
+    Call&lt;List&lt;GitHubRepo&gt;&gt; reposForUser(
+        @Path(&quot;user&quot;) String user
+    );
+}
+</code></pre><p>现在我们来具体看看这些配置项：</p>
+<h3 id="HTTP-请求方式"><a href="#HTTP-请求方式" class="headerlink" title="HTTP 请求方式"></a>HTTP 请求方式</h3><p>看来你已经知道，我们在java接口的方法上使用注解来描述API.首先你要定义的是HTTP请求方式，如<code>GET</code> ,<code>POST</code>,<code>PUT</code>,<code>DELETE</code>等。Retrofit为每一种标准的请求方式提供了一个注解。你可以想下面这样简单的方式使用Retrofit注解描述HTTP请求方式：</p>
+<pre><code>@GET, @POST, @PUT, @DELETE, @PATCH, @HEAD.
+</code></pre><p>你必须明确的支出这个API请求使用什么方式进行请求。如果你从来没有听过HTTP请求方式，，你可以看看这个网址 <a href="https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol#Request_methods" target="_blank" rel="external">HTTP维基百科</a> ，要是打不开就看看国内的吧:<a href="http://www.runoob.com/http/http-methods.html" target="_blank" rel="external">http://www.runoob.com/http/http-methods.html</a>。</p>
+<p><code>@GET</code>, <code>@PUT</code> 和 <code>@DELETE</code>的使用简单例子：</p>
+<pre><code>public interface FutureStudioClient {  
+    @GET(&quot;/user/info&quot;)
+    Call&lt;UserInfo&gt; getUserInfo();
+
+    @PUT(&quot;/user/info&quot;)
+    Call&lt;UserInfo&gt; updateUserInfo(
+        @Body UserInfo userInfo
+    );
+
+    @DELETE(&quot;/user&quot;)
+    Call&lt;Void&gt; deleteUser();
+}
+</code></pre><h3 id="HTTP资源位置"><a href="#HTTP资源位置" class="headerlink" title="HTTP资源位置"></a>HTTP资源位置</h3><p>你要把API中的相对地址作为String类型的参数传递给注解，例如<code>@GET(&quot;/user/info&quot;)</code>。<br>大部分情况，你只需要传递相对地址，而不是完整的地址（如<code>http://futurestud.io/api/user/info</code>）。这样做有一个优点，Retrofit只需要请求基本地址 （<code>http://futurestud.io</code>）一次就可以。如果你改变API的基本地址，你也只需要修改一次即可。除此之外，它还让实现一些高级的功能，如动态基本地址，变得更加容易。如果你想继续学些URL处理和怎么将基本地址和相对地址连接到一起的话，欢迎阅读我们的教程  <a href="https://futurestud.io/tutorials/retrofit-2-url-handling-resolution-and-parsing" target="_blank" rel="external">URL handling, resolution and parsing</a>.</p>
+<p>我们再看个简单的例子：</p>
+<pre><code>public interface FutureStudioClient {  
+    @GET(&quot;/user/info&quot;)
+    Call&lt;UserInfo&gt; getUserInfo();
+
+    @PUT(&quot;/user/info&quot;)
+    Call&lt;UserInfo&gt; updateUserInfo(
+        @Body UserInfo userInfo
+    );
+
+    @DELETE(&quot;/user&quot;)
+    Call&lt;Void&gt; deleteUser();
+
+    // example for passing a full URL
+    @GET(&quot;https://futurestud.io/tutorials/rss/&quot;)
+    Call&lt;FutureStudioRssFeed&gt; getRssFeed();
+}
+</code></pre><h3 id="方法名和返回类型"><a href="#方法名和返回类型" class="headerlink" title="方法名和返回类型"></a>方法名和返回类型</h3><p>现在你应该知道HTTP请求方式注解是干什么用的了。可是，我们还没有提及Java方法声明：<code>Call&lt;UserInfo&gt; getUserInfo();</code> . 这里面涉及三个部分：</p>
+<ol>
+<li>方法名</li>
+<li>方法返回类型</li>
+<li>方法参数</li>
+</ol>
+<p>先从最简单的开始：方法名。你可以随意定义方法名，Retrofit并不在意，而且它对功能也不会产生影响。不过，你还是应该取一个能够帮助其他开发者理解你这个API是干嘛的名字。</p>
+<p>方法的返回类型则颇为严格。你需要定义你想要从服务器获取什么样的数据。例如，当你请求用户信息的时候，你可能会把返回类型写成<code>Call&lt;UserInfo&gt;</code>。 <code>UserInfo</code> 这个类包含一些 带有用户数据的 变量。Retrofit会自动把服务器返回数据映射到UserInfo类的对象中，不需要手动解析。如果你想要原始响应数据，你可以在返回类型中使用<code>ResponseBody</code> 替代 <code>UserInfo</code> 。如果你不关心服务器的响应，你也可以直接使用<code>Void</code>。以上所有情形，都需要包裹在Retrofit的<code>Call&lt;&gt;</code>类中。</p>
+<p>最后，也是主要决定API网址末端部分，你可以传递参数到方法中。这些参数有很多种，这里我们就列出一些出来：</p>
+<ul>
+<li><code>@Body</code>:把java对象当做请求主体发送出去</li>
+<li><code>@Url</code>：使用动态地址</li>
+<li><code>@Field</code>:以form-urlencoded格式发送数据</li>
+</ul>
+<p>再看看使用案例：</p>
+<pre><code>public interface FutureStudioClient {  
+    @GET(&quot;/user/info&quot;)
+    Call&lt;UserInfo&gt; getUserInfo();
+
+    @PUT(&quot;/user/info&quot;)
+    Call&lt;Void&gt; updateUserInfo(
+        @Body UserInfo userInfo
+    );
+
+    @GET
+    Call&lt;ResponseBody&gt; getUserProfilePhoto(
+        @Url String profilePhotoUrl
+    );
+}
+</code></pre><p>因为路径和查询参数很普遍，所以我们会在接下来的两段中讲述它们。</p>
+<h3 id="路径参数"><a href="#路径参数" class="headerlink" title="路径参数"></a>路径参数</h3><p>REST APIs 是建议在动态URL的基础上的（关于REST可进入<a href="http://kb.cnblogs.com/page/132129/" target="_blank" rel="external">http://kb.cnblogs.com/page/132129/</a>了解）。你可以通过替换部分URL地址访问资源，如，想要获得hust201010701的CouponView仓库的所有贡献者，可以访问<a href="https://api.github.com/repos/hust201010701/CouponView/contributors" target="_blank" rel="external">https://api.github.com/repos/hust201010701/CouponView/contributors</a>,其中<code>hust201010701/CouponView</code>就是明确你要访问谁的哪个仓库。Retrofit提供了一种简单的方式替换这些路径参数。你应该在入门指南的教程中看到过了吧。</p>
+<pre><code>public interface GitHubClient {  
+    @GET(&quot;/users/{user}/repos&quot;)
+    Call&lt;List&lt;GitHubRepo&gt;&gt; reposForUser(
+        @Path(&quot;user&quot;) String user
+    );
+}
+</code></pre><p>这里<code>{user}</code>告诉Retrofit，这个值是动态的，当请求发出时会被设置进去。如果你要把一个路径参数放到URL中，你需要给方法的参数添加<code>@Path()</code>标记，<code>@Path</code>标记的值就会替换掉URL的占位符（本例中就是@Path(“user”)）。如果有必要，你可以使用多个占位符。只需要保证你匹配参数的总量。你还可以使用[optional path parameters]（<a href="https://futurestud.io/tutorials/retrofit-optional-path-parameters）。" target="_blank" rel="external">https://futurestud.io/tutorials/retrofit-optional-path-parameters）。</a></p>
+<h3 id="查询参数"><a href="#查询参数" class="headerlink" title="查询参数"></a>查询参数</h3><p>动态URL另一大类就是查询参数。如果你之前使用过过滤器，你应该看过这个网站：<code>https://www.baidu.com/s?wd=123</code> . <code>?wd=123</code>就是一个查询参数，它表明你要搜索的内容,又例如<code>https://futurestud.io/tutorials?filter=video</code>中的<code>?filter=video</code>描述了请求的资源。。和路径参数不同，你不要把它们添加到注解的URL中。你可以很简单的使用<code>@Qurey</code>来添加一个方法的参数和名字。Retrofit会自动把它加到请求中去。如果你传递了<code>null</code>作为查询参数，Retrofit就会忽略这个参数。你可以添加 <a href="https://futurestud.io/tutorials/retrofit-2-add-multiple-query-parameter-with-querymap" target="_blank" rel="external">multiple query parameters</a>。</p>
+<pre><code>public interface FutureStudioClient {  
+    @GET(&quot;/tutorials&quot;)
+    Call&lt;List&lt;Tutorial&gt;&gt; getTutorials(
+        @Query(&quot;page&quot;) Integer page
+    );
+
+    @GET(&quot;/tutorials&quot;)
+    Call&lt;List&lt;Tutorial&gt;&gt; getTutorials(
+            @Query(&quot;page&quot;) Integer page,
+            @Query(&quot;order&quot;) String order,
+            @Query(&quot;author&quot;) String author,
+            @Query(&quot;published_at&quot;) Date date
+    );
+}   
+</code></pre><p>上面这个例子，使用第二个方法，后面三个参数的值都传递<code>null</code>，这样，你就可以移除第一个<code>getTutorials()</code>方法了。</p>
+<h2 id="下节预告"><a href="#下节预告" class="headerlink" title="下节预告"></a>下节预告</h2><p>这只是一个描述API末端的介绍而已。目前你应该学会了怎么添加新的请求地址到你的接口上去了吧。你可以调整资源的位置，HTTP请求方式，返回类型，路径参数和查询参数。</p>
+<p>Retrofit提供了很多选项去进一步修改请求。例如，我们还没有说到的headers(请求头)。接下来还有很多需要学，所以继续学习教程吧！</p>
+<p>欢迎大家关注我的<a href="https://github.com/hust201010701" target="_blank" rel="external">Github</a> 和微博 <a href="http://weibo.com/androidjiqiaogonglue" target="_blank" rel="external">@orzangleli</a> 。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;2-Retrofit-2-—API描述基础知识&quot;&gt;&lt;a href=&quot;#2-Retrofit-2-—API描述基础知识&quot; class=&quot;headerlink&quot; title=&quot;2. Retrofit 2 —API描述基础知识&quot;&gt;&lt;/a&gt;2. Retrofit 2 —A
+    
+    </summary>
+    
+      <category term="Retrofit教程" scheme="http://www.orzangleli.com/categories/Retrofit%E6%95%99%E7%A8%8B/"/>
+    
+    
+      <category term="android" scheme="http://www.orzangleli.com/tags/android/"/>
+    
+      <category term="Retrofit" scheme="http://www.orzangleli.com/tags/Retrofit/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>第一篇_Retrofit入门指南及创建一个Android客户端</title>
+    <link href="http://www.orzangleli.com/2017/01/11/2017-01-11_%5B%E8%B7%9Forzangleli%E4%B8%80%E8%B5%B7%E5%AD%A6Retrofit2%5D%20%20%E7%AC%AC%E4%B8%80%E7%AF%87_Retrofit%E5%85%A5%E9%97%A8%E6%8C%87%E5%8D%97%E5%8F%8A%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AAAndroid%E5%AE%A2%E6%88%B7%E7%AB%AF/"/>
+    <id>http://www.orzangleli.com/2017/01/11/2017-01-11_[跟orzangleli一起学Retrofit2]  第一篇_Retrofit入门指南及创建一个Android客户端/</id>
+    <published>2017-01-10T16:00:00.000Z</published>
+    <updated>2017-01-14T14:58:11.055Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="1-跟orzangleli一起学Retrofit2-第一篇-Retrofit入门指南及创建一个Android客户端"><a href="#1-跟orzangleli一起学Retrofit2-第一篇-Retrofit入门指南及创建一个Android客户端" class="headerlink" title="1. [跟orzangleli一起学Retrofit2]  第一篇  Retrofit入门指南及创建一个Android客户端"></a>1. [跟orzangleli一起学Retrofit2]  第一篇  Retrofit入门指南及创建一个Android客户端</h1><blockquote>
+<p>本系列文章是作者orzangleli基于<a href="https://futurestud.io/tutorials/retrofit-getting-started-and-android-client" target="_blank" rel="external">FutureStudio</a>中的教程经过亲自试验和修改，删除文章中关于1.9版本Retrofit的介绍，让初学者更加方便和清晰地学习Retrofit2.0，并对原文章中部分代码及API作了修改和补充，以达到正常试验效果。<br>本系列文章所有权归orzangleli.com所有，任何人有权转载，但需要标明出处。</p>
+</blockquote>
+<p>本文是Retrofit教程系列的第一篇。本系列通过使用一些案例深入了解Retrofit，并从功能和可扩展性的方面来测试Retrofit.</p>
+<h2 id="跟orzangleli一起学Retrofit2-系列总览"><a href="#跟orzangleli一起学Retrofit2-系列总览" class="headerlink" title="[跟orzangleli一起学Retrofit2]系列总览"></a>[跟orzangleli一起学Retrofit2]系列总览</h2><ol>
+<li>将Github作为Retrofit的测试对象</li>
+<li>入门指南及创建一个Android客户端</li>
+<li>API 基础</li>
+<li>创建一个持久化的Android客户端</li>
+<li>同步和异步请求</li>
+<li>在Request Body中发送对象</li>
+<li>添加自定义请求头</li>
+<li>Retrofit 2——在OkHttp Interceptor中管理请求头</li>
+</ol>
+<p>本篇文章我们将一起学习Retrofit的基础知识，以及对API或者HTTP请求创建一个Android 客户端。</p>
+<p>但是，这篇文章并没有涉及很多入门信息和也没有解释Retrofit究竟是什么。对于这些内容，请访问<a href="http://square.github.io/retrofit/" target="_blank" rel="external">projects homepage</a></p>
+<h2 id="Retrofit是什么"><a href="#Retrofit是什么" class="headerlink" title="Retrofit是什么"></a>Retrofit是什么</h2><p>Retrofit官方主页这样描述它：</p>
+<blockquote>
+<p>A type-safe REST client for Android and Java.(Android和Java的类型安全的REST客户端)</p>
+</blockquote>
+<p>本系列中你将学会使用注解描述HTTP请求，URL参数的替换和查询参数。另外，Retrofit还提供对multipart请求主体和文件的上传功能。</p>
+<h2 id="如何申明（API）请求"><a href="#如何申明（API）请求" class="headerlink" title="如何申明（API）请求"></a>如何申明（API）请求</h2><p>请访问阅读<a href="http://square.github.io/retrofit/#api-declaration" target="_blank" rel="external">Retrofit homepage</a>中API申明部分，好好理解如何构造请求。你将会找到所有重要的信息，而且他们都有着很详细的代码描述。</p>
+<h2 id="Android项目的准备工作"><a href="#Android项目的准备工作" class="headerlink" title="Android项目的准备工作"></a>Android项目的准备工作</h2><p>现在我们言归正传，如果你已经创建了你的Android项目，直接从下一段开始吧。如果没有，请先在你最新最喜欢的IDE中创建一个项目。我们喜欢使用Gradle作为构建系统，但是你也可以使用Maven.</p>
+<h3 id="申明依赖项：Gradle或者Maven"><a href="#申明依赖项：Gradle或者Maven" class="headerlink" title="申明依赖项：Gradle或者Maven"></a>申明依赖项：Gradle或者Maven</h3><p>现在我们把Retrofit添加到你项目的依赖项中。选择你使用的构建系统，在pom.xml或build.gradle中定义Retrofit及其依赖项。当运行命令构建你的代码时，构建系统则会为你的项目自动下载Retrofit库。我们建议将OkHttp配合Retrofit使用，OkHttp还对Okio有依赖性，所以Okio也需要声明依赖性。</p>
+<h4 id="Retrofit-1-9"><a href="#Retrofit-1-9" class="headerlink" title="Retrofit 1.9"></a><strong>Retrofit 1.9</strong></h4><p>本系列译文仅讲述Retrofit2.0,若需要了解之前的版本，请查看<a href="https://futurestud.io/tutorials/retrofit-getting-started-and-android-client" target="_blank" rel="external">英文原版</a>文章。</p>
+<h4 id="Retrofit-2"><a href="#Retrofit-2" class="headerlink" title="Retrofit 2"></a><strong>Retrofit 2</strong></h4><p><strong>pom.xml</strong></p>
+<pre><code>&lt;dependency&gt;  
+    &lt;groupId&gt;com.squareup.retrofit2&lt;/groupId&gt;
+    &lt;artifactId&gt;retrofit&lt;/artifactId&gt;
+    &lt;version&gt;2.1.0&lt;/version&gt;
+&lt;/dependency&gt;  
+&lt;dependency&gt;  
+    &lt;groupId&gt;com.squareup.retrofit2&lt;/groupId&gt;
+    &lt;artifactId&gt;converter-gson&lt;/artifactId&gt;
+    &lt;version&gt;2.1.0&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre><p><strong>build.gradle</strong></p>
+<pre><code>dependencies {  
+    // Retrofit &amp; OkHttp
+    compile &apos;com.squareup.retrofit2:retrofit:2.1.0&apos;
+    compile &apos;com.squareup.retrofit2:converter-gson:2.1.0&apos;
+}
+</code></pre><p>Retrofit 2默认使用OkHttp作为网络层，而且OkHttp也内置到Retrofit2中了，所以你是用OkHttp时不需要在项目中再次声明依赖项了，除非你对OkHttp的版本有特殊要求。（译者注：Retrofit，OkHttp,Okio都是Square公司出品的）</p>
+<p>现在，你的项目已经准备好整合Retrofit了，我们一起来创建一个持久的Android API/HTTP 客户端吧~</p>
+<h2 id="持久的Android-客户端"><a href="#持久的Android-客户端" class="headerlink" title="持久的Android 客户端"></a>持久的Android 客户端</h2><p>在对已经存在的Retrofit客户端的研究中，发现了<a href="https://github.com/bkiers/retrofit-oauth/tree/master/src/main/java/nl/bigo/retrofitoauth" target="_blank" rel="external">example repository of Bart Kiers</a>.实际上，这是个使用Retrofit进行OAuth认证的案例。但是，它提供一个可持久化Android客户端的所有必需的基本知识。这就是为什么我们以后会把它作为坚实基础，并且在以后需要使用认证的文章中拿它来扩展。</p>
+<p>下面的类定义了我们的android 客户端的基本信息：<strong>ServiceGenerator</strong></p>
+<h3 id="ServiceGenerator"><a href="#ServiceGenerator" class="headerlink" title="ServiceGenerator"></a>ServiceGenerator</h3><p><strong>ServiceGenerator</strong>就是我们的API/HTTP客户端的核心，目前来说，它只是定义了一个为给定类和接口创建REST适配器的方法。代码如下：</p>
+<pre><code>public class ServiceGenerator {
+
+    public static final String API_BASE_URL = &quot;http://your.api-base.url&quot;;
+
+    private static OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+
+    private static Retrofit.Builder builder =
+            new Retrofit.Builder()
+                    .baseUrl(API_BASE_URL)
+                    .addConverterFactory(GsonConverterFactory.create());
+
+    public static &lt;S&gt; S createService(Class&lt;S&gt; serviceClass) {
+        Retrofit retrofit = builder.client(httpClient.build()).build();
+        return retrofit.create(serviceClass);
+    }
+}
+</code></pre><p>这个 <code>ServiceGenerator</code> 类使用Retrofit的<code>RestAdapter</code>来创建一个新的带有基本API地址（base URL）的REST客户端.例如，Github的API基本地址是：<code>https://api.github.com/</code>。<code>serviceClass</code>指的是对API请求有注解的类或者接口。以下部分展示Retrofit的具体使用以及如何定义一个典型的客户端。</p>
+<h2 id="JSON-映射"><a href="#JSON-映射" class="headerlink" title="JSON 映射"></a>JSON 映射</h2><p>Retrofit 1.9 默认使用的是Google的Gson库。你所需要做的事就是定义你的响应对象的类，响应数据会自动被映射的。</p>
+<p>使用Retrofit2时，你需要明确地为Retrofit指定一个解析器。例如前面，我们已经添加了下面这行代码到<code>build.gradle</code>文件，导入Gson 解析器到Retrofit2中。</p>
+<pre><code>compile &apos;com.squareup.retrofit2:converter-gson:2.1.0&apos;  
+</code></pre><p>现在你需要添加你的解析器到Retrofit对象中。在Retrofit的builder中调用<code>.addConverterFactory(GsonConverterFactory.create())</code>整合Gson作为默认Json解析器。</p>
+<h2 id="使用Retrofit"><a href="#使用Retrofit" class="headerlink" title="使用Retrofit"></a>使用Retrofit</h2><p>好，我们器来看一个例子，定义一个REST客户端，从Github上请求数据。首先，我们得创建一个接口，定义一些需要的方法。</p>
+<h3 id="Github客户端"><a href="#Github客户端" class="headerlink" title="Github客户端"></a>Github客户端</h3><p>下面的代码定义了<code>GithubClient</code>接口，里面有一个方法请求获取某一个repository（仓库）的所有contributors（贡献者）。它还举例说明了Retrofit的参数替换功能的使用，当请求方法<code>contributors</code>时，会把GET注解参数中{owner} 和 {repo} 替换成给定的变量。</p>
+<pre><code>public interface GitHubClient {  
+    @GET(&quot;/repos/{owner}/{repo}/contributors&quot;)
+    Call&lt;List&lt;Contributor&gt;&gt; contributors(
+        @Path(&quot;owner&quot;) String owner,
+        @Path(&quot;repo&quot;) String repo
+    );
+}
+</code></pre><p>这里有一个<code>Contributor</code>类，这个类包含一些需要的，对应响应数据中的属性。</p>
+<pre><code>static class Contributor {  
+    String login;
+    int contributions;
+}
+</code></pre><p>完整代码如下：</p>
+<pre><code>public interface GitHubClient {  
+    @GET(&quot;/repos/{owner}/{repo}/contributors&quot;)
+    Call&lt;List&lt;Contributor&gt;&gt; contributors(
+        @Path(&quot;owner&quot;) String owner,
+        @Path(&quot;repo&quot;) String repo
+    );
+    static class Contributor {  
+        String login;
+        int contributions;
+    }
+}
+</code></pre><p>关于前面提到的JSON映射：<code>GitHubClient</code>中定义了一个叫<code>contributors</code>的方法，返回值类型是<code>Call&lt;List&lt;Contributor&gt;&gt;</code>。Retrofit确保服务响应映射正确。</p>
+<p><strong>译者注：</strong><code>Contributor</code>中定义的字段并不能随意命名，需要根据服务器返回的json格式的数据做出对应的调整。因为基本地址是：<a href="https://api.github.com/" target="_blank" rel="external">https://api.github.com/</a>，我们手动补全获取所有贡献者的API地址，以我的<a href="https://github.com/hust201010701/CouponView/" target="_blank" rel="external">CouponView</a>为例，完整的请求地址是 <a href="https://api.github.com/repos/hust201010701/CouponView/contributors" target="_blank" rel="external">https://api.github.com/repos/hust201010701/CouponView/contributors</a>.我们通过观察返回数据（如下图所示），选取其中的login和contributions作为我们想提取的数据，当然你可以自己再添加其他的关键字。</p>
+<p><img src="http://7bvaky.com2.z0.glb.qiniucdn.com/2017-01-11_22_00_28_github_contributors.png" alt=""></p>
+<h2 id="API请求案例"><a href="#API请求案例" class="headerlink" title="API请求案例"></a>API请求案例</h2><p>下面这一段举例说明了使用<code>ServiceGenerator</code>初始化你的客户端，具体指的就是Github客户端，用创建的这个客户端获取仓库的贡献者。这个片段修改自<a href="https://github.com/square/retrofit/tree/master/samples/src/main/java/com/example/retrofit" target="_blank" rel="external">Retrofit github-client example</a>。</p>
+<p>你需要手动在<code>ServiceGenerator</code>中定义基本地址为<code>https://api.github.com/</code>，你还可以在<code>ServiceGenerator</code>中再创建一个包含两个参数的<code>createService()</code>，这两个参数分别是客户端类和基本地址。</p>
+<p>首先你需要在AndroidManifest.xml中声明权限（有些权限是以后会用到的）：</p>
+<pre><code>&lt;uses-permission android:name=&quot;android.permission.INTERNET&quot;&gt;&lt;/uses-permission&gt;
+&lt;uses-permission android:name=&quot;android.permission.READ_EXTERNAL_STORAGE&quot;&gt;&lt;/uses-permission&gt;
+&lt;uses-permission android:name=&quot;android.permission.MOUNT_UNMOUNT_FILESYSTEMS&quot;&gt;&lt;/uses-permission&gt;
+&lt;uses-permission android:name=&quot;android.permission.WRITE_EXTERNAL_STORAGE&quot;&gt;&lt;/uses-permission&gt;
+</code></pre><p>如果你是android 6.0以上系统，还需要在java代码中申请权限，相关代码请自行搜索：<code>Android6.0 申请读写权限</code></p>
+<p>在MainActivity中增加以下代码：</p>
+<pre><code>new Thread(new Runnable(){
+            @Override
+            public void run() {
+
+                GithubClient client = ServiceGenerator.createService(GithubClient.class);
+                Call&lt;List&lt;GithubClient.Contributor&gt;&gt; call= client.contributors(&quot;square&quot;,&quot;retrofit&quot;);
+
+                contributors = new ArrayList&lt;GithubClient.Contributor&gt;();
+
+                try {
+                    contributors = call.execute().body();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                for(GithubClient.Contributor contributor : contributors)
+                {
+                    i(contributor.login+&quot;(&quot;+contributor.contributions+&quot;)&quot;);
+                }
+
+            }
+        }).start();
+</code></pre><h2 id="下节预告"><a href="#下节预告" class="headerlink" title="下节预告"></a>下节预告</h2><p>下一篇文章我们将学习如何使用Retrofit实现基本的认证。我们将给出程序案例，实现带有用户名、邮箱、密码等的web服务或API的认证。进一步地，后面的文章会介绍带token的API认证（包括OAuth）。</p>
+<p>希望你能喜欢这个系列的文章。</p>
+<p>本文是由orzangleli翻译，原文地址：<a href="https://futurestud.io/tutorials/retrofit-getting-started-and-android-client" target="_blank" rel="external">Getting Started and Creating an Android Client</a></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;1-跟orzangleli一起学Retrofit2-第一篇-Retrofit入门指南及创建一个Android客户端&quot;&gt;&lt;a href=&quot;#1-跟orzangleli一起学Retrofit2-第一篇-Retrofit入门指南及创建一个Android客户端&quot; clas
+    
+    </summary>
+    
+      <category term="Retrofit教程" scheme="http://www.orzangleli.com/categories/Retrofit%E6%95%99%E7%A8%8B/"/>
+    
+    
+      <category term="android" scheme="http://www.orzangleli.com/tags/android/"/>
+    
+      <category term="Retrofit" scheme="http://www.orzangleli.com/tags/Retrofit/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>第零篇_将Github作为Retrofit的测试对象</title>
+    <link href="http://www.orzangleli.com/2017/01/10/2017-01-10_%5B%E8%B7%9Forzangleli%E4%B8%80%E8%B5%B7%E5%AD%A6Retrofit2%5D%20%20%E7%AC%AC%E9%9B%B6%E7%AF%87_%E5%B0%86Github%E4%BD%9C%E4%B8%BARetrofit%E7%9A%84%E6%B5%8B%E8%AF%95%E5%AF%B9%E8%B1%A1/"/>
+    <id>http://www.orzangleli.com/2017/01/10/2017-01-10_[跟orzangleli一起学Retrofit2]  第零篇_将Github作为Retrofit的测试对象/</id>
+    <published>2017-01-09T16:00:00.000Z</published>
+    <updated>2017-01-14T14:56:59.135Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="Retrofit-2-番外篇-将Github作为Retrofit的测试对象"><a href="#Retrofit-2-番外篇-将Github作为Retrofit的测试对象" class="headerlink" title="[Retrofit 2 番外篇]将Github作为Retrofit的测试对象"></a>[Retrofit 2 番外篇]将Github作为Retrofit的测试对象</h1><p><strong>目录</strong><br><!-- MarkdownTOC --></p>
+<ul>
+<li><a href="#一、-申请认证token">一、 申请认证token</a></li>
+<li><a href="#二、-准备原始数据">二、 准备原始数据</a><ul>
+<li><a href="#21-创建你的第一个仓库">2.1 创建你的第一个仓库</a></li>
+<li><a href="#22-关注一些人">2.2 关注一些人</a></li>
+<li><a href="#23-创建issues">2.3 创建Issues</a></li>
+<li><a href="#24-star-自己的仓库">2.4 Star 自己的仓库</a></li>
+</ul>
+</li>
+<li><a href="#三、-github-api大全">三、 Github API大全</a></li>
+<li><a href="#四、-善后工作">四、 善后工作</a></li>
+</ul>
+<!-- /MarkdownTOC -->
+<p>本文将阐述，将Github作为Retrofit 2学习时的测试对象要做的准备工作。因为在<strong>[跟orzangleli一起学Retrofit2]</strong>这个教程中，译者将全部使用Github中的API进行测试实验。</p>
+<h2 id="一、-申请认证token"><a href="#一、-申请认证token" class="headerlink" title="一、 申请认证token"></a>一、 申请认证token</h2><p>因为Github中的部分API是需要认证的，Github中认证有多种方式，但是token认证较为方便，所以选择token认证。我们到<a href="https://github.com/settings/tokens" target="_blank" rel="external">这个网页</a>获取token,我建议你新建一个全新的token,命名为RetrofitTest,然后勾上所有的权限，最后点击生成,然后你可以看到一串字符串，这个字符串就是token,将它保存在一个你可以随时找到的位置，<strong>因为这个token只会显示一次，以后在找就找不到了。</strong></p>
+<h2 id="二、-准备原始数据"><a href="#二、-准备原始数据" class="headerlink" title="二、 准备原始数据"></a>二、 准备原始数据</h2><h3 id="2-1-创建你的第一个仓库"><a href="#2-1-创建你的第一个仓库" class="headerlink" title="2.1 创建你的第一个仓库"></a>2.1 创建你的第一个仓库</h3><p>如果你之前创建过仓库可以不用再看这一段。</p>
+<p>如图所示，新建一个仓库，命名为RetrofitTest。<br><img src="http://7bvaky.com2.z0.glb.qiniucdn.com/2017-01-13_10_59_43_创建仓库.png" alt=""></p>
+<h3 id="2-2-关注一些人"><a href="#2-2-关注一些人" class="headerlink" title="2.2 关注一些人"></a>2.2 关注一些人</h3><p>因为后面的教程中，会有关于Following API的测试，我们建议你关注一些人。当然我希望你能够关注我的Github:<a href="https://github.com/hust201010701" target="_blank" rel="external">@hust201010701</a>,这里我还推荐一些大牛的Github:</p>
+<ul>
+<li><a href="https://github.com/hust201010701" target="_blank" rel="external">@hust201010701</a> : 本教程译者（非大牛，正在朝大牛方向努力）</li>
+<li><a href="https://github.com/JakeWharton" target="_blank" rel="external">JakeWharton</a>: Square Inc.的大牛</li>
+<li><a href="https://github.com/hongyangAndroid" target="_blank" rel="external">hongyangAndroid</a>: 鸿洋</li>
+<li><a href="https://github.com/kymjs" target="_blank" rel="external">kymjs</a>: 张涛-开源实验室</li>
+</ul>
+<h3 id="2-3-创建Issues"><a href="#2-3-创建Issues" class="headerlink" title="2.3 创建Issues"></a>2.3 创建Issues</h3><p>找到自己刚刚创建的RetrofitTest仓库，然后如图所示，创建一个Issue,Issue的标题可以和图中一样，方便标识，Issue的内容可以自由发挥，随意填写。</p>
+<p><img src="http://7bvaky.com2.z0.glb.qiniucdn.com/2017-01-13_11_24_03_创建Issue.png" alt=""></p>
+<h3 id="2-4-Star-自己的仓库"><a href="#2-4-Star-自己的仓库" class="headerlink" title="2.4 Star 自己的仓库"></a>2.4 Star 自己的仓库</h3><p>在进入RetrofitTest仓库详情页时，右上方的Star按钮，可以自己点一下，这样就相当于自己粉了自己的项目。这样我们以后通过API获取关注者时就不会返回空数据了。</p>
+<h2 id="三、-Github-API大全"><a href="#三、-Github-API大全" class="headerlink" title="三、 Github API大全"></a>三、 Github API大全</h2><p>Github的所有API可以从<a href="https://api.github.com/" target="_blank" rel="external">https://api.github.com/</a>获取到。</p>
+<p>另外，<a href="https://developer.github.com/v3/" target="_blank" rel="external">Github开发者页</a>也对Github的API有详细的描述，有兴趣的可以自己深入研究。</p>
+<h2 id="四、-善后工作"><a href="#四、-善后工作" class="headerlink" title="四、 善后工作"></a>四、 善后工作</h2><p>本教程如果学习完了，你又不想让Github中的仓库有任何风险，你可以自行进入<a href="https://github.com/settings/tokens" target="_blank" rel="external">https://github.com/settings/tokens</a>删除之前创建的RetrofitTest token。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;Retrofit-2-番外篇-将Github作为Retrofit的测试对象&quot;&gt;&lt;a href=&quot;#Retrofit-2-番外篇-将Github作为Retrofit的测试对象&quot; class=&quot;headerlink&quot; title=&quot;[Retrofit 2 番外篇]将G
+    
+    </summary>
+    
+      <category term="Retrofit教程" scheme="http://www.orzangleli.com/categories/Retrofit%E6%95%99%E7%A8%8B/"/>
+    
+    
+      <category term="android" scheme="http://www.orzangleli.com/tags/android/"/>
+    
+      <category term="Retrofit" scheme="http://www.orzangleli.com/tags/Retrofit/"/>
+    
+  </entry>
   
   <entry>
     <title>Python节日倒计时软件</title>
@@ -525,6 +1344,66 @@ collider.transform.position = bornPlace.position;
   </entry>
   
   <entry>
+    <title>使用Python将Jpeg Png Gif 图片转换为 webp格式</title>
+    <link href="http://www.orzangleli.com/2016/11/10/2016-11-10_Python%E5%B0%86Jpeg%20Png%20Gif%E8%BD%AC%E6%8D%A2%E4%B8%BAWebp%E6%A0%BC%E5%BC%8F/"/>
+    <id>http://www.orzangleli.com/2016/11/10/2016-11-10_Python将Jpeg Png Gif转换为Webp格式/</id>
+    <published>2016-11-09T16:00:00.000Z</published>
+    <updated>2016-11-10T14:05:29.034Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="使用Python将Jpeg-Png-Gif-图片转换为-webp格式"><a href="#使用Python将Jpeg-Png-Gif-图片转换为-webp格式" class="headerlink" title="使用Python将Jpeg Png Gif 图片转换为 webp格式"></a>使用Python将Jpeg Png Gif 图片转换为 webp格式</h1><h2 id="一-动机"><a href="#一-动机" class="headerlink" title="一.动机"></a>一.动机</h2><p>因为webp的优良特性：</p>
+<ul>
+<li><p>占空间小，节省带宽</p>
+</li>
+<li><p>总体加载速度快</p>
+</li>
+</ul>
+<p>这里有详细的介绍： 摘自 <a href="https://zh.wikipedia.org/wiki/WebP" target="_blank" rel="external">维基百科-WebP词条</a></p>
+<p>WebP（发音weppy）[6][7]，是一种同时提供了有损压缩与无损压缩（可逆压缩）的图片文件格式[8]，派生自视频编码格式VP8[9]，被认为是WebM多媒体格式的姊妹项目，是由Google在购买On2 Technologies后发展出来[10]，以BSD授权条款发布。[11]<br>WebP最初在2010年发布，目标是减少文件大小，但达到和JPEG格式相同的图片质量，希望能够减少图片档在网络上的发送时间。 [12]2011年11月8日，Google开始让WebP支持无损压缩和透明色（alpha通道）的功能，而在2012年8月16日的参考实做libwebp 0.2.0中正式支持[13][14]。根据Google较早的测试，WebP的无损压缩比网络上找到的PNG档少了45％的文件大小，即使这些PNG档在使用pngcrush和PNGOUT处理过，WebP还是可以减少28％的文件大小[15]。<br>WebP支持的像素最大数量是16383x16383。有损压缩的WebP仅支持8-bit的YUV 4:2:0格式。而无损压缩（可逆压缩）的WebP支持VP8L编码与8-bit之ARGB色彩空间。又无论是有损或无损压缩皆支持Alpha透明通道、ICC色彩配置、XMP诠释数据。<br>WebP有静态与动态两种模式。动态WebP（Animated WebP）支持有损与无损压缩、ICC色彩配置、XMP诠释数据、Alpha透明通道。而无损压缩的动态WebP亦支持8-bit之ARGB色彩空间。</p>
+<h2 id="二-方案实验"><a href="#二-方案实验" class="headerlink" title="二. 方案实验"></a>二. 方案实验</h2><h3 id="1-使用PIL-转换格式"><a href="#1-使用PIL-转换格式" class="headerlink" title="1. 使用PIL 转换格式"></a>1. 使用PIL 转换格式</h3><p>首先指出，PIL转换在大部分情况下都能起到很好的效果，比如讲jpeg转为webp，节省空间约90%。<br>首先安装PIL模块</p>
+<pre><code>pip install pillow
+</code></pre><p>然后在程序中 <code>localfile</code> 为图片路径</p>
+<pre><code>im = Image.open(localfile)
+f,ext = os.path.splitext(localfile.split(&quot;/&quot;)[-1])
+webp_path = &quot;%s.webp&quot;%f
+im.convert(&apos;RGB&apos;).save(webp_path, &quot;webp&quot;)
+</code></pre><p>这里需要注意需要将图片先转化为RGB模式，否则报错</p>
+<pre><code>cannot write mode P as WEBP
+</code></pre><p>现在，是时候说下PIL「失效」的情况了。</p>
+<ol>
+<li>将动图转为gif时，转化过程没有报错，但是打开后，只保存了第一帧的图片，变成了静态图。</li>
+<li>将 gif 转为 webp格式时，同样也只保存了第一帧。</li>
+</ol>
+<p>第一种情况我没有测试，但是在stackoverflow上可以看到有人提问过： <a href="http://stackoverflow.com/questions/24688802/saving-an-animated-gif-in-pillow" target="_blank" rel="external">Saving an animated GIF in Pillow</a> 。回答者是建议使用gifmaker 模块进行处理gif.</p>
+<p>第二张情况，我遇到了，所以可以证实。</p>
+<p>通过搜索，在官网上看到<a href="https://developers.google.com/speed/webp/docs/gif2webp" target="_blank" rel="external">gif2webp</a>,证明官网给出了gif转webp的解决方案，那我们就下载适合自己版本的库<a href="https://storage.googleapis.com/downloads.webmproject.org/releases/webp/index.html" target="_blank" rel="external"></a>.<br>解压后，将bin 目录下的 gif2webp.exe 复制到 工作目录下。接下来，我们使用它来转化格式。</p>
+<h3 id="2-使用gif2webp-exe转化格式"><a href="#2-使用gif2webp-exe转化格式" class="headerlink" title="2. 使用gif2webp.exe转化格式"></a>2. 使用gif2webp.exe转化格式</h3><p>根据官网给的文档<a href="https://developers.google.com/speed/webp/docs/gif2webp" target="_blank" rel="external">gif2webp</a>，我们可以很方便的使用下面的语句来实现：</p>
+<pre><code>f,ext = os.path.splitext(localfile.split(&quot;/&quot;)[-1])
+webp_path = &quot;%s.webp&quot;%f
+os.system(&quot;gif2webp.exe &quot;+ localfile + &quot; -quiet &quot; + &quot; -o &quot; + f + &quot;.webp&quot;)
+</code></pre><p>这里可能会提示：</p>
+<pre><code>GIF decode warning: invalid background color index. Assuming white background.
+</code></pre><p>转换过程持续好几秒，请耐心等待，转化完成后，工作目录下多一个webp文件.</p>
+<h2 id="三-效果比较"><a href="#三-效果比较" class="headerlink" title="三.效果比较"></a>三.效果比较</h2><center>左边是gif格式的               右边是webp格式</center>
+
+
+<p><img src="http://i.imgur.com/aFTWeSK.gif" alt="">   <img src="http://lxctest.qiniudn.com/2016-11-10_15:57:31_zhuanzhuan2.webp" alt=""></p>
+<p>你的肉眼能看出区别么？</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;使用Python将Jpeg-Png-Gif-图片转换为-webp格式&quot;&gt;&lt;a href=&quot;#使用Python将Jpeg-Png-Gif-图片转换为-webp格式&quot; class=&quot;headerlink&quot; title=&quot;使用Python将Jpeg Png Gif 图片
+    
+    </summary>
+    
+      <category term="python" scheme="http://www.orzangleli.com/categories/python/"/>
+    
+    
+      <category term="python" scheme="http://www.orzangleli.com/tags/python/"/>
+    
+  </entry>
+  
+  <entry>
     <title>自己动手造轮子系列———实现『转转APP』Indicator 效果</title>
     <link href="http://www.orzangleli.com/2016/11/10/2016-11-19_%E8%BD%AC%E8%BD%ACIndicator/"/>
     <id>http://www.orzangleli.com/2016/11/10/2016-11-19_转转Indicator/</id>
@@ -641,66 +1520,6 @@ private Handler mHandler = new Handler() {
       <category term="android" scheme="http://www.orzangleli.com/tags/android/"/>
     
       <category term="自己动手造轮子系列" scheme="http://www.orzangleli.com/tags/%E8%87%AA%E5%B7%B1%E5%8A%A8%E6%89%8B%E9%80%A0%E8%BD%AE%E5%AD%90%E7%B3%BB%E5%88%97/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>使用Python将Jpeg Png Gif 图片转换为 webp格式</title>
-    <link href="http://www.orzangleli.com/2016/11/10/2016-11-10_Python%E5%B0%86Jpeg%20Png%20Gif%E8%BD%AC%E6%8D%A2%E4%B8%BAWebp%E6%A0%BC%E5%BC%8F/"/>
-    <id>http://www.orzangleli.com/2016/11/10/2016-11-10_Python将Jpeg Png Gif转换为Webp格式/</id>
-    <published>2016-11-09T16:00:00.000Z</published>
-    <updated>2016-11-10T14:05:29.034Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="使用Python将Jpeg-Png-Gif-图片转换为-webp格式"><a href="#使用Python将Jpeg-Png-Gif-图片转换为-webp格式" class="headerlink" title="使用Python将Jpeg Png Gif 图片转换为 webp格式"></a>使用Python将Jpeg Png Gif 图片转换为 webp格式</h1><h2 id="一-动机"><a href="#一-动机" class="headerlink" title="一.动机"></a>一.动机</h2><p>因为webp的优良特性：</p>
-<ul>
-<li><p>占空间小，节省带宽</p>
-</li>
-<li><p>总体加载速度快</p>
-</li>
-</ul>
-<p>这里有详细的介绍： 摘自 <a href="https://zh.wikipedia.org/wiki/WebP" target="_blank" rel="external">维基百科-WebP词条</a></p>
-<p>WebP（发音weppy）[6][7]，是一种同时提供了有损压缩与无损压缩（可逆压缩）的图片文件格式[8]，派生自视频编码格式VP8[9]，被认为是WebM多媒体格式的姊妹项目，是由Google在购买On2 Technologies后发展出来[10]，以BSD授权条款发布。[11]<br>WebP最初在2010年发布，目标是减少文件大小，但达到和JPEG格式相同的图片质量，希望能够减少图片档在网络上的发送时间。 [12]2011年11月8日，Google开始让WebP支持无损压缩和透明色（alpha通道）的功能，而在2012年8月16日的参考实做libwebp 0.2.0中正式支持[13][14]。根据Google较早的测试，WebP的无损压缩比网络上找到的PNG档少了45％的文件大小，即使这些PNG档在使用pngcrush和PNGOUT处理过，WebP还是可以减少28％的文件大小[15]。<br>WebP支持的像素最大数量是16383x16383。有损压缩的WebP仅支持8-bit的YUV 4:2:0格式。而无损压缩（可逆压缩）的WebP支持VP8L编码与8-bit之ARGB色彩空间。又无论是有损或无损压缩皆支持Alpha透明通道、ICC色彩配置、XMP诠释数据。<br>WebP有静态与动态两种模式。动态WebP（Animated WebP）支持有损与无损压缩、ICC色彩配置、XMP诠释数据、Alpha透明通道。而无损压缩的动态WebP亦支持8-bit之ARGB色彩空间。</p>
-<h2 id="二-方案实验"><a href="#二-方案实验" class="headerlink" title="二. 方案实验"></a>二. 方案实验</h2><h3 id="1-使用PIL-转换格式"><a href="#1-使用PIL-转换格式" class="headerlink" title="1. 使用PIL 转换格式"></a>1. 使用PIL 转换格式</h3><p>首先指出，PIL转换在大部分情况下都能起到很好的效果，比如讲jpeg转为webp，节省空间约90%。<br>首先安装PIL模块</p>
-<pre><code>pip install pillow
-</code></pre><p>然后在程序中 <code>localfile</code> 为图片路径</p>
-<pre><code>im = Image.open(localfile)
-f,ext = os.path.splitext(localfile.split(&quot;/&quot;)[-1])
-webp_path = &quot;%s.webp&quot;%f
-im.convert(&apos;RGB&apos;).save(webp_path, &quot;webp&quot;)
-</code></pre><p>这里需要注意需要将图片先转化为RGB模式，否则报错</p>
-<pre><code>cannot write mode P as WEBP
-</code></pre><p>现在，是时候说下PIL「失效」的情况了。</p>
-<ol>
-<li>将动图转为gif时，转化过程没有报错，但是打开后，只保存了第一帧的图片，变成了静态图。</li>
-<li>将 gif 转为 webp格式时，同样也只保存了第一帧。</li>
-</ol>
-<p>第一种情况我没有测试，但是在stackoverflow上可以看到有人提问过： <a href="http://stackoverflow.com/questions/24688802/saving-an-animated-gif-in-pillow" target="_blank" rel="external">Saving an animated GIF in Pillow</a> 。回答者是建议使用gifmaker 模块进行处理gif.</p>
-<p>第二张情况，我遇到了，所以可以证实。</p>
-<p>通过搜索，在官网上看到<a href="https://developers.google.com/speed/webp/docs/gif2webp" target="_blank" rel="external">gif2webp</a>,证明官网给出了gif转webp的解决方案，那我们就下载适合自己版本的库<a href="https://storage.googleapis.com/downloads.webmproject.org/releases/webp/index.html" target="_blank" rel="external"></a>.<br>解压后，将bin 目录下的 gif2webp.exe 复制到 工作目录下。接下来，我们使用它来转化格式。</p>
-<h3 id="2-使用gif2webp-exe转化格式"><a href="#2-使用gif2webp-exe转化格式" class="headerlink" title="2. 使用gif2webp.exe转化格式"></a>2. 使用gif2webp.exe转化格式</h3><p>根据官网给的文档<a href="https://developers.google.com/speed/webp/docs/gif2webp" target="_blank" rel="external">gif2webp</a>，我们可以很方便的使用下面的语句来实现：</p>
-<pre><code>f,ext = os.path.splitext(localfile.split(&quot;/&quot;)[-1])
-webp_path = &quot;%s.webp&quot;%f
-os.system(&quot;gif2webp.exe &quot;+ localfile + &quot; -quiet &quot; + &quot; -o &quot; + f + &quot;.webp&quot;)
-</code></pre><p>这里可能会提示：</p>
-<pre><code>GIF decode warning: invalid background color index. Assuming white background.
-</code></pre><p>转换过程持续好几秒，请耐心等待，转化完成后，工作目录下多一个webp文件.</p>
-<h2 id="三-效果比较"><a href="#三-效果比较" class="headerlink" title="三.效果比较"></a>三.效果比较</h2><center>左边是gif格式的               右边是webp格式</center>
-
-
-<p><img src="http://i.imgur.com/aFTWeSK.gif" alt="">   <img src="http://lxctest.qiniudn.com/2016-11-10_15:57:31_zhuanzhuan2.webp" alt=""></p>
-<p>你的肉眼能看出区别么？</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;使用Python将Jpeg-Png-Gif-图片转换为-webp格式&quot;&gt;&lt;a href=&quot;#使用Python将Jpeg-Png-Gif-图片转换为-webp格式&quot; class=&quot;headerlink&quot; title=&quot;使用Python将Jpeg Png Gif 图片
-    
-    </summary>
-    
-      <category term="python" scheme="http://www.orzangleli.com/categories/python/"/>
-    
-    
-      <category term="python" scheme="http://www.orzangleli.com/tags/python/"/>
     
   </entry>
   
@@ -1366,810 +2185,6 @@ public int getItemViewType(int position) {
     
     
       <category term="android" scheme="http://www.orzangleli.com/tags/android/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>android  关于图片加载速度优化方案</title>
-    <link href="http://www.orzangleli.com/2016/09/20/android%20%20%E5%85%B3%E4%BA%8E%E5%9B%BE%E7%89%87%E5%8A%A0%E8%BD%BD%E9%80%9F%E5%BA%A6%E4%BC%98%E5%8C%96%E6%96%B9%E6%A1%88/"/>
-    <id>http://www.orzangleli.com/2016/09/20/android  关于图片加载速度优化方案/</id>
-    <published>2016-09-19T16:00:00.000Z</published>
-    <updated>2016-11-03T11:19:53.863Z</updated>
-    
-    <content type="html"><![CDATA[<p>今天下载了58同城旗下的转转app,发现那里的图片加载速度真的是太快了，快的我基本没有感觉到这是网络上下载的，第一次见到这么快的加载速度，让我惊讶，问了下转转的负责人，他跟我说了几个关键词，这里我记录下，以后方便自己实现体验：</p>
-<p>1.webp 合适的尺寸</p>
-<p>2.腾讯云cdn</p>
-<p>3.fresco框架</p>
-<p>4.还有后端的服务</p>
-<p>后端我接触不了，我就下次根据前三点做个测试，记录出详细的测试数据。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;今天下载了58同城旗下的转转app,发现那里的图片加载速度真的是太快了，快的我基本没有感觉到这是网络上下载的，第一次见到这么快的加载速度，让我惊讶，问了下转转的负责人，他跟我说了几个关键词，这里我记录下，以后方便自己实现体验：&lt;/p&gt;
-&lt;p&gt;1.webp 合适的尺寸&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="未分类" scheme="http://www.orzangleli.com/categories/%E6%9C%AA%E5%88%86%E7%B1%BB/"/>
-    
-    
-  </entry>
-  
-  <entry>
-    <title>对java集合类的理解</title>
-    <link href="http://www.orzangleli.com/2016/09/14/%E5%AF%B9java%E9%9B%86%E5%90%88%E7%B1%BB%E7%9A%84%E7%90%86%E8%A7%A3/"/>
-    <id>http://www.orzangleli.com/2016/09/14/对java集合类的理解/</id>
-    <published>2016-09-13T16:00:00.000Z</published>
-    <updated>2016-11-03T11:19:53.663Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="对java集合类的理解"><a href="#对java集合类的理解" class="headerlink" title="对java集合类的理解"></a>对java集合类的理解</h1><hr>
-<h2 id="1-ArrayList扩容策略"><a href="#1-ArrayList扩容策略" class="headerlink" title="1. ArrayList扩容策略"></a>1. ArrayList扩容策略</h2><p>这段时间，找工作，一方面是辛苦，另一方面也是收获，知道自己的哪些不足或者哪些技术没有完全弄清楚，是一个不错的检测自己的方式。</p>
-<blockquote>
-<p>-面试官问道：说下ArrayList和LinkedList的区别？</p>
-</blockquote>
-<p>首先这道题的答案我当时是知道的，我开始说ArrayList是动态数组，LinkedList是链表，然后面试官打断我：</p>
-<blockquote>
-<ul>
-<li>ArrayList是怎么实现动态数组的？</li>
-</ul>
-</blockquote>
-<p>&gt;</p>
-<p>当时就有点懵，实在想不起来了，我就按照我的想法说：</p>
-<blockquote>
-<ul>
-<li>里面用一个数组存数据，当新加的数据超出数组长度的时候，就新建一个数组长度多1的数组，然后把之前的数组复制过去，在添加新的数组。</li>
-</ul>
-</blockquote>
-<p>&gt;</p>
-<p>面试官又说</p>
-<blockquote>
-<ul>
-<li>那我有需要添加一个数据呢？继续增加1个长度在复制？</li>
-</ul>
-</blockquote>
-<p>&gt;</p>
-<p>面试过后，我就查阅ArrayList的源代码（jdk 1.8.0_101）：</p>
-<pre><code>@Override public boolean add(E object) {
-    Object[] a = array;
-    int s = size;
-    if (s == a.length) {
-        Object[] newArray = new Object[s +
-                (s &lt; (MIN_CAPACITY_INCREMENT / 2) ?
-                 MIN_CAPACITY_INCREMENT : s &gt;&gt; 1)];
-        System.arraycopy(a, 0, newArray, 0, s);
-        array = a = newArray;
-    }
-    a[s] = object;
-    size = s + 1;
-    modCount++;
-    return true;
-}
-</code></pre><p>具体解释下这段代码，在添加新元素时，首先判断当前容量是否超过MIN_CAPACITY_INCREMENT / 2 =<br>6，如果不超过6就直接把长度变为s+12,否则当容量大于6时，扩容为之前容量的1.5倍。再使用System.arraycopy复制数组，添加新元素。</p>
-<p>而在jdk1.7版本，扩容策略上略有不同：</p>
-<pre><code>private void grow(int minCapacity) {
-    // overflow-conscious code
-    int oldCapacity = elementData.length;
-    int newCapacity = oldCapacity + (oldCapacity &gt;&gt; 1);
-    if (newCapacity - minCapacity &lt; 0)
-        newCapacity = minCapacity;
-    if (newCapacity - MAX_ARRAY_SIZE &gt; 0)
-        newCapacity = hugeCapacity(minCapacity);
-    // minCapacity is usually close to size, so this is a win:
-    elementData = Arrays.copyOf(elementData, newCapacity);
-}
-</code></pre><p>扩容策略为新的数组长度是之前的1.5倍，然后再进行判断，如果当前新长度小于当前最小容量，数组长度就等于最小容量，如果新的长度长度大于最大长度，就返回hugeCapacity(minCapacity)。</p>
-<h2 id="2-ArrayList和Vector区别"><a href="#2-ArrayList和Vector区别" class="headerlink" title="2. ArrayList和Vector区别"></a>2. ArrayList和Vector区别</h2><p>ArrayList和Vector都是动态数组，不过二者的主要区别是Vector内部大部分方法使用syncchronized关键字同步，所以是线程安全的，而ArrayList则不是线程安全的。</p>
-<p>所以在单线程或者多线程但是不会同时访问同一个对象时可以使用ArrayList,速度快；多线程操作同一个对象的情况下使用Vector因为安全。</p>
-<p>另外，ArrayList和Vector在扩容策略上也有一点区别：</p>
-<blockquote>
-<ul>
-<li><p>ArrayList的策略上一段文字已经说明，基本可以概述为容量满时扩容为原来的1.5倍；</p>
-</li>
-<li><p>而Vector则是在容量满时扩容为原来的2倍。</p>
-</li>
-</ul>
-</blockquote>
-<p>&gt;</p>
-<p><em>注：CopyOnWriteArrayList是线程安全的ArrayList,一般来说可以替代Vector使用</em></p>
-<h2 id="3-ArrayList和LinkedList的区别"><a href="#3-ArrayList和LinkedList的区别" class="headerlink" title="3.ArrayList和LinkedList的区别"></a>3.ArrayList和LinkedList的区别</h2><p>ArrayList是线性表结构，而LinkedList是链表结构。<br>ArrayList内部由数组实现，数组可以由下标快速寻址，所以ArrayList的get和set速度很快。<br>LinkedList内部使用Node类包含上一个节点，下一个节点的指针和当前节点的值，所以对于LinkedList<br>使用add和remove速度很快，而get和set则需要一个遍历来寻址节点。</p>
-<p>LinkedList还可以实现队列，双向队列，栈等数据结构。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;对java集合类的理解&quot;&gt;&lt;a href=&quot;#对java集合类的理解&quot; class=&quot;headerlink&quot; title=&quot;对java集合类的理解&quot;&gt;&lt;/a&gt;对java集合类的理解&lt;/h1&gt;&lt;hr&gt;
-&lt;h2 id=&quot;1-ArrayList扩容策略&quot;&gt;&lt;a href
-    
-    </summary>
-    
-      <category term="面试" scheme="http://www.orzangleli.com/categories/%E9%9D%A2%E8%AF%95/"/>
-    
-    
-      <category term="面试" scheme="http://www.orzangleli.com/tags/%E9%9D%A2%E8%AF%95/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Android 自定义弹幕 View</title>
-    <link href="http://www.orzangleli.com/2016/09/05/Android%20%E8%87%AA%E5%AE%9A%E4%B9%89%E5%BC%B9%E5%B9%95%20View/"/>
-    <id>http://www.orzangleli.com/2016/09/05/Android 自定义弹幕 View/</id>
-    <published>2016-09-04T16:00:00.000Z</published>
-    <updated>2016-11-03T11:19:53.042Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="Android-自定义弹幕-View-高度自定义"><a href="#Android-自定义弹幕-View-高度自定义" class="headerlink" title="Android 自定义弹幕 View 高度自定义"></a>Android 自定义弹幕 View 高度自定义</h1><p>##<br><a href="https://github.com/hust201010701/Danmu/tree/master#1自定义弹幕的model层" target="_blank" rel="external"></a>1.自定义弹幕的Model层</p>
-<p>本着MVC的框架，弹幕分为弹幕的Model层和View层，Activity中负责Controller层连接二者。 自定义一个DanmuText类</p>
-<pre><code>private String content ;
-private int textSize ;
-private int textColor;
-private int x;
-private int y;
-private double xRate;
-private double yRate;
-private Paint paint;
-private boolean isShow ;
-private int speed ;
-private int width;
-private int height;
-private int orientation; //方向，0代表水平，1代表竖直
-private int antiDirection; //是否反方向运动，0代表否，1代表是
-</code></pre><p>分别定义以上弹幕属性，然后添加get，set方法。 并添加默认构造方法：</p>
-<pre><code>DanmuText()
-{
-    paint = new Paint();
-    paint.setColor(Color.BLUE);
-    paint.setTextSize(80);
-    width = 0;
-    speed = 1;
-    xRate = yRate = Math.random();
-    orientation = 0;
-    antiDirection = 0;
-    new Thread(new DanmuRollRunnable()).start();
-}
-</code></pre><p>在构造方法中启动一个线程，以对弹幕进行滚动处理。</p>
-<pre><code>public class DanmuRollRunnable implements Runnable {
-        @Override
-        public void run() {
-            while (true) {
-                if(orientation == 0)
-                    x += speed;
-                else
-                    y += speed;
-                try {
-                    Thread.sleep(10);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-}
-</code></pre><p>DanmuRollRunnable 中是一个死循环，每隔10ms判断一次，orientation 代表<br>弹幕的滚动方向是水平的还是竖直的，0代表水平，1代表竖直。</p>
-<p>##<br><a href="https://github.com/hust201010701/Danmu/tree/master#2自定义弹幕view层" target="_blank" rel="external"></a>2.自定义弹幕View层</p>
-<p>自定义一个DanmuView类，DanmuView是继承自View，其中主要的变量是</p>
-<pre><code>private String mOrientation = &quot;horizontal&quot;;
-private boolean mAntidirection = false;
-private int width;
-private int height;
-ArrayList&lt;DanmuText&gt; list;
-</code></pre><p>mOrientation 和 mAntidirection 用来保存从XML文件中获取的弹幕的排列方向和运动方向。<br>width和height用于保存DanmuView的宽和高。list用于动态存储弹幕DanmuText类。</p>
-<p>重点： 在onDraw中对list中所有弹幕进行判断处理。</p>
-<pre><code>@Override
-protected void onDraw(Canvas canvas) {
-    super.onDraw(canvas);
-    for (int i = 0; i &lt; list.size(); i++) {
-        if(list.get(i).getAntiDirection() == 0) {
-            //竖直方向运动
-            if (list.get(i).getOrientation() == 1) {
-                if (list.get(i).getY() &lt; height + list.get(i).getHeight()) {
-                    canvas.drawText(list.get(i).getContent(), (int) (list.get(i).getxRate() * width), height - list.get(i).getY(), list.get(i).getPaint());
-                    postInvalidate();
-                } else {
-                    list.get(i).setShow(false);
-                    removeDanmu(i);
-                    postInvalidate();
-                }
-            } else {
-                if (list.get(i).getX() &lt; width + list.get(i).getWidth()) {
-                    canvas.drawText(list.get(i).getContent(), width - list.get(i).getX(), (int) (list.get(i).getyRate() * height), list.get(i).getPaint());
-                    postInvalidate();
-                } else {
-                    list.get(i).setShow(false);
-                    removeDanmu(i);
-                    postInvalidate();
-                }
-            }
-        }
-        else
-        {
-            //竖直方向运动
-            if (list.get(i).getOrientation() == 1) {
-                if (list.get(i).getY() &lt; height) {
-                    canvas.drawText(list.get(i).getContent(), (int) (list.get(i).getxRate() * width), list.get(i).getY() - list.get(i).getHeight(), list.get(i).getPaint());
-                    postInvalidate();
-                } else {
-                    list.get(i).setShow(false);
-                    removeDanmu(i);
-                    postInvalidate();
-                }
-            } else {
-                if (list.get(i).getX() &lt; width) {
-                    canvas.drawText(list.get(i).getContent(), list.get(i).getX() - list.get(i).getWidth(), (int) (list.get(i).getyRate() * height), list.get(i).getPaint());
-                    postInvalidate();
-                } else {
-                    list.get(i).setShow(false);
-                    removeDanmu(i);
-                    postInvalidate();
-                }
-            }
-        }
-    }
-
-}
-</code></pre><p>同时增加添加弹幕和移除弹幕的方法：</p>
-<pre><code>public void addDanmu(DanmuText text) {
-    if (mOrientation.equals(&quot;vertical&quot;))
-        text.setOrientation(1);
-    else
-        text.setOrientation(0);
-    if (mAntidirection)
-        text.setAntiDirection(1);
-    else
-        text.setAntiDirection(0);
-    list.add(text);
-}
-
-public void removeDanmu(int i) {
-    list.remove(i);
-}
-</code></pre><p>3.在Activity中对弹幕进行调用</p>
-<pre><code>package com.orzangleli.danmu;
-
-import android.graphics.Color;
-import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-
-import java.util.Random;
-
-public class MainActivity extends AppCompatActivity {
-
-    String danmu[] = new String[]{&quot;这是一个Danmu Demo&quot;,&quot;它可以自定义Danmu的速度&quot;,&quot;方向&quot;,&quot;还有颜色&quot;,&quot;文本大小&quot;,&quot;还有滑动方向&quot;};
-    DanmuView danmuView;
-    EditText message;
-    Button send;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        toolbar.setOnMenuItemClickListener(onMenuItemClick);
-
-        danmuView = (DanmuView) this.findViewById(R.id.danmuView);
-        message = (EditText) this.findViewById(R.id.message);
-        send = (Button) this.findViewById(R.id.send);
-
-        send.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(!message.getText().toString().trim().equals(&quot;&quot;))
-                {
-                    DanmuText danmuText = new DanmuText();
-                    danmuText.setContent(message.getText().toString().trim());
-                    Random random =new Random();
-                    danmuText.setTextColor(Color.rgb(random.nextInt(255), random.nextInt(255), random.nextInt(255)));
-                    danmuView.addDanmu(danmuText);
-                    message.setText(&quot;&quot;);
-                }
-            }
-        });
-
-        for(int i=0;i&lt;danmu.length;i++)
-        {
-            DanmuText danmuText = new DanmuText();
-            danmuText.setContent(danmu[i]);
-            Random random =new Random();
-            danmuText.setTextColor(Color.rgb(random.nextInt(255), random.nextInt(255), random.nextInt(255)));
-            danmuView.addDanmu(danmuText);
-        }
-
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main_menu, menu);
-        return true;
-    }
-
-    private Toolbar.OnMenuItemClickListener onMenuItemClick = new Toolbar.OnMenuItemClickListener() {
-        @Override
-        public boolean onMenuItemClick(MenuItem menuItem) {
-            switch (menuItem.getItemId()) {
-                case R.id.action_vertical:
-                    danmuView.setOrientation(&quot;vertical&quot;);
-                    break;
-                case R.id.action_horizontal:
-                    danmuView.setOrientation(&quot;horizontal&quot;);
-                    break;
-                case R.id.action_normaldirection:
-                    danmuView.setmAntidirection(false);
-                    break;
-                case R.id.action_antinormaldirention:
-                    danmuView.setmAntidirection(true);
-                    break;
-            }
-            return true;
-        }
-    };
-
-}
-</code></pre><p>添加一个效果图：</p>
-<p><a href="https://camo.githubusercontent.com/e8e079a4d259df8e4ee1eb7e468d397d457ab46b/687474703a2f2f377872726e692e636f6d312e7a302e676c622e636c6f7564646e2e636f6d2f53637265656e5265636f72645f323031362d30392d30352d31332d35332d31342e6d70345f313437333035353632392e6769663f696d61676556696577322f302f772f333630" target="_blank" rel="external"><img src="https://camo.githubusercontent.com/e8e079a4d259df8e4ee1eb7e468d397d457ab46b/687474703a2f2f377872726e692e636f6d312e7a302e676c622e636c6f7564646e2e636f6d2f53637265656e5265636f72645f323031362d30392d30352d31332d35332d31342e6d70345f313437333035353632392e6769663f696d61676556696577322f302f772f333630" alt=""></a></p>
-<p>项目托管地址：</p>
-<p><a href="https://github.com/myst729/wp-reposidget" target="_blank" rel="external">GitHub 仓库挂件 WordPress 插件</a></p>
-<h2 id="hust201010701"><a href="#hust201010701" class="headerlink" title="hust201010701 /"></a><a href="https://github.com/hust201010701" target="_blank" rel="external">hust201010701</a> /</h2><p><a href="https://github.com/hust201010701/Danmu" target="_blank" rel="external"><strong>Danmu</strong></a></p>
-<p>自定义弹幕视图，可以实现水平/竖直方向，正向/反向弹幕，可以自定义颜色、文字大小等</p>
-<p><a href="http://www.orzangleli.com"><strong>http://www.orzangleli.com</strong></a></p>
-<p>21 <a href="https://github.com/hust201010701/Danmu/archive/master.zip" target="_blank" rel="external">Download ZIP</a></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;Android-自定义弹幕-View-高度自定义&quot;&gt;&lt;a href=&quot;#Android-自定义弹幕-View-高度自定义&quot; class=&quot;headerlink&quot; title=&quot;Android 自定义弹幕 View 高度自定义&quot;&gt;&lt;/a&gt;Android 自定义弹幕 
-    
-    </summary>
-    
-      <category term="未分类" scheme="http://www.orzangleli.com/categories/%E6%9C%AA%E5%88%86%E7%B1%BB/"/>
-    
-    
-  </entry>
-  
-  <entry>
-    <title>Android Service 持久运行不被杀死方法总结</title>
-    <link href="http://www.orzangleli.com/2016/08/22/Android%20Service%20%E6%8C%81%E4%B9%85%E8%BF%90%E8%A1%8C%E4%B8%8D%E8%A2%AB%E6%9D%80%E6%AD%BB%E6%96%B9%E6%B3%95%E6%80%BB%E7%BB%93/"/>
-    <id>http://www.orzangleli.com/2016/08/22/Android Service 持久运行不被杀死方法总结/</id>
-    <published>2016-08-21T16:00:00.000Z</published>
-    <updated>2016-11-03T11:19:54.102Z</updated>
-    
-    <content type="html"><![CDATA[<blockquote>
-<p>序：好久没有写文字了，并不代表我不在学习，只是学习的过程有些漫长，加上总结需要时间。</p>
-</blockquote>
-<h1 id="Android-Service-持久运行不被杀死方法总结"><a href="#Android-Service-持久运行不被杀死方法总结" class="headerlink" title="Android Service 持久运行不被杀死方法总结"></a>Android Service 持久运行不被杀死方法总结</h1><p>&gt;<br>简介：Android应用开发中，我们经常会遇到各种各样的场景需要保持Service不被杀死的需求。最常见的即时通讯类软件，由于实时性需求，需要保持消息服务类的运行状态。这里我总结了当下几种常见的解决方法及其利弊。首先申明：迄今为止我没有发现能够通过常规方法达到流氓需求(通过长按home键清除都清除不掉)的方法，目前所有方法都是指通过Android的内存回收机制和普通的第三方内存清除等手段后仍然保持运行的方法。</p>
-<h2 id="方法1：申明Service为前台服务和提高Service的优先级"><a href="#方法1：申明Service为前台服务和提高Service的优先级" class="headerlink" title="方法1：申明Service为前台服务和提高Service的优先级"></a>方法1：申明Service为前台服务和提高Service的优先级</h2><p>这里说到了两个小分类，申明Service为前台服务和提高Service的优先级，实际上申明Service为前台服务也是提高服务的优先级，因为Android系统中默认的内存回收顺序(越往下越先回收)是：</p>
-<blockquote>
-<p>( 引用自：<a href="http://blog.csdn.net/mad1989/article/details/22492519" target="_blank" rel="external">http://blog.csdn.net/mad1989/article/details/22492519</a>)</p>
-</blockquote>
-<p>&gt;</p>
-<blockquote>
-<ol>
-<li><p>前台进程( FOREGROUND_APP)</p>
-</li>
-<li><p>可视进程(VISIBLE_APP )</p>
-</li>
-<li><p>次要服务进程(SECONDARY_SERVER )</p>
-</li>
-<li><p>后台进程 (HIDDEN_APP)</p>
-</li>
-<li><p>内容供应节点(CONTENT_PROVIDER)</p>
-</li>
-<li><p>空进程(EMPTY_APP)</p>
-</li>
-</ol>
-</blockquote>
-<p>&gt;</p>
-<p>具体方法是在Service的onStartCommand方法中初始化Notification对象并将其绑定在服务上成为前台(Foreground)服务。<br>具体代码：</p>
-<pre><code>@Override
-public int onStartCommand(Intent intent, int flags, int startId) {
-    //使用Notification.Builder构造Notification
-    Notification.Builder builder = new Notification.Builder(this.getApplicationContext());
-    builder.setContentInfo(&quot;补充内容&quot;);
-    builder.setContentText(&quot;主内容区&quot;);
-    builder.setContentTitle(&quot;通知标题&quot;);
-    builder.setSmallIcon(R.mipmap.ic_launcher);
-    builder.setTicker(&quot;新消息&quot;);
-    builder.setAutoCancel(true);
-    builder.setWhen(System.currentTimeMillis());
-    Intent intent2 = new Intent(this.getApplicationContext(), MainActivity.class);
-    PendingIntent pendingIntent = PendingIntent.getActivity(this.getApplicationContext(), 0, intent2, PendingIntent.FLAG_CANCEL_CURRENT);
-    builder.setContentIntent(pendingIntent);
-    Notification notification = builder.build();
-    //设置为前台服务，必须绑定一个notification对象，实际上也就是说如果你想做持久化的Service就得让用户知道，PID是自定义的整数表明notification的ID
-    startForeground(PID, notification);
-
-    return START_STICKY;
-}
-</code></pre><p>代码中提到：<em>设置为前台服务，必须绑定一个notification对象，实际上也就是说如果你想做持久化的Service就得让用户知道，PID是自定义的整数表明notification的ID</em><br>，实际上有一种方法可以达到前台服务不显示通知栏的效果。</p>
-<h3 id="前台服务不显示通知栏"><a href="#前台服务不显示通知栏" class="headerlink" title="前台服务不显示通知栏"></a>前台服务不显示通知栏</h3><p>这里用到的黑科技来自博客：<a href="http://blog.csdn.net/wxx614817/article/details/50669420" target="_blank" rel="external">http://blog.csdn.net/wxx614817/article/details/50669420</a>。文中所提的方法即为：再新开一个辅助Service，onStartCommand里面同样设置为前台服务，而且startForeground(PID,<br>notification)的PID和第一个Service相同，然后在辅助Service中关闭前台服务，这样第一个Service还在运行，但是第二个服务会让通知栏关闭，这样就实现了所需功能。具体实现方式为：</p>
-<ol>
-<li><p>修改第一个Service里的onStartCommand方法，在后面启动辅助Service. </p>
-<p>   @Override<br>   public int onStartCommand(Intent intent, int flags, int startId) {<br>   //使用Notification.Builder构造Notification<br>   Notification.Builder builder = new Notification.Builder(this.getApplicationContext());<br>   builder.setContentInfo(“补充内容”);<br>   builder.setContentText(“主内容区”);<br>   builder.setContentTitle(“通知标题”);<br>   builder.setSmallIcon(R.mipmap.ic_launcher);<br>   builder.setTicker(“新消息”);<br>   builder.setAutoCancel(true);<br>   builder.setWhen(System.currentTimeMillis());<br>   Intent intent2 = new Intent(this.getApplicationContext(), MainActivity.class);<br>   PendingIntent pendingIntent = PendingIntent.getActivity(this.getApplicationContext(), 0, intent2, PendingIntent.FLAG_CANCEL_CURRENT);<br>   builder.setContentIntent(pendingIntent);<br>   Notification notification = builder.build();<br>   //设置为前台服务，必须绑定一个notification对象，实际上也就是说如果你想做持久化的Service就得让用户知道，PID是自定义的整数表明notification的ID<br>   startForeground(PID, notification);</p>
-<p>   //启动辅助Service<br>   Intent intent3 = new Intent(MyService.this,AssistService.class);<br>   MyService.this.startService(intent3);</p>
-<p>   return START_STICKY;<br>}</p>
-</li>
-</ol>
-<ol>
-<li><p>在辅助Service中开启一个同样ID的notification，并取消。 </p>
-<p>   @Override<br>   public int onStartCommand(Intent intent, int flags, int startId) {</p>
-<pre><code>Notification.Builder builder = new Notification.Builder(this.getApplicationContext());
-builder.setContentInfo(&quot;补充内容&quot;);
-builder.setContentText(&quot;主内容区&quot;);
-builder.setContentTitle(&quot;通知标题&quot;);
-builder.setSmallIcon(R.mipmap.ic_launcher);
-builder.setTicker(&quot;新消息&quot;);
-builder.setAutoCancel(true);
-builder.setWhen(System.currentTimeMillis());
-Intent intent2 = new Intent(this.getApplicationContext(), MainActivity.class);
-PendingIntent pendingIntent = PendingIntent.getActivity(this.getApplicationContext(), 0, intent2, PendingIntent.FLAG_CANCEL_CURRENT);
-builder.setContentIntent(pendingIntent);
-Notification notification = builder.build();
-NotificationManager manager =
-        (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-//先显示
-startForeground(PID, notification);
-//再销毁
-stopForeground(true);
-
-return START_STICKY;
-</code></pre><p>   }</p>
-</li>
-</ol>
-<p>修改Service优先级比较简单：在AndroidManifest.xml文件中添加intent-<br>fliter,priority值在-1000到1000范围内，数值越高优先级越高。</p>
-<pre><code>&lt;service android:name=&quot;.MyService&quot;&gt;
-    &lt;intent-filter android:priority=&quot;1000&quot;&gt;
-        &lt;action android:name=&quot;com.orzangleli.qqservicekeepdemo&quot; /&gt;
-    &lt;/intent-filter&gt;
-&lt;/service&gt;
-</code></pre><p><strong>测试效果：</strong>这种方法经过测试，在手机较高内存使用率时，大概能够运行5分钟左右（测试手机型号：nubia z7 mini ,内存2G）。这实际上也就表明了其缺点，申明为前台服务只能提高优先级，并不能保证在低内存时不被回收。</p>
-<h2 id="方法2：通过BroadcastReceiver-重启服务"><a href="#方法2：通过BroadcastReceiver-重启服务" class="headerlink" title="方法2：通过BroadcastReceiver 重启服务"></a>方法2：通过BroadcastReceiver 重启服务</h2><p>首先解释下BroadcastReceiver的两种注册方式，动态注册和静态注册，两者大多数情况下可以通用，但存在以下l两点区别：</p>
-<ol>
-<li>动态注册在程序关闭时，无法接收到广播，因为注册广播是在程序运行时执行的。</li>
-<li>静态注册虽然可以在程序未打开时接收到广播，但是有三种广播无法静态注册： <ul>
-<li>android.intent.action.SCREEN_ON</li>
-<li>android.intent.action.SCREEN_OFF</li>
-<li>android.intent.action.BATTERY_CHANGED</li>
-<li>android.intent.action.CONFIGURATION_CHANGED</li>
-<li>android.intent.action.TIME_TICK</li>
-</ul>
-</li>
-</ol>
-<p>在测试时，我使用android.intent.action.TIME_TICK动态注册广播接受者，在onReceive方法中添加判断目标服务是否在运行的判断，如果不在运行就重新启动。代码如下：</p>
-<pre><code>public class MyBroadcastReceiver extends BroadcastReceiver {
-    @Override
-    public void onReceive(Context context, Intent intent) {
-        if(intent.getAction().equals(Intent.ACTION_TIME_TICK))
-        {
-            Log.i(&quot;lxc&quot;,&quot;接收到广播了&quot;);
-            if(!isServiceRunning(context,&quot;com.orzangleli.qqservicekeepdemo.MyService&quot;))
-            {
-                Intent service = new Intent(context,MyService.class);
-                service .setAction(&quot;com.orzangleli.qqservicekeepdemo&quot;);
-                context.startService(service);
-            }
-        }
-    }
-
-    public static boolean isServiceRunning(Context context,String serviceClassName){
-        final ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-        final List&lt;ActivityManager.RunningServiceInfo&gt; services = activityManager.getRunningServices(Integer.MAX_VALUE);
-
-        for (ActivityManager.RunningServiceInfo runningServiceInfo : services) {
-            if (runningServiceInfo.service.getClassName().equals(serviceClassName)){
-                return true;
-            }
-        }
-        return false;
-    }
-
-}
-</code></pre><p>测试结果：在程序不退出但是服务停止的情况下，的确可以重启服务，但是重启不是即时的，而是每隔1分钟(在每分钟的第0秒触发)，没有尝试其他的静态注册方式，因为我没有找到一个静态注册的广播，它的广播频率比这个android.intent.action.TIME_TICK还要高的，如果各位读者有知道的，麻烦告知下。而在程序完全退出时，动态注册的BroadcastReceiver不再接受广播，所以也就不会重启Service.</p>
-<h2 id="方法3-双进程守护"><a href="#方法3-双进程守护" class="headerlink" title="方法3.双进程守护"></a>方法3.双进程守护</h2><p>双进程守护是指开启两个进程，这两个进程相互独立但是又相互守护，如果其中一个进程被杀死，另一个进程则重启该进程，因为一般情况下不会发生两个进程同时死亡的场景，所以在Service常驻功能上能够满足。</p>
-<p>这里插上一句话：在手机的应用程序中可以看到我们手机里大部分常驻内存的Service都是两个或以上的，比如下图中的微信电话本，Hola桌面和<del>QQ</del>(后面解释了QQ不是用的这种方法).</p>
-<p><img src="http://7xrrni.com1.z0.glb.clouddn.com/Screenshot_2016-08-21-22-52-24.png?imageView2/0/w/360" alt="运行中的程序"></p>
-<p>具体操作步骤为：</p>
-<p><strong>1. 申明Service的进程，主服务和辅助服务不要同一个进程</strong></p>
-<pre><code>&lt;service android:name=&quot;.MyService&quot;
-            android:process=&quot;:myservice&quot;
-            &gt;
-            &lt;intent-filter android:priority=&quot;1000&quot;&gt;
-                &lt;action android:name=&quot;com.orzangleli.qqservicekeepdemo&quot; /&gt;
-            &lt;/intent-filter&gt;
-        &lt;/service&gt;
-        &lt;service android:name=&quot;.AssistService&quot;
-            android:process=&quot;:assistservice&quot;
-            &gt;
-        &lt;/service&gt;
-</code></pre><p><strong>2. 在两个服务中分别启动一个线程检查另一个服务的状态</strong></p>
-<pre><code>class MyRunnable implements  Runnable
-{
-    @Override
-    public void run() {
-        while(enable) {
-            Log.i(TAG, &quot; 时间： &quot; + Calendar.getInstance().get(Calendar.SECOND));
-            keepAssistService();
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-}
-private  void keepAssistService(){
-    boolean isRun = isServiceRunning(this, Process_Name);
-    if (isRun == false) {
-
-            Log.i(TAG,&quot;重新启动 AssistService&quot;);
-            Intent intent = new Intent(this,AssistService.class);
-            intent .setAction(&quot;com.orzangleli.qqservicekeepdemo&quot;);
-            this.startService(intent);
-    }
-
-}
-
-public static boolean isServiceRunning(Context context,String serviceClassName){
-    final ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-    final List&lt;ActivityManager.RunningServiceInfo&gt; services = activityManager.getRunningServices(Integer.MAX_VALUE);
-
-    for (ActivityManager.RunningServiceInfo runningServiceInfo : services) {
-        if (runningServiceInfo.service.getClassName().equals(serviceClassName)){
-            return true;
-        }
-    }
-    return false;
-}
-</code></pre><p>测试结果：经过一个多小时的使用，后台服务仍然在运行状态。比较完美实现了，唯一的确定就是里面有两个线程循环执行，会导致耗电更快。</p>
-<h2 id="方法4-QQ的一像素保持前台服务方法"><a href="#方法4-QQ的一像素保持前台服务方法" class="headerlink" title="方法4.QQ的一像素保持前台服务方法"></a>方法4.QQ的一像素保持前台服务方法</h2><p>先推荐阅读文章： <a href="http://www.expreview.com/39438.html" target="_blank" rel="external">手机QQ后台为何清不掉？MIUI工程师：全靠1像素的页面保命</a></p>
-<p>文中提到，QQ通过一个像素，在程序退出时，显示这个像素，使得系统认为该服务为前台服务，所以允许常驻内存，这种方法我不很懂。</p>
-<p>我在测试的时候，在Service显示一个悬浮窗，用这个悬浮窗代替QQ的一个像素，但是在运行5分钟左右后，悬浮窗消失同时后台服务也停止运行，不是说有可见的UI的后台服务就是为前台服务了么，怎么也会被杀死。而且如果是用这种方法实现的常驻内存，为什么QQ也会使用到双进程呢？(<strong>更新：经过测试，QQ的双进程并没有守护关系，关闭掉Downloader的那个进程并不会重新启动</strong>)。</p>
-<p>现在的问题就是：为什么我在Service中启动的悬浮窗会被杀死呢？本文会持续更新。</p>
-<h2 id="方法5：使用一些常见的白名单推送包"><a href="#方法5：使用一些常见的白名单推送包" class="headerlink" title="方法5：使用一些常见的白名单推送包"></a>方法5：使用一些常见的白名单推送包</h2><p>据说使用常见的白名单推送包在保持进行活跃上也有一定效果，例如Jpush，或者内置的系统账户同步系统等，定时推送消息然后启动服务。此方法暂未测试，不知道效果如何，暂时留白。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;blockquote&gt;
-&lt;p&gt;序：好久没有写文字了，并不代表我不在学习，只是学习的过程有些漫长，加上总结需要时间。&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;h1 id=&quot;Android-Service-持久运行不被杀死方法总结&quot;&gt;&lt;a href=&quot;#Android-Service
-    
-    </summary>
-    
-      <category term="android" scheme="http://www.orzangleli.com/categories/android/"/>
-    
-    
-      <category term="android" scheme="http://www.orzangleli.com/tags/android/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>【源码解析】UIL的图片缓存策略</title>
-    <link href="http://www.orzangleli.com/2016/08/16/%E3%80%90%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90%E3%80%91UIL%E7%9A%84%E5%9B%BE%E7%89%87%E7%BC%93%E5%AD%98%E7%AD%96%E7%95%A5/"/>
-    <id>http://www.orzangleli.com/2016/08/16/【源码解析】UIL的图片缓存策略/</id>
-    <published>2016-08-15T16:00:00.000Z</published>
-    <updated>2016-11-03T11:19:52.954Z</updated>
-    
-    <content type="html"><![CDATA[<p>UIL中缓存分为内存缓存（MemoryCache）和磁盘缓存(DiscCache).</p>
-<h3 id="内存缓存"><a href="#内存缓存" class="headerlink" title="内存缓存"></a>内存缓存</h3><p>1.强引用缓存</p>
-<p><strong>LRUMemoryCache:</strong> 这个类缓存的都是bitmap对象的强引用.强引用只要引用存在，就不会被回收，而且bitmap的数据量很大，很容易导致程序超过最大内存限制，容易发生OOM.LRUMemoryCache就是最近最少使用内存缓存先删除的原理，这样保证程序不会发生OOM.</p>
-<p>2.弱引用缓存</p>
-<p><strong>WeakMemoryCache:</strong> 这个类缓存的都是bitmap的弱引用，对内存的总大小没有限制，但是不稳定，容易被gc回收掉。</p>
-<p>3.强引用和弱引用相结合</p>
-<ul>
-<li><strong>UsingFreqLimitedMemoryCache:</strong> 先删除最少使用的bitmap</li>
-<li><strong>LRULimitedMemoryCache:</strong> 先删除<strong>最近</strong>最少使用的bitmap</li>
-<li><strong>FIFOLimitedMemoryCache:</strong> 先删除最先加入缓存的bitmap</li>
-<li><strong>LargestLimitedMemortCache:</strong> 先删除最大内存的bitmap</li>
-<li><strong>LimitedAgeMemoryCache:</strong> 先删除比设定值早加入缓存中的bitmap</li>
-</ul>
-<h3 id="磁盘缓存"><a href="#磁盘缓存" class="headerlink" title="磁盘缓存"></a>磁盘缓存</h3><ol>
-<li><strong>FileCountLimitedDiscCache:</strong> 当缓存图片个数超过设定值时，先删除最先加入到磁盘中的文件</li>
-<li><strong>TotalSizeLimitedDiscCache:</strong> 当缓存图片的总文件大小超过设定值时，先删除最先加入到磁盘中的文件</li>
-<li><strong>LimitedAgeDiscCache:</strong> 设置图片存活的最长时间，超过这个时间的，就删除该文件</li>
-<li><strong>UnlimitedDiscCache:</strong> 不限制地在磁盘上缓存</li>
-</ol>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;UIL中缓存分为内存缓存（MemoryCache）和磁盘缓存(DiscCache).&lt;/p&gt;
-&lt;h3 id=&quot;内存缓存&quot;&gt;&lt;a href=&quot;#内存缓存&quot; class=&quot;headerlink&quot; title=&quot;内存缓存&quot;&gt;&lt;/a&gt;内存缓存&lt;/h3&gt;&lt;p&gt;1.强引用缓存&lt;/p&gt;
-
-    
-    </summary>
-    
-      <category term="android" scheme="http://www.orzangleli.com/categories/android/"/>
-    
-    
-      <category term="android" scheme="http://www.orzangleli.com/tags/android/"/>
-    
-      <category term="面试" scheme="http://www.orzangleli.com/tags/%E9%9D%A2%E8%AF%95/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>HTC VIVE VR关卡场景切换原理</title>
-    <link href="http://www.orzangleli.com/2016/08/09/HTC%20VIVE%20VR%E5%85%B3%E5%8D%A1%E5%9C%BA%E6%99%AF%E5%88%87%E6%8D%A2%E5%8E%9F%E7%90%86/"/>
-    <id>http://www.orzangleli.com/2016/08/09/HTC VIVE VR关卡场景切换原理/</id>
-    <published>2016-08-08T16:00:00.000Z</published>
-    <updated>2016-11-03T11:19:52.938Z</updated>
-    
-    <content type="html"><![CDATA[<p>在VR中，有时候不止一个场景，我们需要把他单独的场景连接起来，这里我们模仿普遍的网游中“传送门”的原理。</p>
-<p>如图所示，在某一处，有一个传送门标志：</p>
-<p><img src="http://www.orzangleli.com/wp-
-content/uploads/2016/08/chuansong.gif" alt="chuansong"></p>
-<p>然后主角移动到传送门附近时，跳转到下一关。</p>
-<p>这里是根据两者之间的距离来判断的，我们要VIVE<br>包中camer(head)来表示主角位置。场景的加载可以通过Application.LoadLevel来切换，在这里之前，我们需要在File-<br>Build中添加需要加载的所有场景，我这里只有两个，系统会自动分配id给它们，如我的两个场景是0和1。</p>
-<p><img src="http://www.orzangleli.com/wp-
-content/uploads/2016/08/20160809211302.png" alt="20160809211302"></p>
-<p>我们新建一个脚本，然后把脚本托给传送门的GameObject.脚本代码为：</p>
-<pre><code>using UnityEngine;
-using System.Collections;
-
-public class ChangeSence : MonoBehaviour {
-    public GameObject cameraRig;
-    // Use this for initialization
-    void Start () {
-
-    }
-
-    // Update is called once per frame
-    void Update () {
-        if (Vector3.Distance (cameraRig.transform.position, this.transform.position) &lt; 2f) {
-            if (MyApplication.level == 0) {
-                Application.LoadLevel (1);
-                MyApplication.level = 1;
-            } else if (MyApplication.level == 1) {
-                Application.LoadLevel (0);
-                MyApplication.level = 0;
-            }
-        }
-    }
-}
-</code></pre><p>恩，主要就是这样。下一讲，我们来看看VIVE控制器下的武器切换原理。</p>
-<p>组件我打包了，可以下载：需要unity 5.3+版本。</p>
-<p>链接：<a href="http://pan.baidu.com/s/1gfAvRX5" target="_blank" rel="external">http://pan.baidu.com/s/1gfAvRX5</a> 密码：zrk8</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;在VR中，有时候不止一个场景，我们需要把他单独的场景连接起来，这里我们模仿普遍的网游中“传送门”的原理。&lt;/p&gt;
-&lt;p&gt;如图所示，在某一处，有一个传送门标志：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://www.orzangleli.com/wp-
-content/up
-    
-    </summary>
-    
-      <category term="HTC VIVE" scheme="http://www.orzangleli.com/categories/HTC-VIVE/"/>
-    
-    
-      <category term="unity3D" scheme="http://www.orzangleli.com/tags/unity3D/"/>
-    
-      <category term="HTC VIVE" scheme="http://www.orzangleli.com/tags/HTC-VIVE/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Unity3D 虚拟现实FPS游戏</title>
-    <link href="http://www.orzangleli.com/2016/08/07/Unity3D%20%E8%99%9A%E6%8B%9F%E7%8E%B0%E5%AE%9EFPS%E6%B8%B8%E6%88%8F/"/>
-    <id>http://www.orzangleli.com/2016/08/07/Unity3D 虚拟现实FPS游戏/</id>
-    <published>2016-08-06T16:00:00.000Z</published>
-    <updated>2016-11-03T11:19:52.460Z</updated>
-    
-    <content type="html"><![CDATA[<p>Share the video</p>
-<ul>
-<li><a href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Fwww.orzangleli.com%2F2016%2F08%2F07%2Funity3d-%25e8%2599%259a%25e6%258b%259f%25e7%258e%25b0%25e5%25ae%259efps%25e6%25b8%25b8%25e6%2588%258f%2F" target="_blank" rel="external">Facebook</a></li>
-<li><a href="https://twitter.com/home?status=Unity3D+%E8%99%9A%E6%8B%9F%E7%8E%B0%E5%AE%9EFPS%E6%B8%B8%E6%88%8F+http%3A%2F%2Fwww.orzangleli.com%2F2016%2F08%2F07%2Funity3d-%25e8%2599%259a%25e6%258b%259f%25e7%258e%25b0%25e5%25ae%259efps%25e6%25b8%25b8%25e6%2588%258f%2F" target="_blank" rel="external">Twitter</a></li>
-<li><a href="https://plus.google.com/share?url=http%3A%2F%2Fwww.orzangleli.com%2F2016%2F08%2F07%2Funity3d-%25e8%2599%259a%25e6%258b%259f%25e7%258e%25b0%25e5%25ae%259efps%25e6%25b8%25b8%25e6%2588%258f%2F" target="_blank" rel="external">Google+</a></li>
-<li><a href="mailto:?body=Check%20the%20amazing%20video%20here%3A%20http%3A%2F%2Fwww.orzangleli.com%2F2016%2F08%2F07%2Funity3d-%25e8%2599%259a%25e6%258b%259f%25e7%258e%25b0%25e5%25ae%259efps%25e6%25b8%25b8%25e6%2588%258f%2F" target="_blank" rel="external">Email</a></li>
-</ul>
-<p><strong>Embed</strong></p>
-<p>Copy and paste this HTML code into your webpage to embed.</p>
-<hr>
-<p><a href="http://flowplayer.org" target="_blank" rel="external">flowplayer</a></p>
-<p><em>00:00</em> __ <em>00:00</em></p>
-<p>##</p>
-<p>Copy and paste this HTML code into your webpage to embed.</p>
-<p>_space_play / pause</p>
-<p>_q_unload | stop</p>
-<p>_f_fullscreen</p>
-<p>_↑__↓_volume</p>
-<p>_m_mute</p>
-<p>_←__→_seek</p>
-<p>_ . _seek to previous</p>
-<p><em>1__2</em>… <em>6</em> seek to 10%, 20% … 60%</p>
-<ul>
-<li>© 2015</li>
-<li><a href="http://flowplayer.org" target="_blank" rel="external">About Flowplayer</a></li>
-<li><a href="http://flowplayer.org/license" target="_blank" rel="external">GPL based license</a></li>
-</ul>
-<p><a href="http://flowplayer.org" target="_blank" rel="external"></a></p>
-<p>以下为技术细节记录：</p>
-<h4 id="1-自动寻路组件-Navigation"><a href="#1-自动寻路组件-Navigation" class="headerlink" title="1.自动寻路组件 Navigation"></a>1.自动寻路组件 Navigation</h4><p>首先在Unity3D中打开Window菜单的Navigation,然后依次选择场景中的模型，然后标记为这三种状态：</p>
-<ul>
-<li>Walkable</li>
-<li>NotWalkable</li>
-<li>Jump</li>
-</ul>
-<p>分别代表该处地形，可以行走，不可以行走和允许跳跃。</p>
-<p>然后在需要自动寻迹的目标上添加 Nav Mesh<br>Agent，自动寻迹代理组件。可以设置代理组件的寻迹速度和加速度，然后给目标上添加一个脚本，把它的终点位置设置好。以本游戏为例，就是僵尸自动寻找主角，主角是僵尸的目标，僵尸身上会有Nav<br>Mesh Agent组件。</p>
-<p>本游戏中，将所有建筑设置状态后，烘焙后显示寻迹路线（绿色为可以行走的部门）：</p>
-<p>特别需要注意的是，如果寻迹路线中断，僵尸是不能通过的，所以只能通过修改某些碰撞器重新烘焙，就可以生成一条连续的寻迹路线。</p>
-<p>在脚本中，使用下面的语句设置寻迹目标：</p>
-<pre><code>// Update is called once per frame
-void Update () {
-    if (agent.enabled) {
-        agent.destination = player.transform.position;
-        if (Vector3.Distance (this.transform.position, player.transform.position) &lt; 2.2f) {
-            SwitchAttack (true);    
-            agent.Stop ();
-        } else {
-            SwitchAttack (false);
-            agent.Resume ();
-        }
-    }
-}
-</code></pre><p>基本原理就是，当寻迹组件激活时，如果僵尸和主角距离超过2.2m则自动追踪主角，如果小于2.2m,就切换为攻击模式。</p>
-<h4 id="2-射击原理"><a href="#2-射击原理" class="headerlink" title="2.射击原理"></a>2.射击原理</h4><p>射击就是给子弹一个速度，然后让子弹从发射口发射出去，发射过程中，不断的在子弹的正前方发射射线，射线的长度为0.1m，这样就能检测出射击击中的位置。</p>
-<p>具体代码为：</p>
-<pre><code>using UnityEngine;
-using System.Collections;
-
-public class BulletLife : MonoBehaviour {
-
-    private Vector3 direction;
-    public GameObject holePrefab,bloodPrefab;
-    private GameObject baozha;
-
-
-    RaycastHit hit ;
-    // Use this for initialization
-    void Start () {
-        //手枪的发射方向
-        direction = -this.transform.right;
-        Destroy (gameObject,5);
-    }
-
-    // Update is called once per frame
-    void Update () {
-        Physics.Raycast (this.transform.position, direction, out hit, 0.1f);
-    }
-
-    void OnCollisionEnter(Collision c)
-    {
-        GameObject hole=Instantiate (holePrefab,hit.point,Quaternion.identity) as GameObject;
-        hole.transform.parent = hit.collider.transform;
-        hole.transform.up = hit.normal;
-        baozha = hole.transform.FindChild (&quot;baozha&quot;).gameObject;
-        if (c.collider.tag == &quot;Zombie&quot;) {
-            hole.transform.FindChild (&quot;Canvas&quot;).gameObject.SetActive (false);
-        }
-        Destroy (baozha,1.0f);
-        Destroy (hole,5f);
-        Destroy (gameObject);
-    }
-}
-</code></pre><p><strong>为什么不使用Collider来检测碰撞呢？</strong></p>
-<p>因为Collider的检测碰撞实际上是通过在间隔时间内检测是否碰撞到，如果才能返回碰撞结果的，如果物体运动速度很快，被撞物体很薄，如子弹射击木板，因为碰撞持续时间很短，很有可能检测不出碰撞来，这样就会出现一种bug：视觉上子弹穿过了僵尸，但是僵尸并没有死亡。</p>
-<p>下面附上这一周完成情况的几张截图和视频链接：</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;Share the video&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&quot;https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Fwww.orzangleli.com%2F2016%2F08%2F07%2Funi
-    
-    </summary>
-    
-      <category term="未分类" scheme="http://www.orzangleli.com/categories/%E6%9C%AA%E5%88%86%E7%B1%BB/"/>
-    
     
   </entry>
   

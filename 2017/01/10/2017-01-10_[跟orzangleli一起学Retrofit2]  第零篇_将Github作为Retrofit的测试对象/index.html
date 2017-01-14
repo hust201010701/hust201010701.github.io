@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  
+  <title>第零篇_将Github作为Retrofit的测试对象 | orzangleli | 活在梦里的程序员和设计师</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  <meta name="theme-color" content="#3F51B5">
+  
+  
+  <meta name="keywords" content="android,Retrofit">
+  <meta name="description" content="[Retrofit 2 番外篇]将Github作为Retrofit的测试对象目录
+
+一、 申请认证token
+二、 准备原始数据
+2.1 创建你的第一个仓库
+2.2 关注一些人
+2.3 创建Issues
+2.4 Star 自己的仓库
+
+
+三、 Github API大全
+四、 善后工作
+
+
+本文将阐述，将Github作为Retrofit 2学习时的测试对象要做的准备工作。因为在[跟orzanglel">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第零篇_将Github作为Retrofit的测试对象">
+<meta property="og:url" content="http://www.orzangleli.com/2017/01/10/2017-01-10_[跟orzangleli一起学Retrofit2]  第零篇_将Github作为Retrofit的测试对象/index.html">
+<meta property="og:site_name" content="orzangleli">
+<meta property="og:description" content="[Retrofit 2 番外篇]将Github作为Retrofit的测试对象目录
+
+一、 申请认证token
+二、 准备原始数据
+2.1 创建你的第一个仓库
+2.2 关注一些人
+2.3 创建Issues
+2.4 Star 自己的仓库
+
+
+三、 Github API大全
+四、 善后工作
+
+
+本文将阐述，将Github作为Retrofit 2学习时的测试对象要做的准备工作。因为在[跟orzanglel">
+<meta property="og:image" content="http://7bvaky.com2.z0.glb.qiniucdn.com/2017-01-13_10_59_43_创建仓库.png">
+<meta property="og:image" content="http://7bvaky.com2.z0.glb.qiniucdn.com/2017-01-13_11_24_03_创建Issue.png">
+<meta property="og:updated_time" content="2017-01-14T14:56:59.135Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="第零篇_将Github作为Retrofit的测试对象">
+<meta name="twitter:description" content="[Retrofit 2 番外篇]将Github作为Retrofit的测试对象目录
+
+一、 申请认证token
+二、 准备原始数据
+2.1 创建你的第一个仓库
+2.2 关注一些人
+2.3 创建Issues
+2.4 Star 自己的仓库
+
+
+三、 Github API大全
+四、 善后工作
+
+
+本文将阐述，将Github作为Retrofit 2学习时的测试对象要做的准备工作。因为在[跟orzanglel">
+<meta name="twitter:image" content="http://7bvaky.com2.z0.glb.qiniucdn.com/2017-01-13_10_59_43_创建仓库.png">
+  
+    <link rel="alternative" href="/atom.xml" title="orzangleli" type="application/atom+xml">
+  
+  <link rel="shortcut icon" href="/assets/favicon.ico">
+  <link rel="stylesheet" href="/css/style.css?v=1.2.1">
+</head>
+
+<body>
+  <div id="loading" class="active"></div>
+
+  <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/assets/avatar.gif">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">orzangleli</h5>
+          <a href="mailto:orzangleli@163.com" title="orzangleli@163.com" class="mail">orzangleli@163.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/hust201010701" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="http://weibo.com/androidjiqiaogonglue" target="_blank" >
+                <i class="icon icon-lg icon-weibo"></i>
+                Weibo
+              </a>
+            </li>
+        
+      </ul>
+
+      <footer class="footer">
+  <p><a rel="license" target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0;vertical-align:middle;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAAAPCAMAAABEF7i9AAAAllBMVEUAAAD///+rsapERER3d3eIiIjMzMzu7u4iIiKUmZO6v7rKzsoODg4RERFVVVUNDQ0NDg0PEA8zMzNLTEtbXltmZmZydnF9gn2AgICPkI+ZmZmqqqq7u7vFxsXIzMgNDQwZGRkgICAhISEkJSMnKCcuMC4xMzE5Ozk7PTtBQkFCQkJDQ0Nna2eGhoaHh4ezuLLGysbd3d1wVGpAAAAA4UlEQVR42q2T1xqCMAyFk7QsBQeKA9x7j/d/OSm22CpX0nzcpA1/T05aAOuBVkMAScQFHLnEwoCo2f1TnQIGoVMewjZEjVFN4GH1Ue1Cn2jWqwfsOOj6wDwGvotsl/c8lv7KIq1eLOsT0HMFHMIE/RZyHnlphryT9zyV+8WH5e8yQw3wnQvgAFxPTKUVi555SHR/lOfLMgVTeDlSfN+TaoUsiTyeIm+bCkHvCA2FUKG48LDtYBZBknsYP/G8NTw0gaaHyuQf4H5pecrB/FYCT2sL9zAfy1Xyjou6L8X2W7YcLyBZCRtnq/zfAAAAAElFTkSuQmCC" /></a></p>
+  <p>orzangleli &copy; 2016 - 2017</p>
+  <p>Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme
+  <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a></p>
+  <a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-2x icon-rss-square"></i></a>
+</footer>
+
+    </div>
+  </div>
+</aside>
+
+  <main id="main">
+    <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">第零篇_将Github作为Retrofit的测试对象</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container">
+        <h1 class="title">第零篇_将Github作为Retrofit的测试对象</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2017-01-09T16:00:00.000Z" itemprop="datePublished" class="page-time">
+  2017-01-10
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Retrofit教程/">Retrofit教程</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#Retrofit-2-番外篇-将Github作为Retrofit的测试对象"><span class="post-toc-number">1.</span> <span class="post-toc-text">[Retrofit 2 番外篇]将Github作为Retrofit的测试对象</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#一、-申请认证token"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">一、 申请认证token</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#二、-准备原始数据"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">二、 准备原始数据</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#2-1-创建你的第一个仓库"><span class="post-toc-number">1.2.1.</span> <span class="post-toc-text">2.1 创建你的第一个仓库</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#2-2-关注一些人"><span class="post-toc-number">1.2.2.</span> <span class="post-toc-text">2.2 关注一些人</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#2-3-创建Issues"><span class="post-toc-number">1.2.3.</span> <span class="post-toc-text">2.3 创建Issues</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#2-4-Star-自己的仓库"><span class="post-toc-number">1.2.4.</span> <span class="post-toc-text">2.4 Star 自己的仓库</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#三、-Github-API大全"><span class="post-toc-number">1.3.</span> <span class="post-toc-text">三、 Github API大全</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#四、-善后工作"><span class="post-toc-number">1.4.</span> <span class="post-toc-text">四、 善后工作</span></a></li></ol></li></ol>
+        </nav>
+    </aside>
+    
+<article id="post-2017-01-10_[跟orzangleli一起学Retrofit2]  第零篇_将Github作为Retrofit的测试对象" 
+  class="post-article article-type-post" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">第零篇_将Github作为Retrofit的测试对象</h1>
+        <div class="post-meta">
+            <time datetime="2017-01-09T16:00:00.000Z" itemprop="datePublished" class="post-time">
+  2017-01-10
+</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Retrofit教程/">Retrofit教程</a></li></ul>
+
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h1 id="Retrofit-2-番外篇-将Github作为Retrofit的测试对象"><a href="#Retrofit-2-番外篇-将Github作为Retrofit的测试对象" class="headerlink" title="[Retrofit 2 番外篇]将Github作为Retrofit的测试对象"></a>[Retrofit 2 番外篇]将Github作为Retrofit的测试对象</h1><p><strong>目录</strong><br><!-- MarkdownTOC --></p>
+<ul>
+<li><a href="#一、-申请认证token">一、 申请认证token</a></li>
+<li><a href="#二、-准备原始数据">二、 准备原始数据</a><ul>
+<li><a href="#21-创建你的第一个仓库">2.1 创建你的第一个仓库</a></li>
+<li><a href="#22-关注一些人">2.2 关注一些人</a></li>
+<li><a href="#23-创建issues">2.3 创建Issues</a></li>
+<li><a href="#24-star-自己的仓库">2.4 Star 自己的仓库</a></li>
+</ul>
+</li>
+<li><a href="#三、-github-api大全">三、 Github API大全</a></li>
+<li><a href="#四、-善后工作">四、 善后工作</a></li>
+</ul>
+<!-- /MarkdownTOC -->
+<p>本文将阐述，将Github作为Retrofit 2学习时的测试对象要做的准备工作。因为在<strong>[跟orzangleli一起学Retrofit2]</strong>这个教程中，译者将全部使用Github中的API进行测试实验。</p>
+<h2 id="一、-申请认证token"><a href="#一、-申请认证token" class="headerlink" title="一、 申请认证token"></a>一、 申请认证token</h2><p>因为Github中的部分API是需要认证的，Github中认证有多种方式，但是token认证较为方便，所以选择token认证。我们到<a href="https://github.com/settings/tokens" target="_blank" rel="external">这个网页</a>获取token,我建议你新建一个全新的token,命名为RetrofitTest,然后勾上所有的权限，最后点击生成,然后你可以看到一串字符串，这个字符串就是token,将它保存在一个你可以随时找到的位置，<strong>因为这个token只会显示一次，以后在找就找不到了。</strong></p>
+<h2 id="二、-准备原始数据"><a href="#二、-准备原始数据" class="headerlink" title="二、 准备原始数据"></a>二、 准备原始数据</h2><h3 id="2-1-创建你的第一个仓库"><a href="#2-1-创建你的第一个仓库" class="headerlink" title="2.1 创建你的第一个仓库"></a>2.1 创建你的第一个仓库</h3><p>如果你之前创建过仓库可以不用再看这一段。</p>
+<p>如图所示，新建一个仓库，命名为RetrofitTest。<br><img src="http://7bvaky.com2.z0.glb.qiniucdn.com/2017-01-13_10_59_43_创建仓库.png" alt=""></p>
+<h3 id="2-2-关注一些人"><a href="#2-2-关注一些人" class="headerlink" title="2.2 关注一些人"></a>2.2 关注一些人</h3><p>因为后面的教程中，会有关于Following API的测试，我们建议你关注一些人。当然我希望你能够关注我的Github:<a href="https://github.com/hust201010701" target="_blank" rel="external">@hust201010701</a>,这里我还推荐一些大牛的Github:</p>
+<ul>
+<li><a href="https://github.com/hust201010701" target="_blank" rel="external">@hust201010701</a> : 本教程译者（非大牛，正在朝大牛方向努力）</li>
+<li><a href="https://github.com/JakeWharton" target="_blank" rel="external">JakeWharton</a>: Square Inc.的大牛</li>
+<li><a href="https://github.com/hongyangAndroid" target="_blank" rel="external">hongyangAndroid</a>: 鸿洋</li>
+<li><a href="https://github.com/kymjs" target="_blank" rel="external">kymjs</a>: 张涛-开源实验室</li>
+</ul>
+<h3 id="2-3-创建Issues"><a href="#2-3-创建Issues" class="headerlink" title="2.3 创建Issues"></a>2.3 创建Issues</h3><p>找到自己刚刚创建的RetrofitTest仓库，然后如图所示，创建一个Issue,Issue的标题可以和图中一样，方便标识，Issue的内容可以自由发挥，随意填写。</p>
+<p><img src="http://7bvaky.com2.z0.glb.qiniucdn.com/2017-01-13_11_24_03_创建Issue.png" alt=""></p>
+<h3 id="2-4-Star-自己的仓库"><a href="#2-4-Star-自己的仓库" class="headerlink" title="2.4 Star 自己的仓库"></a>2.4 Star 自己的仓库</h3><p>在进入RetrofitTest仓库详情页时，右上方的Star按钮，可以自己点一下，这样就相当于自己粉了自己的项目。这样我们以后通过API获取关注者时就不会返回空数据了。</p>
+<h2 id="三、-Github-API大全"><a href="#三、-Github-API大全" class="headerlink" title="三、 Github API大全"></a>三、 Github API大全</h2><p>Github的所有API可以从<a href="https://api.github.com/" target="_blank" rel="external">https://api.github.com/</a>获取到。</p>
+<p>另外，<a href="https://developer.github.com/v3/" target="_blank" rel="external">Github开发者页</a>也对Github的API有详细的描述，有兴趣的可以自己深入研究。</p>
+<h2 id="四、-善后工作"><a href="#四、-善后工作" class="headerlink" title="四、 善后工作"></a>四、 善后工作</h2><p>本教程如果学习完了，你又不想让Github中的仓库有任何风险，你可以自行进入<a href="https://github.com/settings/tokens" target="_blank" rel="external">https://github.com/settings/tokens</a>删除之前创建的RetrofitTest token。</p>
+
+        </div>
+        
+        <blockquote class="post-copyright">
+    <div class="content">
+        所有原创文章版权归orzangleli所有，转载需声明：<a href="/2017/01/10/2017-01-10_[跟orzangleli一起学Retrofit2]  第零篇_将Github作为Retrofit的测试对象/" target="_blank" rel="external">http://www.orzangleli.com/2017/01/10/2017-01-10_[跟orzangleli一起学Retrofit2]  第零篇_将Github作为Retrofit的测试对象/</a>
+    </div>
+    <footer>
+        <a href="http://www.orzangleli.com">
+            <img src="/assets/avatar.gif" alt="orzangleli">
+            orzangleli
+        </a>
+    </footer>
+</blockquote>
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Retrofit/">Retrofit</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/android/">android</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <div class="tit">分享到：</div>
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.orzangleli.com/2017/01/10/2017-01-10_[跟orzangleli一起学Retrofit2]  第零篇_将Github作为Retrofit的测试对象/&title=《第零篇_将Github作为Retrofit的测试对象》 — orzangleli&pic=http://www.orzangleli.com/assets/avatar.gif" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.orzangleli.com/2017/01/10/2017-01-10_[跟orzangleli一起学Retrofit2]  第零篇_将Github作为Retrofit的测试对象/&title=《第零篇_将Github作为Retrofit的测试对象》 — orzangleli&source=华中科技大学 本科10级 硕士14级 一个热爱技术的宅~" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.orzangleli.com/2017/01/10/2017-01-10_[跟orzangleli一起学Retrofit2]  第零篇_将Github作为Retrofit的测试对象/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《第零篇_将Github作为Retrofit的测试对象》 — orzangleli&url=http://www.orzangleli.com/2017/01/10/2017-01-10_[跟orzangleli一起学Retrofit2]  第零篇_将Github作为Retrofit的测试对象/&via=http://www.orzangleli.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.orzangleli.com/2017/01/10/2017-01-10_[跟orzangleli一起学Retrofit2]  第零篇_将Github作为Retrofit的测试对象/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>   
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2017/01/11/2017-01-11_[跟orzangleli一起学Retrofit2]  第一篇_Retrofit入门指南及创建一个Android客户端/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">第一篇_Retrofit入门指南及创建一个Android客户端</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2017/01/07/2017-01-07_Python节日倒计时软件/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">Python节日倒计时软件</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+            
+    
+<div class="duoshuo" id="comments">
+	<div class="ds-thread" data-thread-key="2017-01-10_[跟orzangleli一起学Retrofit2]  第零篇_将Github作为Retrofit的测试对象" data-title="第零篇_将Github作为Retrofit的测试对象" data-url="http://www.orzangleli.com/2017/01/10/2017-01-10_[跟orzangleli一起学Retrofit2]  第零篇_将Github作为Retrofit的测试对象/"></div>
+</div>
+<script src="/js/embed.min.js?v=1.2.1"></script>
+<script src="//cdn.bootcss.com/marked/0.3.6/marked.min.js" async="async"></script>
+<script>
+var duoshuoQuery = {short_name:'orzangleli', theme: 'none'}
+</script>
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+  </main>
+  <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false }</script>
+
+
+
+<div class="global-share" id="globalShare">
+    <div class="tit">分享到：</div>
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.orzangleli.com/2017/01/10/2017-01-10_[跟orzangleli一起学Retrofit2]  第零篇_将Github作为Retrofit的测试对象/&title=《第零篇_将Github作为Retrofit的测试对象》 — orzangleli&pic=http://www.orzangleli.com/assets/avatar.gif" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.orzangleli.com/2017/01/10/2017-01-10_[跟orzangleli一起学Retrofit2]  第零篇_将Github作为Retrofit的测试对象/&title=《第零篇_将Github作为Retrofit的测试对象》 — orzangleli&source=华中科技大学 本科10级 硕士14级 一个热爱技术的宅~" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.orzangleli.com/2017/01/10/2017-01-10_[跟orzangleli一起学Retrofit2]  第零篇_将Github作为Retrofit的测试对象/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《第零篇_将Github作为Retrofit的测试对象》 — orzangleli&url=http://www.orzangleli.com/2017/01/10/2017-01-10_[跟orzangleli一起学Retrofit2]  第零篇_将Github作为Retrofit的测试对象/&via=http://www.orzangleli.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.orzangleli.com/2017/01/10/2017-01-10_[跟orzangleli一起学Retrofit2]  第零篇_将Github作为Retrofit的测试对象/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="http://s.jiathis.com/qrcode.php?url=http://www.orzangleli.com/2017/01/10/2017-01-10_[跟orzangleli一起学Retrofit2]  第零篇_将Github作为Retrofit的测试对象/" alt="微信分享二维码">
+</div>
+
+
+
+
+  <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script src="/js/main.min.js?v=1.2.1"></script>
+
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.2.1"></script>
+
+
+
+
+
+<script src="//s95.cnzz.com/z_stat.php?id=1260851403&web_id=1260851403"></script>
+
+
+
+
+
+</body>
+</html>

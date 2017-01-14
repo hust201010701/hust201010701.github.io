@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  
+  <title>第二篇__API描述的基础知识 | orzangleli | 活在梦里的程序员和设计师</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  <meta name="theme-color" content="#3F51B5">
+  
+  
+  <meta name="keywords" content="android,Retrofit">
+  <meta name="description" content="2. Retrofit 2 —API描述基础知识目录
+
+
+如何描述API
+HTTP 请求方式
+HTTP资源位置
+方法名和返回类型
+路径参数
+查询参数
+
+
+下节预告
+
+
+在上一节Retrofit入门教程中，你已经完成对Github网站的第一次请求了。希望你对Retrofit更多功能的试验仍保持热情。本节教程中你将学会Retrofit中描述API的更多细节。
+如何描述API正如你第一节学到的，我们描述">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第二篇__API描述的基础知识">
+<meta property="og:url" content="http://www.orzangleli.com/2017/01/11/2017-01-11_[跟orzangleli一起学Retrofit2]  第二篇__API描述的基础知识/index.html">
+<meta property="og:site_name" content="orzangleli">
+<meta property="og:description" content="2. Retrofit 2 —API描述基础知识目录
+
+
+如何描述API
+HTTP 请求方式
+HTTP资源位置
+方法名和返回类型
+路径参数
+查询参数
+
+
+下节预告
+
+
+在上一节Retrofit入门教程中，你已经完成对Github网站的第一次请求了。希望你对Retrofit更多功能的试验仍保持热情。本节教程中你将学会Retrofit中描述API的更多细节。
+如何描述API正如你第一节学到的，我们描述">
+<meta property="og:updated_time" content="2017-01-14T14:58:10.987Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="第二篇__API描述的基础知识">
+<meta name="twitter:description" content="2. Retrofit 2 —API描述基础知识目录
+
+
+如何描述API
+HTTP 请求方式
+HTTP资源位置
+方法名和返回类型
+路径参数
+查询参数
+
+
+下节预告
+
+
+在上一节Retrofit入门教程中，你已经完成对Github网站的第一次请求了。希望你对Retrofit更多功能的试验仍保持热情。本节教程中你将学会Retrofit中描述API的更多细节。
+如何描述API正如你第一节学到的，我们描述">
+  
+    <link rel="alternative" href="/atom.xml" title="orzangleli" type="application/atom+xml">
+  
+  <link rel="shortcut icon" href="/assets/favicon.ico">
+  <link rel="stylesheet" href="/css/style.css?v=1.2.1">
+</head>
+
+<body>
+  <div id="loading" class="active"></div>
+
+  <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/assets/avatar.gif">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">orzangleli</h5>
+          <a href="mailto:orzangleli@163.com" title="orzangleli@163.com" class="mail">orzangleli@163.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/hust201010701" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="http://weibo.com/androidjiqiaogonglue" target="_blank" >
+                <i class="icon icon-lg icon-weibo"></i>
+                Weibo
+              </a>
+            </li>
+        
+      </ul>
+
+      <footer class="footer">
+  <p><a rel="license" target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0;vertical-align:middle;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAAAPCAMAAABEF7i9AAAAllBMVEUAAAD///+rsapERER3d3eIiIjMzMzu7u4iIiKUmZO6v7rKzsoODg4RERFVVVUNDQ0NDg0PEA8zMzNLTEtbXltmZmZydnF9gn2AgICPkI+ZmZmqqqq7u7vFxsXIzMgNDQwZGRkgICAhISEkJSMnKCcuMC4xMzE5Ozk7PTtBQkFCQkJDQ0Nna2eGhoaHh4ezuLLGysbd3d1wVGpAAAAA4UlEQVR42q2T1xqCMAyFk7QsBQeKA9x7j/d/OSm22CpX0nzcpA1/T05aAOuBVkMAScQFHLnEwoCo2f1TnQIGoVMewjZEjVFN4GH1Ue1Cn2jWqwfsOOj6wDwGvotsl/c8lv7KIq1eLOsT0HMFHMIE/RZyHnlphryT9zyV+8WH5e8yQw3wnQvgAFxPTKUVi555SHR/lOfLMgVTeDlSfN+TaoUsiTyeIm+bCkHvCA2FUKG48LDtYBZBknsYP/G8NTw0gaaHyuQf4H5pecrB/FYCT2sL9zAfy1Xyjou6L8X2W7YcLyBZCRtnq/zfAAAAAElFTkSuQmCC" /></a></p>
+  <p>orzangleli &copy; 2016 - 2017</p>
+  <p>Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme
+  <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a></p>
+  <a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-2x icon-rss-square"></i></a>
+</footer>
+
+    </div>
+  </div>
+</aside>
+
+  <main id="main">
+    <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">第二篇__API描述的基础知识</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container">
+        <h1 class="title">第二篇__API描述的基础知识</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2017-01-10T16:00:00.000Z" itemprop="datePublished" class="page-time">
+  2017-01-11
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Retrofit教程/">Retrofit教程</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#2-Retrofit-2-—API描述基础知识"><span class="post-toc-number">1.</span> <span class="post-toc-text">2. Retrofit 2 —API描述基础知识</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#如何描述API"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">如何描述API</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#HTTP-请求方式"><span class="post-toc-number">1.1.1.</span> <span class="post-toc-text">HTTP 请求方式</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#HTTP资源位置"><span class="post-toc-number">1.1.2.</span> <span class="post-toc-text">HTTP资源位置</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#方法名和返回类型"><span class="post-toc-number">1.1.3.</span> <span class="post-toc-text">方法名和返回类型</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#路径参数"><span class="post-toc-number">1.1.4.</span> <span class="post-toc-text">路径参数</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#查询参数"><span class="post-toc-number">1.1.5.</span> <span class="post-toc-text">查询参数</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#下节预告"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">下节预告</span></a></li></ol></li></ol>
+        </nav>
+    </aside>
+    
+<article id="post-2017-01-11_[跟orzangleli一起学Retrofit2]  第二篇__API描述的基础知识" 
+  class="post-article article-type-post" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">第二篇__API描述的基础知识</h1>
+        <div class="post-meta">
+            <time datetime="2017-01-10T16:00:00.000Z" itemprop="datePublished" class="post-time">
+  2017-01-11
+</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Retrofit教程/">Retrofit教程</a></li></ul>
+
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h1 id="2-Retrofit-2-—API描述基础知识"><a href="#2-Retrofit-2-—API描述基础知识" class="headerlink" title="2. Retrofit 2 —API描述基础知识"></a>2. Retrofit 2 —API描述基础知识</h1><p><strong>目录</strong></p>
+<!-- MarkdownTOC -->
+<ul>
+<li><a href="#如何描述api">如何描述API</a><ul>
+<li><a href="#http-请求方式">HTTP 请求方式</a></li>
+<li><a href="#http资源位置">HTTP资源位置</a></li>
+<li><a href="#方法名和返回类型">方法名和返回类型</a></li>
+<li><a href="#路径参数">路径参数</a></li>
+<li><a href="#查询参数">查询参数</a></li>
+</ul>
+</li>
+<li><a href="#下节预告">下节预告</a></li>
+</ul>
+<!-- /MarkdownTOC -->
+<p>在上一节Retrofit入门教程中，你已经完成对Github网站的第一次请求了。希望你对Retrofit更多功能的试验仍保持热情。本节教程中你将学会Retrofit中描述API的更多细节。</p>
+<h2 id="如何描述API"><a href="#如何描述API" class="headerlink" title="如何描述API"></a>如何描述API</h2><p>正如你第一节学到的，我们描述Retrofit所有的请求都是通过接口完成的。在第一个案例中，我们就展示一点点的功能，如下：</p>
+<pre><code>public interface GitHubClient {  
+    @GET(&quot;/users/{user}/repos&quot;)
+    Call&lt;List&lt;GitHubRepo&gt;&gt; reposForUser(
+        @Path(&quot;user&quot;) String user
+    );
+}
+</code></pre><p>现在我们来具体看看这些配置项：</p>
+<h3 id="HTTP-请求方式"><a href="#HTTP-请求方式" class="headerlink" title="HTTP 请求方式"></a>HTTP 请求方式</h3><p>看来你已经知道，我们在java接口的方法上使用注解来描述API.首先你要定义的是HTTP请求方式，如<code>GET</code> ,<code>POST</code>,<code>PUT</code>,<code>DELETE</code>等。Retrofit为每一种标准的请求方式提供了一个注解。你可以想下面这样简单的方式使用Retrofit注解描述HTTP请求方式：</p>
+<pre><code>@GET, @POST, @PUT, @DELETE, @PATCH, @HEAD.
+</code></pre><p>你必须明确的支出这个API请求使用什么方式进行请求。如果你从来没有听过HTTP请求方式，，你可以看看这个网址 <a href="https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol#Request_methods" target="_blank" rel="external">HTTP维基百科</a> ，要是打不开就看看国内的吧:<a href="http://www.runoob.com/http/http-methods.html" target="_blank" rel="external">http://www.runoob.com/http/http-methods.html</a>。</p>
+<p><code>@GET</code>, <code>@PUT</code> 和 <code>@DELETE</code>的使用简单例子：</p>
+<pre><code>public interface FutureStudioClient {  
+    @GET(&quot;/user/info&quot;)
+    Call&lt;UserInfo&gt; getUserInfo();
+
+    @PUT(&quot;/user/info&quot;)
+    Call&lt;UserInfo&gt; updateUserInfo(
+        @Body UserInfo userInfo
+    );
+
+    @DELETE(&quot;/user&quot;)
+    Call&lt;Void&gt; deleteUser();
+}
+</code></pre><h3 id="HTTP资源位置"><a href="#HTTP资源位置" class="headerlink" title="HTTP资源位置"></a>HTTP资源位置</h3><p>你要把API中的相对地址作为String类型的参数传递给注解，例如<code>@GET(&quot;/user/info&quot;)</code>。<br>大部分情况，你只需要传递相对地址，而不是完整的地址（如<code>http://futurestud.io/api/user/info</code>）。这样做有一个优点，Retrofit只需要请求基本地址 （<code>http://futurestud.io</code>）一次就可以。如果你改变API的基本地址，你也只需要修改一次即可。除此之外，它还让实现一些高级的功能，如动态基本地址，变得更加容易。如果你想继续学些URL处理和怎么将基本地址和相对地址连接到一起的话，欢迎阅读我们的教程  <a href="https://futurestud.io/tutorials/retrofit-2-url-handling-resolution-and-parsing" target="_blank" rel="external">URL handling, resolution and parsing</a>.</p>
+<p>我们再看个简单的例子：</p>
+<pre><code>public interface FutureStudioClient {  
+    @GET(&quot;/user/info&quot;)
+    Call&lt;UserInfo&gt; getUserInfo();
+
+    @PUT(&quot;/user/info&quot;)
+    Call&lt;UserInfo&gt; updateUserInfo(
+        @Body UserInfo userInfo
+    );
+
+    @DELETE(&quot;/user&quot;)
+    Call&lt;Void&gt; deleteUser();
+
+    // example for passing a full URL
+    @GET(&quot;https://futurestud.io/tutorials/rss/&quot;)
+    Call&lt;FutureStudioRssFeed&gt; getRssFeed();
+}
+</code></pre><h3 id="方法名和返回类型"><a href="#方法名和返回类型" class="headerlink" title="方法名和返回类型"></a>方法名和返回类型</h3><p>现在你应该知道HTTP请求方式注解是干什么用的了。可是，我们还没有提及Java方法声明：<code>Call&lt;UserInfo&gt; getUserInfo();</code> . 这里面涉及三个部分：</p>
+<ol>
+<li>方法名</li>
+<li>方法返回类型</li>
+<li>方法参数</li>
+</ol>
+<p>先从最简单的开始：方法名。你可以随意定义方法名，Retrofit并不在意，而且它对功能也不会产生影响。不过，你还是应该取一个能够帮助其他开发者理解你这个API是干嘛的名字。</p>
+<p>方法的返回类型则颇为严格。你需要定义你想要从服务器获取什么样的数据。例如，当你请求用户信息的时候，你可能会把返回类型写成<code>Call&lt;UserInfo&gt;</code>。 <code>UserInfo</code> 这个类包含一些 带有用户数据的 变量。Retrofit会自动把服务器返回数据映射到UserInfo类的对象中，不需要手动解析。如果你想要原始响应数据，你可以在返回类型中使用<code>ResponseBody</code> 替代 <code>UserInfo</code> 。如果你不关心服务器的响应，你也可以直接使用<code>Void</code>。以上所有情形，都需要包裹在Retrofit的<code>Call&lt;&gt;</code>类中。</p>
+<p>最后，也是主要决定API网址末端部分，你可以传递参数到方法中。这些参数有很多种，这里我们就列出一些出来：</p>
+<ul>
+<li><code>@Body</code>:把java对象当做请求主体发送出去</li>
+<li><code>@Url</code>：使用动态地址</li>
+<li><code>@Field</code>:以form-urlencoded格式发送数据</li>
+</ul>
+<p>再看看使用案例：</p>
+<pre><code>public interface FutureStudioClient {  
+    @GET(&quot;/user/info&quot;)
+    Call&lt;UserInfo&gt; getUserInfo();
+
+    @PUT(&quot;/user/info&quot;)
+    Call&lt;Void&gt; updateUserInfo(
+        @Body UserInfo userInfo
+    );
+
+    @GET
+    Call&lt;ResponseBody&gt; getUserProfilePhoto(
+        @Url String profilePhotoUrl
+    );
+}
+</code></pre><p>因为路径和查询参数很普遍，所以我们会在接下来的两段中讲述它们。</p>
+<h3 id="路径参数"><a href="#路径参数" class="headerlink" title="路径参数"></a>路径参数</h3><p>REST APIs 是建议在动态URL的基础上的（关于REST可进入<a href="http://kb.cnblogs.com/page/132129/" target="_blank" rel="external">http://kb.cnblogs.com/page/132129/</a>了解）。你可以通过替换部分URL地址访问资源，如，想要获得hust201010701的CouponView仓库的所有贡献者，可以访问<a href="https://api.github.com/repos/hust201010701/CouponView/contributors" target="_blank" rel="external">https://api.github.com/repos/hust201010701/CouponView/contributors</a>,其中<code>hust201010701/CouponView</code>就是明确你要访问谁的哪个仓库。Retrofit提供了一种简单的方式替换这些路径参数。你应该在入门指南的教程中看到过了吧。</p>
+<pre><code>public interface GitHubClient {  
+    @GET(&quot;/users/{user}/repos&quot;)
+    Call&lt;List&lt;GitHubRepo&gt;&gt; reposForUser(
+        @Path(&quot;user&quot;) String user
+    );
+}
+</code></pre><p>这里<code>{user}</code>告诉Retrofit，这个值是动态的，当请求发出时会被设置进去。如果你要把一个路径参数放到URL中，你需要给方法的参数添加<code>@Path()</code>标记，<code>@Path</code>标记的值就会替换掉URL的占位符（本例中就是@Path(“user”)）。如果有必要，你可以使用多个占位符。只需要保证你匹配参数的总量。你还可以使用[optional path parameters]（<a href="https://futurestud.io/tutorials/retrofit-optional-path-parameters）。" target="_blank" rel="external">https://futurestud.io/tutorials/retrofit-optional-path-parameters）。</a></p>
+<h3 id="查询参数"><a href="#查询参数" class="headerlink" title="查询参数"></a>查询参数</h3><p>动态URL另一大类就是查询参数。如果你之前使用过过滤器，你应该看过这个网站：<code>https://www.baidu.com/s?wd=123</code> . <code>?wd=123</code>就是一个查询参数，它表明你要搜索的内容,又例如<code>https://futurestud.io/tutorials?filter=video</code>中的<code>?filter=video</code>描述了请求的资源。。和路径参数不同，你不要把它们添加到注解的URL中。你可以很简单的使用<code>@Qurey</code>来添加一个方法的参数和名字。Retrofit会自动把它加到请求中去。如果你传递了<code>null</code>作为查询参数，Retrofit就会忽略这个参数。你可以添加 <a href="https://futurestud.io/tutorials/retrofit-2-add-multiple-query-parameter-with-querymap" target="_blank" rel="external">multiple query parameters</a>。</p>
+<pre><code>public interface FutureStudioClient {  
+    @GET(&quot;/tutorials&quot;)
+    Call&lt;List&lt;Tutorial&gt;&gt; getTutorials(
+        @Query(&quot;page&quot;) Integer page
+    );
+
+    @GET(&quot;/tutorials&quot;)
+    Call&lt;List&lt;Tutorial&gt;&gt; getTutorials(
+            @Query(&quot;page&quot;) Integer page,
+            @Query(&quot;order&quot;) String order,
+            @Query(&quot;author&quot;) String author,
+            @Query(&quot;published_at&quot;) Date date
+    );
+}   
+</code></pre><p>上面这个例子，使用第二个方法，后面三个参数的值都传递<code>null</code>，这样，你就可以移除第一个<code>getTutorials()</code>方法了。</p>
+<h2 id="下节预告"><a href="#下节预告" class="headerlink" title="下节预告"></a>下节预告</h2><p>这只是一个描述API末端的介绍而已。目前你应该学会了怎么添加新的请求地址到你的接口上去了吧。你可以调整资源的位置，HTTP请求方式，返回类型，路径参数和查询参数。</p>
+<p>Retrofit提供了很多选项去进一步修改请求。例如，我们还没有说到的headers(请求头)。接下来还有很多需要学，所以继续学习教程吧！</p>
+<p>欢迎大家关注我的<a href="https://github.com/hust201010701" target="_blank" rel="external">Github</a> 和微博 <a href="http://weibo.com/androidjiqiaogonglue" target="_blank" rel="external">@orzangleli</a> 。</p>
+
+        </div>
+        
+        <blockquote class="post-copyright">
+    <div class="content">
+        所有原创文章版权归orzangleli所有，转载需声明：<a href="/2017/01/11/2017-01-11_[跟orzangleli一起学Retrofit2]  第二篇__API描述的基础知识/" target="_blank" rel="external">http://www.orzangleli.com/2017/01/11/2017-01-11_[跟orzangleli一起学Retrofit2]  第二篇__API描述的基础知识/</a>
+    </div>
+    <footer>
+        <a href="http://www.orzangleli.com">
+            <img src="/assets/avatar.gif" alt="orzangleli">
+            orzangleli
+        </a>
+    </footer>
+</blockquote>
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Retrofit/">Retrofit</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/android/">android</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <div class="tit">分享到：</div>
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.orzangleli.com/2017/01/11/2017-01-11_[跟orzangleli一起学Retrofit2]  第二篇__API描述的基础知识/&title=《第二篇__API描述的基础知识》 — orzangleli&pic=http://www.orzangleli.com/assets/avatar.gif" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.orzangleli.com/2017/01/11/2017-01-11_[跟orzangleli一起学Retrofit2]  第二篇__API描述的基础知识/&title=《第二篇__API描述的基础知识》 — orzangleli&source=华中科技大学 本科10级 硕士14级 一个热爱技术的宅~" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.orzangleli.com/2017/01/11/2017-01-11_[跟orzangleli一起学Retrofit2]  第二篇__API描述的基础知识/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《第二篇__API描述的基础知识》 — orzangleli&url=http://www.orzangleli.com/2017/01/11/2017-01-11_[跟orzangleli一起学Retrofit2]  第二篇__API描述的基础知识/&via=http://www.orzangleli.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.orzangleli.com/2017/01/11/2017-01-11_[跟orzangleli一起学Retrofit2]  第二篇__API描述的基础知识/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>   
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2017/01/12/2017-01-12_[跟orzangleli一起学Retrofit2]  第五篇 在Retrofit的请求主体中发送对象/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">第五篇 在Retrofit的请求主体中发送对象</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2017/01/11/2017-01-11_[跟orzangleli一起学Retrofit2]  第一篇_Retrofit入门指南及创建一个Android客户端/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">第一篇_Retrofit入门指南及创建一个Android客户端</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+            
+    
+<div class="duoshuo" id="comments">
+	<div class="ds-thread" data-thread-key="2017-01-11_[跟orzangleli一起学Retrofit2]  第二篇__API描述的基础知识" data-title="第二篇__API描述的基础知识" data-url="http://www.orzangleli.com/2017/01/11/2017-01-11_[跟orzangleli一起学Retrofit2]  第二篇__API描述的基础知识/"></div>
+</div>
+<script src="/js/embed.min.js?v=1.2.1"></script>
+<script src="//cdn.bootcss.com/marked/0.3.6/marked.min.js" async="async"></script>
+<script>
+var duoshuoQuery = {short_name:'orzangleli', theme: 'none'}
+</script>
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+  </main>
+  <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false }</script>
+
+
+
+<div class="global-share" id="globalShare">
+    <div class="tit">分享到：</div>
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.orzangleli.com/2017/01/11/2017-01-11_[跟orzangleli一起学Retrofit2]  第二篇__API描述的基础知识/&title=《第二篇__API描述的基础知识》 — orzangleli&pic=http://www.orzangleli.com/assets/avatar.gif" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.orzangleli.com/2017/01/11/2017-01-11_[跟orzangleli一起学Retrofit2]  第二篇__API描述的基础知识/&title=《第二篇__API描述的基础知识》 — orzangleli&source=华中科技大学 本科10级 硕士14级 一个热爱技术的宅~" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.orzangleli.com/2017/01/11/2017-01-11_[跟orzangleli一起学Retrofit2]  第二篇__API描述的基础知识/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《第二篇__API描述的基础知识》 — orzangleli&url=http://www.orzangleli.com/2017/01/11/2017-01-11_[跟orzangleli一起学Retrofit2]  第二篇__API描述的基础知识/&via=http://www.orzangleli.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.orzangleli.com/2017/01/11/2017-01-11_[跟orzangleli一起学Retrofit2]  第二篇__API描述的基础知识/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="http://s.jiathis.com/qrcode.php?url=http://www.orzangleli.com/2017/01/11/2017-01-11_[跟orzangleli一起学Retrofit2]  第二篇__API描述的基础知识/" alt="微信分享二维码">
+</div>
+
+
+
+
+  <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script src="/js/main.min.js?v=1.2.1"></script>
+
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.2.1"></script>
+
+
+
+
+
+<script src="//s95.cnzz.com/z_stat.php?id=1260851403&web_id=1260851403"></script>
+
+
+
+
+
+</body>
+</html>
