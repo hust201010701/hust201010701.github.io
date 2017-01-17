@@ -151,6 +151,119 @@
     <ul class="post-list">
     
         <li class="post-list-item">
+            <article id="post-LeapMotion 在Unity中的手势识别"
+  class="article-card article-type-post" itemprop="blogPost">
+     
+    <div class="post-meta">
+        <time datetime="2016-10-11T16:00:00.000Z" itemprop="datePublished" class="post-time">
+  2016-10-12
+</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/unity3D/">unity3D</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/2016/10/12/LeapMotion 在Unity中的手势识别/">LeapMotion 在Unity中的手势识别</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent" >
+
+    
+        今天终于把LeapMotion的手势（特指静态手势）识别搞懂了，现在以下记录。
+首先识别的脚本是绑定在物理手臂上。对手势的识别是通过对手势的分析做出来的。如果你的手势是比较复杂的手势，例如下图：
+这个手势几个特点：
+
+大拇指和食指需要伸出；
+大拇指指向正上方；
+食指指向左边。
+
+而且这三个条件之间的关系是And，所以需要添加一个逻辑控制模块DetectorLogicGate，这个模块可以将多...
+    
+    
+        <a href="/2016/10/12/LeapMotion 在Unity中的手势识别/" class="post-more waves-effect waves-button">
+            阅读全文...
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/unity3D/">unity3D</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item">
+            <article id="post-Android中上拉、下拉刷新的解决方案总结"
+  class="article-card article-type-post" itemprop="blogPost">
+     
+    <div class="post-meta">
+        <time datetime="2016-10-08T16:00:00.000Z" itemprop="datePublished" class="post-time">
+  2016-10-09
+</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/android/">android</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/2016/10/09/Android中上拉、下拉刷新的解决方案总结/">Android中上拉、下拉刷新的解决方案总结</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent" >
+
+    
+        Android中上拉、下拉刷新的解决方案总结
+序：android中上拉、下拉刷新在日常的交互中最为常见，而android系统并没有提供完善的解决方案，本文通过总结几种常见的刷新解决方案的优缺点，供各位读者方便选取适合自己的方案。本文的内容控件以RecyclerView为例。
+
+常见的方案主要有以下几种：
+1. SwipeRefreshLayout 解决方案
+根据需求不同可以分为两类
+
+只需要...
+    
+    
+        <a href="/2016/10/09/Android中上拉、下拉刷新的解决方案总结/" class="post-more waves-effect waves-button">
+            阅读全文...
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/android/">android</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item">
             <article id="post-android  关于图片加载速度优化方案"
   class="article-card article-type-post" itemprop="blogPost">
      
@@ -560,110 +673,6 @@ compile &...
     
     
         <a href="/2016/08/02/CouponView 开源库的发布/" class="post-more waves-effect waves-button">
-            阅读全文...
-        </a>
-    </div>
-    
-    <div class="post-footer">
-        
-	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/android/">android</a></li></ul>
-
-    </div>
-    
-</article>
-
-        </li>
-    
-        <li class="post-list-item">
-            <article id="post-AppBarLayout 下Toolbar 在RecyclerView下实现滑动隐藏"
-  class="article-card article-type-post" itemprop="blogPost">
-     
-    <div class="post-meta">
-        <time datetime="2016-07-24T16:00:00.000Z" itemprop="datePublished" class="post-time">
-  2016-07-25
-</time>
-
-        
-	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/android/">android</a></li></ul>
-
-
-
-    </div>
-
-    
-
-
-  
-    <h3 class="post-title" itemprop="name">
-      <a class="post-title-link" href="/2016/07/25/AppBarLayout 下Toolbar 在RecyclerView下实现滑动隐藏/">AppBarLayout 下Toolbar 在RecyclerView下实现滑动隐藏</a>
-    </h3>
-  
-
-
-
-
-    <div class="post-content" id="post-content" itemprop="postContent" >
-
-    
-        今天介绍的是AppBarLayout 下Toolbar在RecyclerView下实现滑动隐藏,目前网络上也存在一部分Toolbar在RecyclerView下隐藏的博文，但是是没有突出在AppBarLayout的布局下。
-首先是main_activity.xml的代码中AppBarLayout部分：
-&lt;android.support.design.widget.AppBarLayou...
-    
-    
-        <a href="/2016/07/25/AppBarLayout 下Toolbar 在RecyclerView下实现滑动隐藏/" class="post-more waves-effect waves-button">
-            阅读全文...
-        </a>
-    </div>
-    
-    <div class="post-footer">
-        
-	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/android/">android</a></li></ul>
-
-    </div>
-    
-</article>
-
-        </li>
-    
-        <li class="post-list-item">
-            <article id="post-Android 动态设置状态栏颜色"
-  class="article-card article-type-post" itemprop="blogPost">
-     
-    <div class="post-meta">
-        <time datetime="2016-07-23T16:00:00.000Z" itemprop="datePublished" class="post-time">
-  2016-07-24
-</time>
-
-        
-	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/android/">android</a></li></ul>
-
-
-
-    </div>
-
-    
-
-
-  
-    <h3 class="post-title" itemprop="name">
-      <a class="post-title-link" href="/2016/07/24/Android 动态设置状态栏颜色/">Android 动态设置状态栏颜色</a>
-    </h3>
-  
-
-
-
-
-    <div class="post-content" id="post-content" itemprop="postContent" >
-
-    
-        Android 动态设置状态栏颜色直接代码：
-window = this.getWindow();
-//取消设置透明状态栏,使 ContentView 内容不再覆盖状态栏
-window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-//需要设置这个 flag 才能调用 setStatusBarColor 来设置...
-    
-    
-        <a href="/2016/07/24/Android 动态设置状态栏颜色/" class="post-more waves-effect waves-button">
             阅读全文...
         </a>
     </div>
