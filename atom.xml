@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://www.orzangleli.com/"/>
-  <updated>2017-01-17T14:32:19.294Z</updated>
+  <updated>2017-01-18T13:50:30.310Z</updated>
   <id>http://www.orzangleli.com/</id>
   
   <author>
@@ -14,6 +14,145 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>第十篇 Retrofit—可选的查询参数</title>
+    <link href="http://www.orzangleli.com/2017/01/18/2017-01-18_%E7%AC%AC%E5%8D%81%E7%AF%87%20Retrofit%E2%80%94%E5%8F%AF%E9%80%89%E7%9A%84%E6%9F%A5%E8%AF%A2%E5%8F%82%E6%95%B0/"/>
+    <id>http://www.orzangleli.com/2017/01/18/2017-01-18_第十篇 Retrofit—可选的查询参数/</id>
+    <published>2017-01-17T16:00:00.000Z</published>
+    <updated>2017-01-18T13:50:30.310Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="10-可选的查询参数"><a href="#10-可选的查询参数" class="headerlink" title="10. 可选的查询参数"></a>10. 可选的查询参数</h1><!-- MarkdownTOC -->
+<ul>
+<li><a href="#一、-retrofit查询参数">一、 Retrofit查询参数</a></li>
+<li><a href="#二、-可选的查询参数">二、 可选的查询参数</a></li>
+<li><a href="#三、-在github中实战">三、 在Github中实战</a></li>
+</ul>
+<!-- /MarkdownTOC -->
+<p>前几篇文章，带你领略了添加自定义请求头的技术方法。现在，我们来看看在Retofit中如何让参数可选。</p>
+<h2 id="一、-Retrofit查询参数"><a href="#一、-Retrofit查询参数" class="headerlink" title="一、 Retrofit查询参数"></a>一、 Retrofit查询参数</h2><p>Retrofit使用注解定义查询参数。方法参数前面定义的注解，指定了要查询的参数的名字。在请求执行时，我们要查询的参数就会传递到URL中。现在我们来看个具体的例子。下面的代码讲的就是一个以<code>/tasks</code>作为API endpoint的请求，它提供了一个选项<code>sort</code>参数以达到排序的目的。</p>
+<p>public interface TaskService {<br>    @GET(“/tasks”)<br>    Call<list<task>&gt; getTasks(@Query(“sort”) String order);<br>}</list<task></p>
+<p>假设你的API的基本地址是：<code>https://your.api.com</code>,请求就使用上面的<code>TaskService</code>调用<code>getTasks</code>方法，最终形成的请求的URL是这样的：</p>
+<pre><code>https://your.api.com/tasks?sort=value-of-order-parameter
+</code></pre><h2 id="二、-可选的查询参数"><a href="#二、-可选的查询参数" class="headerlink" title="二、 可选的查询参数"></a>二、 可选的查询参数</h2><p>根据API的设计原则，<code>sort</code>参数应该是可选的。如果你不想在请求中传递这个参数，你可以在方法调用的时候直接传递<strong><code>null</code></strong>给<code>order</code>。</p>
+<pre><code>service.getTasks(null);  
+</code></pre><p>Retrofit会跳过<code>null</code>参数，并且在实现请求的时候忽略它们。记住，你不可以把<code>null</code>传递给这几种类型:<code>int</code>,<code>float</code>,<code>long</code>等。但是如果你使用的是<code>Integer</code>,<code>Float</code>,<code>Long</code>，那么就可以传递<code>null</code>了。</p>
+<p>下面的例子描述的就是给之前提到的集中数据类型定义的请求客户端。</p>
+<pre><code>public interface TaskService {  
+    @GET(&quot;/tasks&quot;)
+    Call&lt;List&lt;Task&gt;&gt; getTasks(
+        @Query(&quot;sort&quot;) String order,
+        @Query(&quot;page&quot;) Integer page);
+}
+</code></pre><p>现在，你可以给<code>order</code>或<code>page</code>中任何一个参数传递<code>null</code>了。</p>
+<pre><code>service.getTasks(null, null); 
+</code></pre><p>这样就是了，可选参数的查询，让我们总结下：实现可选参数的方法就是在定义客户端接口时，如果参数类型是<code>int</code>,’long’等基本数据类型，需要把这个参数的类型修改为其包装类，如<code>Integer</code>,<code>Long</code>等，如果本身就是封装的类，那在接口定义时就不需要处理。然后在调用客户端接口中的方法时，可以使用<code>null</code>传递给某些参数，这样在API请求时，就会自动忽略值为<code>null</code>的参数，从而达到参数可选的功能。</p>
+<h2 id="三、-在Github中实战"><a href="#三、-在Github中实战" class="headerlink" title="三、 在Github中实战"></a>三、 在Github中实战</h2><p>我们以Github中<code>Search repositories</code>仓库搜索的API为例，展示下可选查询参数的demo.<br>从<a href="https://developer.github.com/v3/search/#search-repositories" target="_blank" rel="external">https://developer.github.com/v3/search/#search-repositories</a>中，我们可以找到搜索仓库的API使用方法。</p>
+<pre><code>GET /search/repositories
+</code></pre><table>
+<thead>
+<tr>
+<th style="text-align:center">Name</th>
+<th style="text-align:center">Type</th>
+<th style="text-align:center">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">q</td>
+<td style="text-align:center">string</td>
+<td style="text-align:center">搜索的关键字</td>
+</tr>
+<tr>
+<td style="text-align:center">sort</td>
+<td style="text-align:center">string</td>
+<td style="text-align:center">排序依据参数，可以是 <code>stars</code>, <code>forks</code>, 或者 <code>updated</code>. 默认是按匹配的程度排序。</td>
+</tr>
+<tr>
+<td style="text-align:center">order</td>
+<td style="text-align:center">string</td>
+<td style="text-align:center">决定搜索结果的排序是增序还是减序，可以是asc或 desc. 默认是: desc（减序）</td>
+</tr>
+</tbody>
+</table>
+<p>好，现在我们把GithubClient接口修改下，注意请求方式是<code>GET</code>：</p>
+<pre><code>public interface GithubClient {
+    @GET(&quot;/search/repositories&quot;)
+    Call&lt;ResponseBody&gt; searchRepos(
+            @Query(&quot;q&quot;) String keywords,
+            @Query(&quot;sort&quot;) String sort,
+            @Query(&quot;order&quot;) String order
+    );
+}
+</code></pre><p>MainActivity中测试时，可以将<code>searchRepos(...)</code>方法中的第二个和第三个参数修改为<code>null</code>。</p>
+<pre><code>public class MainActivity extends AppCompatActivity {
+    private final static String TAG = &quot;ILearnRetrofit&quot;;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        Utils.init(this);
+
+        GithubClient client = ServiceGenerator.createService(GithubClient.class);
+        Call&lt;ResponseBody&gt; call = client.searchRepos(&quot;Retrofit&quot;,&quot;updated&quot;,null);  // 搜索包含`Retrofit`关键字的仓库，按照更新时间排序，排序方式按照默认的减序
+        call.enqueue(new Callback&lt;ResponseBody&gt;() {
+            @Override
+            public void onResponse(Call&lt;ResponseBody&gt; call, Response&lt;ResponseBody&gt; response) {
+                try {
+                    if (response.isSuccessful())
+                        i(TAG, &quot;搜索成功：&quot; + response.body().string() );
+                    else
+                        i(TAG, &quot;搜索失败：&quot; + response.errorBody().string());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            @Override
+            public void onFailure(Call&lt;ResponseBody&gt; call, Throwable t) {
+                i(TAG, &quot;搜索失败：&quot; + t.getMessage());
+            }
+        });
+
+    }
+}
+</code></pre><p>正常的返回数据在控制台中可以看到打印（因为logcat打印有4k长度限制,所以直接看到的json格式并不是完整的）：</p>
+<p><img src="http://7bvaky.com2.z0.glb.qiniucdn.com/2017-01-15_12_28_02_搜索仓库.png" alt=""></p>
+<p>因为<code>sort</code>和<code>order</code>是可选参数，如果不填写，是有默认值可以继续正常使用的，这也就是为什么<code>q</code>参数不能传递<code>null</code>，虽然程序可以正常执行，但是API端返回数据有误，报错如下：</p>
+<pre><code>搜索失败：
+{
+    &quot;message&quot;: &quot;Validation Failed&quot;,
+    &quot;errors&quot;: [
+        {
+            &quot;resource&quot;: &quot;Search&quot;,
+            &quot;field&quot;: &quot;q&quot;,
+            &quot;code&quot;: &quot;missing&quot;
+        }
+    ],
+    &quot;documentation_url&quot;: &quot;https://developer.github.com/v3/search&quot;
+}
+</code></pre><blockquote>
+<p>本教程所有源码参见此网页：[留白]</p>
+</blockquote>
+<p>Enjoy Coding! 如果在阅读本教程的过程中有任何疑问或者需要帮助，可以随时在微博上联系我，我的微博是 <a href="http://weibo.com/androidjiqiaogonglue" target="_blank" rel="external">@orzanglei</a>。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;10-可选的查询参数&quot;&gt;&lt;a href=&quot;#10-可选的查询参数&quot; class=&quot;headerlink&quot; title=&quot;10. 可选的查询参数&quot;&gt;&lt;/a&gt;10. 可选的查询参数&lt;/h1&gt;&lt;!-- MarkdownTOC --&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;
+    
+    </summary>
+    
+      <category term="Retrofit教程" scheme="http://www.orzangleli.com/categories/Retrofit%E6%95%99%E7%A8%8B/"/>
+    
+    
+      <category term="android" scheme="http://www.orzangleli.com/tags/android/"/>
+    
+      <category term="Retrofit" scheme="http://www.orzangleli.com/tags/Retrofit/"/>
+    
+  </entry>
   
   <entry>
     <title>9 第九篇 Retrofit—同一key多重value字段</title>
@@ -2018,43 +2157,6 @@ taoObj.get_all_data()
     
       <category term="未分类" scheme="http://www.orzangleli.com/categories/%E6%9C%AA%E5%88%86%E7%B1%BB/"/>
     
-    
-  </entry>
-  
-  <entry>
-    <title>Python 3.5的环境下使用opencv 3.1版本</title>
-    <link href="http://www.orzangleli.com/2016/10/21/Python%203.5%E7%9A%84%E7%8E%AF%E5%A2%83%E4%B8%8B%E4%BD%BF%E7%94%A8opencv%203.1%E7%89%88%E6%9C%AC/"/>
-    <id>http://www.orzangleli.com/2016/10/21/Python 3.5的环境下使用opencv 3.1版本/</id>
-    <published>2016-10-20T16:00:00.000Z</published>
-    <updated>2016-11-03T11:19:54.781Z</updated>
-    
-    <content type="html"><![CDATA[<p>本来照着这个教程学习OpenCV，说3.5版本不能使用opencv,需要转换版本，可以是用的是linux命令，我也看不懂。上网搜了下，可以在3.5中使用opencv的，安装方法就是下载<a href="http://www.lfd.uci.edu/~gohlke/pythonlibs/6kbpejrn/opencv_python-3.1.0-cp35-cp35m-win_amd64.whl" target="_blank" rel="external">opencv<br>for<br>python</a>.<br>然后新建一个py脚本进行测试，脚本内容为：</p>
-<pre><code>import cv2
-import numpy as np
-image = cv2.imread(&quot;1.jpg&quot;)
-cv2.imshow(&quot;Image&quot;,image)
-cv2.waitKey(0)
-</code></pre><p>需要提前安装numpy，使用 pip install numpy .</p>
-<p>当然会提示这样的错误：</p>
-<pre><code>Traceback (most recent call last):
-File &quot;test.py&quot;, line 1, in &lt;module&gt;
-import cv2
-ImportError: DLL load failed: 找不到指定的模块。
-</code></pre><p>这时候，安装一个vs的C++库就行了，下载地址：</p>
-<p><a href="https://www.microsoft.com/zh-cn/download/confirmation.aspx?id=48145" target="_blank" rel="external">https://www.microsoft.com/zh-cn/download/confirmation.aspx?id=48145</a></p>
-<p>安装完成后，就发现可以正常显示图片了~~~</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;本来照着这个教程学习OpenCV，说3.5版本不能使用opencv,需要转换版本，可以是用的是linux命令，我也看不懂。上网搜了下，可以在3.5中使用opencv的，安装方法就是下载&lt;a href=&quot;http://www.lfd.uci.edu/~gohlke/pytho
-    
-    </summary>
-    
-      <category term="Python" scheme="http://www.orzangleli.com/categories/Python/"/>
-    
-    
-      <category term="Python" scheme="http://www.orzangleli.com/tags/Python/"/>
     
   </entry>
   
