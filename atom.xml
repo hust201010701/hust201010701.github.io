@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://www.orzangleli.com/"/>
-  <updated>2017-01-18T13:50:30.310Z</updated>
+  <updated>2017-02-13T12:32:05.226Z</updated>
   <id>http://www.orzangleli.com/</id>
   
   <author>
@@ -14,6 +14,143 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>第十一篇 Retrofit— 使用日志级别调试请求</title>
+    <link href="http://www.orzangleli.com/2017/02/13/2017-02-13_%E7%AC%AC%E5%8D%81%E4%B8%80%E7%AF%87%20Retrofit%E2%80%94%20%E4%BD%BF%E7%94%A8%E6%97%A5%E5%BF%97%E7%BA%A7%E5%88%AB%E8%B0%83%E8%AF%95%E8%AF%B7%E6%B1%82/"/>
+    <id>http://www.orzangleli.com/2017/02/13/2017-02-13_第十一篇 Retrofit— 使用日志级别调试请求/</id>
+    <published>2017-02-12T16:00:00.000Z</published>
+    <updated>2017-02-13T12:32:05.226Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="11-第十一篇-Retrofit—-使用日志级别调试请求"><a href="#11-第十一篇-Retrofit—-使用日志级别调试请求" class="headerlink" title="11. 第十一篇 Retrofit— 使用日志级别调试请求"></a>11. 第十一篇 Retrofit— 使用日志级别调试请求</h1><!-- MarkdownTOC -->
+<ul>
+<li><a href="#一-、retrofit-2-中的日志功能">一 、Retrofit 2 中的日志功能</a></li>
+<li><a href="#二、日志级别">二、日志级别</a><ul>
+<li><a href="#21-none">2.1 None</a></li>
+<li><a href="#22-basic">2.2 Basic</a></li>
+<li><a href="#23-headers">2.3 Headers</a></li>
+<li><a href="#24-body">2.4 Body</a></li>
+</ul>
+</li>
+<li><a href="#三、总结">三、总结</a></li>
+<li><a href="#四、在github中实战">四、在Github中实战</a></li>
+</ul>
+<!-- /MarkdownTOC -->
+<p>在深入挖掘Retrofit的网络请求艺术后，本文我们看看Retrofit的调试功能，顺便复习下之前学到的知识点。</p>
+<h2 id="一-、Retrofit-2-中的日志功能"><a href="#一-、Retrofit-2-中的日志功能" class="headerlink" title="一 、Retrofit 2 中的日志功能"></a>一 、Retrofit 2 中的日志功能</h2><p>Retrofit2 在网络操作上完全依赖OkHttp.OkHttp的开发者已经发布了一个独立的继承OkHttp的日志拦截工程。你可以把它添加到你项目的<code>build.gradle</code>中：</p>
+<pre><code>compile &apos;com.squareup.okhttp3:logging-interceptor:3.3.1&apos;  
+
+在开发APP或者调试程序时，整合了日志功能，能显示请求和响应信息是非常不错的。因为Retrofit 2默认并没有整合日志功能，所以我们需要添加一个日志拦截器到OkHttp上。幸运的是，OkHttp已经为拦截器做好了准备，你需要做的就是激活它。
+
+HttpLoggingInterceptor logging = new HttpLoggingInterceptor();  
+// set your desired log level
+logging.setLevel(Level.BODY);
+
+OkHttpClient.Builder httpClient = new OkHttpClient.Builder();  
+// add your other interceptors …
+
+// add logging as last interceptor
+httpClient.addInterceptor(logging);  // &lt;-- this is the important line!
+
+Retrofit retrofit = new Retrofit.Builder()  
+   .baseUrl(API_BASE_URL)
+   .addConverterFactory(GsonConverterFactory.create())
+   .client(httpClient.build())
+   .build();
+</code></pre><h2 id="二、日志级别"><a href="#二、日志级别" class="headerlink" title="二、日志级别"></a>二、日志级别</h2><p>打印过多信息会爆掉你的Android 监视器，这就是为什么OkHttp的日志拦截器有个日志级别： <code>NONE</code>, <code>BASIC</code>, <code>HEADERS</code>, <code>BODY</code>.现在带你一起看看每一种日志级别并描述它们的输出内容。</p>
+<h3 id="2-1-None"><a href="#2-1-None" class="headerlink" title="2.1 None"></a>2.1 None</h3><p><strong>无日志</strong></p>
+<p>使用这个日志级别配置开发环境会让你的app跳过所有的日志操作。</p>
+<h3 id="2-2-Basic"><a href="#2-2-Basic" class="headerlink" title="2.2 Basic"></a>2.2 Basic</h3><p><strong>打印请求type,url,request body大小，响应状态和response  body的大小</strong></p>
+<pre><code>D/HttpLoggingInterceptor$Logger: --&gt; POST /upload HTTP/1.1 (277-byte body)  
+D/HttpLoggingInterceptor$Logger: &lt;-- HTTP/1.1 200 OK (543ms, -1-byte body) 
+</code></pre><p>使用<code>Basic</code>级别会打印最少的请求信息。如果你只对equest body的大小，response  body的大小和响应状态感兴趣，这种日志级别最适合你。</p>
+<h3 id="2-3-Headers"><a href="#2-3-Headers" class="headerlink" title="2.3 Headers"></a>2.3 Headers</h3><p><strong>记录请求和响应头，请求类型，url，响应状态</strong></p>
+<p>使用<code>Headers</code>级别的日志辉记录请求和响应头。Retrofit或OkHttp默认会添加适当的请求头，但是不会在请求上显示出来，也因为它们是后来才在请求链中被添加上去的。如果你不在Android上截获真实的请求，你什么都看不到。如果你自己添加了请求头，请确保日志拦截器是你最后添加拦截器。如果你最先添加日志拦截器，那请求头上就不会有任何的请求头了。</p>
+<p>假设你要自己定义请求头，我们使用<code>Accept</code>和<code>Content-Type</code>这两个字段来验证下输出内容。</p>
+<pre><code>D/HttpLoggingInterceptor$Logger: --&gt; POST /upload HTTP/1.1  
+D/HttpLoggingInterceptor$Logger: Accept: application/json  
+D/HttpLoggingInterceptor$Logger: Content-Type: application/json  
+D/HttpLoggingInterceptor$Logger: --&gt; END POST  
+D/HttpLoggingInterceptor$Logger: &lt;-- HTTP/1.1 200 OK (1039ms)  
+D/HttpLoggingInterceptor$Logger: content-type: text/html; charset=utf-8  
+D/HttpLoggingInterceptor$Logger: cache-control: no-cache  
+D/HttpLoggingInterceptor$Logger: vary: accept-encoding  
+D/HttpLoggingInterceptor$Logger: Date: Wed, 28 Oct 2015 08:24:20 GMT  
+D/HttpLoggingInterceptor$Logger: Connection: keep-alive  
+D/HttpLoggingInterceptor$Logger: Transfer-Encoding: chunked  
+D/HttpLoggingInterceptor$Logger: OkHttp-Selected-Protocol: http/1.1  
+D/HttpLoggingInterceptor$Logger: OkHttp-Sent-Millis: 1446020610352  
+D/HttpLoggingInterceptor$Logger: OkHttp-Received-Millis: 1446020610369  
+D/HttpLoggingInterceptor$Logger: &lt;-- END HTTP
+</code></pre><p>除了服务器的响应头，你还可以看到使用什么协议以及在各自的发送请求和接受响应所用的毫秒级时间。</p>
+<h3 id="2-4-Body"><a href="#2-4-Body" class="headerlink" title="2.4 Body"></a>2.4 Body</h3><p><strong>记录日志请求和响应的请求头和请求体</strong></p>
+<p>这是最完整的日志级别，会打印所有请求和响应相关的信息。</p>
+<pre><code>D/HttpLoggingInterceptor$Logger: --&gt; POST /upload HTTP/1.1  
+D/HttpLoggingInterceptor$Logger: --9df820bb-bc7e-4a93-bb67-5f28f4140795  
+D/HttpLoggingInterceptor$Logger: Content-Disposition: form-data; name=&quot;description&quot;  
+D/HttpLoggingInterceptor$Logger: Content-Transfer-Encoding: binary  
+D/HttpLoggingInterceptor$Logger: Content-Type: application/json; charset=UTF-8  
+D/HttpLoggingInterceptor$Logger: Content-Length: 37  
+D/HttpLoggingInterceptor$Logger:  
+D/HttpLoggingInterceptor$Logger: &quot;hello, this is description speaking&quot;  
+D/HttpLoggingInterceptor$Logger: --9df820bb-bc7e-4a93-bb67-5f28f4140795--  
+D/HttpLoggingInterceptor$Logger: --&gt; END POST (277-byte body)  
+D/HttpLoggingInterceptor$Logger: &lt;-- HTTP/1.1 200 OK (1099ms)  
+D/HttpLoggingInterceptor$Logger: content-type: text/html; charset=utf-8  
+D/HttpLoggingInterceptor$Logger: cache-control: no-cache  
+D/HttpLoggingInterceptor$Logger: vary: accept-encoding  
+D/HttpLoggingInterceptor$Logger: Date: Wed, 28 Oct 2015 08:33:40 GMT  
+D/HttpLoggingInterceptor$Logger: Connection: keep-alive  
+D/HttpLoggingInterceptor$Logger: Transfer-Encoding: chunked  
+D/HttpLoggingInterceptor$Logger: OkHttp-Selected-Protocol: http/1.1  
+D/HttpLoggingInterceptor$Logger: OkHttp-Sent-Millis: 1446021170095  
+D/HttpLoggingInterceptor$Logger: OkHttp-Received-Millis: 1446021170107  
+D/HttpLoggingInterceptor$Logger: Perfect!  
+D/HttpLoggingInterceptor$Logger: &lt;-- END HTTP (8-byte body) 
+</code></pre><p>这是唯一一种可以获得响应主体的日志界别。当你和后端开发者有不同意见的时候，用这中日志级别可以显示所有接受到的数据。但是<code>Body</code>级别会在接受大量数据时让你的Android 监视器堵塞。只有在有必要的时候才使用这种日志级别。</p>
+<h2 id="三、总结"><a href="#三、总结" class="headerlink" title="三、总结"></a>三、总结</h2><p>我们希望你能把日志用到你的项目开发中，日志级别的信息会帮助你选择正确的日志级别。尝试不同的日志级别，看看哪个最适合你。即使说<code>Body</code>级别可能会堵塞你的日志监视窗口，但是有可能你只有在显示所有请求细节的时候才能找到你想要的信息。</p>
+<h2 id="四、在Github中实战"><a href="#四、在Github中实战" class="headerlink" title="四、在Github中实战"></a>四、在Github中实战</h2><p>要添加日志记录功能，不需要对已有的业务模块进行修改，只要把<code>ServiceGenerator</code>修改下就可以了，看我修改后的代码：</p>
+<pre><code>public class ServiceGenerator {
+
+    public static final String API_BASIC_URL = &quot;https://api.github.com/&quot;;
+    private static OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+
+    private static Retrofit.Builder builder =new Retrofit.Builder()
+            .baseUrl(API_BASIC_URL)
+            .addConverterFactory(GsonConverterFactory.create());
+
+    static HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+
+
+    public static &lt;S&gt; S createService(Class&lt;S&gt; serviceClass){
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+        httpClient.addInterceptor(logging);
+
+        Retrofit retrofit = builder.client(httpClient.build()).build();
+        return retrofit.create(serviceClass);
+    }
+}
+</code></pre><p>记住，在项目的<code>build.gradle</code>中添加对log拦截器的依赖：</p>
+<pre><code>compile &apos;com.squareup.okhttp3:logging-interceptor:3.3.1&apos;
+</code></pre><p>在控制台中可以看到很多请求和响应的日志，截图：</p>
+<p><img src="http://7bvaky.com2.z0.glb.qiniucdn.com/2017-01-16_17_13_21_log.png" alt=""></p>
+<p>Enjoy Coding! 如果在阅读本教程的过程中有任何疑问或者需要帮助，可以随时在微博上联系我，我的微博是 <a href="http://weibo.com/androidjiqiaogonglue" target="_blank" rel="external">@orzanglei</a>。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;11-第十一篇-Retrofit—-使用日志级别调试请求&quot;&gt;&lt;a href=&quot;#11-第十一篇-Retrofit—-使用日志级别调试请求&quot; class=&quot;headerlink&quot; title=&quot;11. 第十一篇 Retrofit— 使用日志级别调试请求&quot;&gt;&lt;/a&gt;1
+    
+    </summary>
+    
+      <category term="Retrofit教程" scheme="http://www.orzangleli.com/categories/Retrofit%E6%95%99%E7%A8%8B/"/>
+    
+    
+      <category term="android" scheme="http://www.orzangleli.com/tags/android/"/>
+    
+      <category term="Retrofit" scheme="http://www.orzangleli.com/tags/Retrofit/"/>
+    
+  </entry>
   
   <entry>
     <title>第十篇 Retrofit—可选的查询参数</title>
@@ -1597,66 +1734,6 @@ collider.transform.position = bornPlace.position;
   </entry>
   
   <entry>
-    <title>使用Python将Jpeg Png Gif 图片转换为 webp格式</title>
-    <link href="http://www.orzangleli.com/2016/11/10/2016-11-10_Python%E5%B0%86Jpeg%20Png%20Gif%E8%BD%AC%E6%8D%A2%E4%B8%BAWebp%E6%A0%BC%E5%BC%8F/"/>
-    <id>http://www.orzangleli.com/2016/11/10/2016-11-10_Python将Jpeg Png Gif转换为Webp格式/</id>
-    <published>2016-11-09T16:00:00.000Z</published>
-    <updated>2016-11-10T14:05:29.034Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="使用Python将Jpeg-Png-Gif-图片转换为-webp格式"><a href="#使用Python将Jpeg-Png-Gif-图片转换为-webp格式" class="headerlink" title="使用Python将Jpeg Png Gif 图片转换为 webp格式"></a>使用Python将Jpeg Png Gif 图片转换为 webp格式</h1><h2 id="一-动机"><a href="#一-动机" class="headerlink" title="一.动机"></a>一.动机</h2><p>因为webp的优良特性：</p>
-<ul>
-<li><p>占空间小，节省带宽</p>
-</li>
-<li><p>总体加载速度快</p>
-</li>
-</ul>
-<p>这里有详细的介绍： 摘自 <a href="https://zh.wikipedia.org/wiki/WebP" target="_blank" rel="external">维基百科-WebP词条</a></p>
-<p>WebP（发音weppy）[6][7]，是一种同时提供了有损压缩与无损压缩（可逆压缩）的图片文件格式[8]，派生自视频编码格式VP8[9]，被认为是WebM多媒体格式的姊妹项目，是由Google在购买On2 Technologies后发展出来[10]，以BSD授权条款发布。[11]<br>WebP最初在2010年发布，目标是减少文件大小，但达到和JPEG格式相同的图片质量，希望能够减少图片档在网络上的发送时间。 [12]2011年11月8日，Google开始让WebP支持无损压缩和透明色（alpha通道）的功能，而在2012年8月16日的参考实做libwebp 0.2.0中正式支持[13][14]。根据Google较早的测试，WebP的无损压缩比网络上找到的PNG档少了45％的文件大小，即使这些PNG档在使用pngcrush和PNGOUT处理过，WebP还是可以减少28％的文件大小[15]。<br>WebP支持的像素最大数量是16383x16383。有损压缩的WebP仅支持8-bit的YUV 4:2:0格式。而无损压缩（可逆压缩）的WebP支持VP8L编码与8-bit之ARGB色彩空间。又无论是有损或无损压缩皆支持Alpha透明通道、ICC色彩配置、XMP诠释数据。<br>WebP有静态与动态两种模式。动态WebP（Animated WebP）支持有损与无损压缩、ICC色彩配置、XMP诠释数据、Alpha透明通道。而无损压缩的动态WebP亦支持8-bit之ARGB色彩空间。</p>
-<h2 id="二-方案实验"><a href="#二-方案实验" class="headerlink" title="二. 方案实验"></a>二. 方案实验</h2><h3 id="1-使用PIL-转换格式"><a href="#1-使用PIL-转换格式" class="headerlink" title="1. 使用PIL 转换格式"></a>1. 使用PIL 转换格式</h3><p>首先指出，PIL转换在大部分情况下都能起到很好的效果，比如讲jpeg转为webp，节省空间约90%。<br>首先安装PIL模块</p>
-<pre><code>pip install pillow
-</code></pre><p>然后在程序中 <code>localfile</code> 为图片路径</p>
-<pre><code>im = Image.open(localfile)
-f,ext = os.path.splitext(localfile.split(&quot;/&quot;)[-1])
-webp_path = &quot;%s.webp&quot;%f
-im.convert(&apos;RGB&apos;).save(webp_path, &quot;webp&quot;)
-</code></pre><p>这里需要注意需要将图片先转化为RGB模式，否则报错</p>
-<pre><code>cannot write mode P as WEBP
-</code></pre><p>现在，是时候说下PIL「失效」的情况了。</p>
-<ol>
-<li>将动图转为gif时，转化过程没有报错，但是打开后，只保存了第一帧的图片，变成了静态图。</li>
-<li>将 gif 转为 webp格式时，同样也只保存了第一帧。</li>
-</ol>
-<p>第一种情况我没有测试，但是在stackoverflow上可以看到有人提问过： <a href="http://stackoverflow.com/questions/24688802/saving-an-animated-gif-in-pillow" target="_blank" rel="external">Saving an animated GIF in Pillow</a> 。回答者是建议使用gifmaker 模块进行处理gif.</p>
-<p>第二张情况，我遇到了，所以可以证实。</p>
-<p>通过搜索，在官网上看到<a href="https://developers.google.com/speed/webp/docs/gif2webp" target="_blank" rel="external">gif2webp</a>,证明官网给出了gif转webp的解决方案，那我们就下载适合自己版本的库<a href="https://storage.googleapis.com/downloads.webmproject.org/releases/webp/index.html" target="_blank" rel="external"></a>.<br>解压后，将bin 目录下的 gif2webp.exe 复制到 工作目录下。接下来，我们使用它来转化格式。</p>
-<h3 id="2-使用gif2webp-exe转化格式"><a href="#2-使用gif2webp-exe转化格式" class="headerlink" title="2. 使用gif2webp.exe转化格式"></a>2. 使用gif2webp.exe转化格式</h3><p>根据官网给的文档<a href="https://developers.google.com/speed/webp/docs/gif2webp" target="_blank" rel="external">gif2webp</a>，我们可以很方便的使用下面的语句来实现：</p>
-<pre><code>f,ext = os.path.splitext(localfile.split(&quot;/&quot;)[-1])
-webp_path = &quot;%s.webp&quot;%f
-os.system(&quot;gif2webp.exe &quot;+ localfile + &quot; -quiet &quot; + &quot; -o &quot; + f + &quot;.webp&quot;)
-</code></pre><p>这里可能会提示：</p>
-<pre><code>GIF decode warning: invalid background color index. Assuming white background.
-</code></pre><p>转换过程持续好几秒，请耐心等待，转化完成后，工作目录下多一个webp文件.</p>
-<h2 id="三-效果比较"><a href="#三-效果比较" class="headerlink" title="三.效果比较"></a>三.效果比较</h2><center>左边是gif格式的               右边是webp格式</center>
-
-
-<p><img src="http://i.imgur.com/aFTWeSK.gif" alt="">   <img src="http://lxctest.qiniudn.com/2016-11-10_15:57:31_zhuanzhuan2.webp" alt=""></p>
-<p>你的肉眼能看出区别么？</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;使用Python将Jpeg-Png-Gif-图片转换为-webp格式&quot;&gt;&lt;a href=&quot;#使用Python将Jpeg-Png-Gif-图片转换为-webp格式&quot; class=&quot;headerlink&quot; title=&quot;使用Python将Jpeg Png Gif 图片
-    
-    </summary>
-    
-      <category term="python" scheme="http://www.orzangleli.com/categories/python/"/>
-    
-    
-      <category term="python" scheme="http://www.orzangleli.com/tags/python/"/>
-    
-  </entry>
-  
-  <entry>
     <title>自己动手造轮子系列———实现『转转APP』Indicator 效果</title>
     <link href="http://www.orzangleli.com/2016/11/10/2016-11-19_%E8%BD%AC%E8%BD%ACIndicator/"/>
     <id>http://www.orzangleli.com/2016/11/10/2016-11-19_转转Indicator/</id>
@@ -1773,6 +1850,66 @@ private Handler mHandler = new Handler() {
       <category term="android" scheme="http://www.orzangleli.com/tags/android/"/>
     
       <category term="自己动手造轮子系列" scheme="http://www.orzangleli.com/tags/%E8%87%AA%E5%B7%B1%E5%8A%A8%E6%89%8B%E9%80%A0%E8%BD%AE%E5%AD%90%E7%B3%BB%E5%88%97/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>使用Python将Jpeg Png Gif 图片转换为 webp格式</title>
+    <link href="http://www.orzangleli.com/2016/11/10/2016-11-10_Python%E5%B0%86Jpeg%20Png%20Gif%E8%BD%AC%E6%8D%A2%E4%B8%BAWebp%E6%A0%BC%E5%BC%8F/"/>
+    <id>http://www.orzangleli.com/2016/11/10/2016-11-10_Python将Jpeg Png Gif转换为Webp格式/</id>
+    <published>2016-11-09T16:00:00.000Z</published>
+    <updated>2016-11-10T14:05:29.034Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="使用Python将Jpeg-Png-Gif-图片转换为-webp格式"><a href="#使用Python将Jpeg-Png-Gif-图片转换为-webp格式" class="headerlink" title="使用Python将Jpeg Png Gif 图片转换为 webp格式"></a>使用Python将Jpeg Png Gif 图片转换为 webp格式</h1><h2 id="一-动机"><a href="#一-动机" class="headerlink" title="一.动机"></a>一.动机</h2><p>因为webp的优良特性：</p>
+<ul>
+<li><p>占空间小，节省带宽</p>
+</li>
+<li><p>总体加载速度快</p>
+</li>
+</ul>
+<p>这里有详细的介绍： 摘自 <a href="https://zh.wikipedia.org/wiki/WebP" target="_blank" rel="external">维基百科-WebP词条</a></p>
+<p>WebP（发音weppy）[6][7]，是一种同时提供了有损压缩与无损压缩（可逆压缩）的图片文件格式[8]，派生自视频编码格式VP8[9]，被认为是WebM多媒体格式的姊妹项目，是由Google在购买On2 Technologies后发展出来[10]，以BSD授权条款发布。[11]<br>WebP最初在2010年发布，目标是减少文件大小，但达到和JPEG格式相同的图片质量，希望能够减少图片档在网络上的发送时间。 [12]2011年11月8日，Google开始让WebP支持无损压缩和透明色（alpha通道）的功能，而在2012年8月16日的参考实做libwebp 0.2.0中正式支持[13][14]。根据Google较早的测试，WebP的无损压缩比网络上找到的PNG档少了45％的文件大小，即使这些PNG档在使用pngcrush和PNGOUT处理过，WebP还是可以减少28％的文件大小[15]。<br>WebP支持的像素最大数量是16383x16383。有损压缩的WebP仅支持8-bit的YUV 4:2:0格式。而无损压缩（可逆压缩）的WebP支持VP8L编码与8-bit之ARGB色彩空间。又无论是有损或无损压缩皆支持Alpha透明通道、ICC色彩配置、XMP诠释数据。<br>WebP有静态与动态两种模式。动态WebP（Animated WebP）支持有损与无损压缩、ICC色彩配置、XMP诠释数据、Alpha透明通道。而无损压缩的动态WebP亦支持8-bit之ARGB色彩空间。</p>
+<h2 id="二-方案实验"><a href="#二-方案实验" class="headerlink" title="二. 方案实验"></a>二. 方案实验</h2><h3 id="1-使用PIL-转换格式"><a href="#1-使用PIL-转换格式" class="headerlink" title="1. 使用PIL 转换格式"></a>1. 使用PIL 转换格式</h3><p>首先指出，PIL转换在大部分情况下都能起到很好的效果，比如讲jpeg转为webp，节省空间约90%。<br>首先安装PIL模块</p>
+<pre><code>pip install pillow
+</code></pre><p>然后在程序中 <code>localfile</code> 为图片路径</p>
+<pre><code>im = Image.open(localfile)
+f,ext = os.path.splitext(localfile.split(&quot;/&quot;)[-1])
+webp_path = &quot;%s.webp&quot;%f
+im.convert(&apos;RGB&apos;).save(webp_path, &quot;webp&quot;)
+</code></pre><p>这里需要注意需要将图片先转化为RGB模式，否则报错</p>
+<pre><code>cannot write mode P as WEBP
+</code></pre><p>现在，是时候说下PIL「失效」的情况了。</p>
+<ol>
+<li>将动图转为gif时，转化过程没有报错，但是打开后，只保存了第一帧的图片，变成了静态图。</li>
+<li>将 gif 转为 webp格式时，同样也只保存了第一帧。</li>
+</ol>
+<p>第一种情况我没有测试，但是在stackoverflow上可以看到有人提问过： <a href="http://stackoverflow.com/questions/24688802/saving-an-animated-gif-in-pillow" target="_blank" rel="external">Saving an animated GIF in Pillow</a> 。回答者是建议使用gifmaker 模块进行处理gif.</p>
+<p>第二张情况，我遇到了，所以可以证实。</p>
+<p>通过搜索，在官网上看到<a href="https://developers.google.com/speed/webp/docs/gif2webp" target="_blank" rel="external">gif2webp</a>,证明官网给出了gif转webp的解决方案，那我们就下载适合自己版本的库<a href="https://storage.googleapis.com/downloads.webmproject.org/releases/webp/index.html" target="_blank" rel="external"></a>.<br>解压后，将bin 目录下的 gif2webp.exe 复制到 工作目录下。接下来，我们使用它来转化格式。</p>
+<h3 id="2-使用gif2webp-exe转化格式"><a href="#2-使用gif2webp-exe转化格式" class="headerlink" title="2. 使用gif2webp.exe转化格式"></a>2. 使用gif2webp.exe转化格式</h3><p>根据官网给的文档<a href="https://developers.google.com/speed/webp/docs/gif2webp" target="_blank" rel="external">gif2webp</a>，我们可以很方便的使用下面的语句来实现：</p>
+<pre><code>f,ext = os.path.splitext(localfile.split(&quot;/&quot;)[-1])
+webp_path = &quot;%s.webp&quot;%f
+os.system(&quot;gif2webp.exe &quot;+ localfile + &quot; -quiet &quot; + &quot; -o &quot; + f + &quot;.webp&quot;)
+</code></pre><p>这里可能会提示：</p>
+<pre><code>GIF decode warning: invalid background color index. Assuming white background.
+</code></pre><p>转换过程持续好几秒，请耐心等待，转化完成后，工作目录下多一个webp文件.</p>
+<h2 id="三-效果比较"><a href="#三-效果比较" class="headerlink" title="三.效果比较"></a>三.效果比较</h2><center>左边是gif格式的               右边是webp格式</center>
+
+
+<p><img src="http://i.imgur.com/aFTWeSK.gif" alt="">   <img src="http://lxctest.qiniudn.com/2016-11-10_15:57:31_zhuanzhuan2.webp" alt=""></p>
+<p>你的肉眼能看出区别么？</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;使用Python将Jpeg-Png-Gif-图片转换为-webp格式&quot;&gt;&lt;a href=&quot;#使用Python将Jpeg-Png-Gif-图片转换为-webp格式&quot; class=&quot;headerlink&quot; title=&quot;使用Python将Jpeg Png Gif 图片
+    
+    </summary>
+    
+      <category term="python" scheme="http://www.orzangleli.com/categories/python/"/>
+    
+    
+      <category term="python" scheme="http://www.orzangleli.com/tags/python/"/>
     
   </entry>
   
@@ -1999,159 +2136,6 @@ blog.saveBlog()
     
       &lt;p&gt;昨天晚上本来想看android文档，使用之前好久没用的Lantern，发现已经不能打开墙外网站了，于是就想着android官方文档很重要，而且可能随时会看，就想着自己做一个镜像网站。&lt;/p&gt;
 &lt;p&gt;本来想的是使用Python爬虫，将developer.android.com
-    
-    </summary>
-    
-      <category term="未分类" scheme="http://www.orzangleli.com/categories/%E6%9C%AA%E5%88%86%E7%B1%BB/"/>
-    
-    
-  </entry>
-  
-  <entry>
-    <title>Python3 实现淘女郎照片爬虫 （完整版教程）</title>
-    <link href="http://www.orzangleli.com/2016/10/28/Python3%20%E5%AE%9E%E7%8E%B0%E6%B7%98%E5%A5%B3%E9%83%8E%E7%85%A7%E7%89%87%E7%88%AC%E8%99%AB%20%EF%BC%88%E5%AE%8C%E6%95%B4%E7%89%88%E6%95%99%E7%A8%8B%EF%BC%89/"/>
-    <id>http://www.orzangleli.com/2016/10/28/Python3 实现淘女郎照片爬虫 （完整版教程）/</id>
-    <published>2016-10-27T16:00:00.000Z</published>
-    <updated>2016-11-03T11:19:54.879Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="Python3-实现淘女郎照片爬虫-（完整版教程）"><a href="#Python3-实现淘女郎照片爬虫-（完整版教程）" class="headerlink" title="Python3 实现淘女郎照片爬虫 （完整版教程）"></a>Python3 实现淘女郎照片爬虫 （完整版教程）</h1><hr>
-<h2 id="一-项目介绍"><a href="#一-项目介绍" class="headerlink" title="一. 项目介绍"></a>一. 项目介绍</h2><p>本项目通过Python 3实现一个爬取淘女郎网页上的美女的头像和详细介绍帖子中的所有图片并下载到本地来。</p>
-<p><strong>Todo:</strong><br>1. 将图片自动上传到七牛等云存储空间中<br>2. 将图片的信息添加到在线数据库中</p>
-<h2 id="二-知识点"><a href="#二-知识点" class="headerlink" title="二. 知识点"></a>二. 知识点</h2><ol>
-<li>使用Python 3编程</li>
-<li>使用BeautifulSoup解析html网页</li>
-<li>使用Selenium抓取动态网页</li>
-<li>下载文件的几种方式</li>
-<li>正则表达式的使用</li>
-</ol>
-<h2 id="三-项目效果"><a href="#三-项目效果" class="headerlink" title="三. 项目效果"></a>三. 项目效果</h2><p>这是我们要爬取的目标页面：</p>
-<p>淘女郎：<a href="https://mm.taobao.com/search_tstar_model.htm" target="_blank" rel="external">https://mm.taobao.com/search_tstar_model.htm</a></p>
-<p><strong>目标页面</strong></p>
-<p><img src="http://lxctest.qiniudn.com/2016-10-28_17:45:12_111111.jpg?imageView2/0/w/600" alt=""><br><strong>爬取后的本地目录</strong><br><img src="https://dn-anything-about-doc.qbox.me/document-
-uid30174labid1970timestamp1470190197607.png/wm" alt="此处输入图片的描述"><br><strong>每个目录中的图片</strong></p>
-<p><img src="https://dn-anything-about-doc.qbox.me/document-
-uid30174labid1970timestamp1470190356134.png/wm" alt="此处输入图片的描述"></p>
-<h2 id="四-项目实战"><a href="#四-项目实战" class="headerlink" title="四. 项目实战"></a>四. 项目实战</h2><h1 id="4-1-安装需要使用的库"><a href="#4-1-安装需要使用的库" class="headerlink" title="4.1 安装需要使用的库"></a>4.1 安装需要使用的库</h1><p>以下是本项目需要使用到的库文件：</p>
-<pre><code>from bs4 import BeautifulSoup
-import urllib
-from selenium import webdriver
-import time
-import os
-import re
-import requests
-</code></pre><p>需要安装的几个库是bs4，selenium,requests.安装方式是使用pip，分别运行下面的命令：</p>
-<pre><code>pip install BeautifulSoup4
-pip install selenium
-pip install requests
-pip install html5lib
-</code></pre><p>Selenium<br>是一个强大的网络数据采集工具，最初是为网站自动化测试而开发的。近几年，他还被广泛用于获取精确的网站快照，因为他们可以直接运行在浏览器上。Selenium<br>可以让浏览器自动加载页面，获取需要的数据，甚至页面截屏，或者判断网站上某些动作上是否发生。</p>
-<p>Selenium 自己不带浏览器，它需要与第三方浏览器结合在一起使用。我们使用的是PhantomJS浏览器，这是一个无头的浏览器，PhantomJS<br>会把网站加载到内存并执行页面上的 JavaScript，但是不会向用户展示网页的图形化界面，可以用来处理 cookie、JavaScript 及<br>header 信息，以及任何你需要浏览器协助完成的事情。</p>
-<p>可以去链接下载，也可以自行搜索下载：</p>
-<p>链接：<a href="http://pan.baidu.com/s/1eSLrpzs" target="_blank" rel="external">http://pan.baidu.com/s/1eSLrpzs</a> 密码：vsq9</p>
-<h1 id="4-2-项目目标"><a href="#4-2-项目目标" class="headerlink" title="4.2 项目目标"></a>4.2 项目目标</h1><ol>
-<li>抓取淘女郎页面中美女的封面，昵称和城市</li>
-<li>抓取个人主页中图片</li>
-<li>将每个美女的图片以文件夹的形式存储在文件夹中</li>
-</ol>
-<h1 id="4-3-可行性分析"><a href="#4-3-可行性分析" class="headerlink" title="4.3 可行性分析"></a>4.3 可行性分析</h1><p>淘女郎首页上的源码信息是公开的，本次实验仅仅是用来技术实践，并不带盈利性目的，也不将图片用于其他商业环境，并不会产生商业上的产权纠纷，所以这个项目是可行的。</p>
-<h1 id="4-4-流程说明"><a href="#4-4-流程说明" class="headerlink" title="4.4 流程说明"></a>4.4 流程说明</h1><p>通过 Selenium Webdriver 获得目标页面源码，之后通过 BeautifulSoup<br>解析概源码，通过正则表达式提取出模特名字、所在城市、身高、体重，个人主页、封面图片地址等信息，根据模特名字和城市建立文件夹。</p>
-<p>再次通过 Selenium Webdriver 获得模特个人主页的页面源码，之后通过 BeautifulSoup<br>解析源码，通过正则获得页面艺术照的URL地址信息。</p>
-<p>最后通过 urllib 内置库，打开图片地址，通过二进制读写的方式获得模特艺术照，并将艺术照存在相应文件夹里面。</p>
-<h1 id="4-5-网页源码分析"><a href="#4-5-网页源码分析" class="headerlink" title="4.5 网页源码分析"></a>4.5 网页源码分析</h1><p><img src="http://i.imgur.com/gtNM6Un.jpg" alt=""></p>
-<p>图中的1,2,3,4分别代表该MM的个人介绍主页地址，封面图片地址，名字和城市，身高体重。第四个我们不使用，只需要获取前三个信息即可。进入个人主页，我们继续类似前面的审查元素，可以看到</p>
-<pre><code>&lt;img style=&quot;width: 630.0px;float: none;margin: 10.0px;height: 945.0px;&quot; width=&quot;630&quot; height=&quot;945&quot; src=&quot;//img.alicdn.com/imgextra/i2/927018118/TB1vpJVNVXXXXXzaXXXXXXXXXXX_!!0-tstar.jpg&quot;&gt;
-</code></pre><p>里面的图片的标签都是img，而且图片的网址前面是一样的，因此可以使用正则表达式来匹配图片地址：</p>
-<pre><code>^\/\/img\.alicdn\.com\/imgextra\/.*\.jpg$
-</code></pre><p>这样可以过滤掉其他图片。</p>
-<h1 id="4-6-程序实战"><a href="#4-6-程序实战" class="headerlink" title="4.6 程序实战"></a>4.6 程序实战</h1><p>首先导入要使用的库</p>
-<pre><code>from bs4 import BeautifulSoup
-import urllib
-from selenium import webdriver
-import time
-import os
-import re
-import requests
-</code></pre><p>建一个类，叫做Taonvlang,里面有几个函数：</p>
-<p>get_detail_imgs(self,detail_url,dir_name): 根据detail_url获取个人主页图片，并存到目录dir_name中</p>
-<p>get_all_data(self): 获取主页的所有的美女封面和个人主页</p>
-<p><strong>init</strong>(self,driver,homePage,outputDir): 初始化函数，初始化类中变量</p>
-<p>具体查看代码</p>
-<pre><code>from bs4 import BeautifulSoup
-import urllib
-from selenium import webdriver
-import time
-import os
-import re
-import requests
-
-class Taolvlang(object):
-    def __init__(self,driver,homePage,outputDir):
-        self.driver = driver
-        self.homePage = homePage
-        self.outputDir = outputDir
-
-    def get_detail_imgs(self,detail_url,dir_name):
-        num = 0    #计数器，用于统计页面上的图片，作为图片名字
-        self.driver.get(detail_url)  #访问个人主页
-        js=&quot;var q=document.documentElement.scrollTop=10000&quot;
-        self.driver.execute_script(js)    #执行JS脚本，这个脚本主要是滚动页面到最下面，
-        #因为有些网页是动态加载的，用户滑动到哪里加载到哪里
-        bs = BeautifulSoup(driver.page_source,&quot;html5lib&quot;)   #使用BeautifulSoup解析网页源码，使用的是html5lib,如果不安装这个库，会报错
-        allImage = bs.findAll(&quot;img&quot;,{&quot;src&quot;:re.compile(&quot;^\/\/img\.alicdn\.com\/imgextra\/.*.jpg$&quot;)}) #使用正则表达式匹配所有图片 
-        for image in allImage:
-            img_url = image[&quot;src&quot;]    #获取图片的src
-            if not img_url.startswith(&quot;http:&quot;): 
-                img_url = &quot;http:&quot;+img_url    #给图片地址加上http：
-            num = num +1    #计数器+1
-            r = requests.get(img_url)   #使用requests获取图片
-            if not os.path.exists(&quot;%s/%d.jpg&quot;%(dir_name,num)):    #判断是否已经存在这个文件了
-                with open(&quot;%s/%d.jpg&quot;%(dir_name,num),&quot;wb&quot;) as pic:
-                    pic.write(r.content)    #不存在的话就保存到文件中
-
-    def get_all_data(self):  
-        self.driver.get(homePage)   #访问主页
-        js=&quot;var q=document.documentElement.scrollTop=10000&quot;
-        self.driver.execute_script(js)
-        time.sleep(3)    #等待网页加载完成
-        self.driver.get_screenshot_as_file(&quot;1.jpg&quot;)    #保存网页截图
-        bs = BeautifulSoup(self.driver.page_source,&quot;html5lib&quot;)    #使用BeautifulSoup解析网页源码，使用的是html5lib,如果不安装这个库，会报错
-        allItem = bs.findAll(class_=&quot;item&quot;)   #找到所有的项，是class 为item的
-        for item in allItem:
-            detail_url = item.find(class_=&quot;item-link&quot;)[&quot;href&quot;]  #获取个人主页连接
-            header_img_url = item.find(&quot;img&quot;)[&quot;src&quot;]   #获取封面图片链接
-            dir_name = outputDir+&quot;%s_%s&quot;%(item.find(class_=&quot;name&quot;).get_text(),item.find(class_=&quot;city&quot;).get_text())   #获取名字和城市名组成文件夹名字
-            if not os.path.exists(dir_name):   #如果文件夹不存在新建
-                os.makedirs(dir_name)
-            if not detail_url.startswith(&quot;http:&quot;):
-                detail_url = &quot;http:&quot;+detail_url
-            if not header_img_url.startswith(&quot;http:&quot;):
-                header_img_url = &quot;http:&quot;+header_img_url
-            print(&quot;detail_url=%s&quot;%detail_url)
-            print(&quot;header_img_url=%s&quot;%header_img_url)
-            #将头像存入目录
-            if not os.path.exists(outputDir+&quot;%s/0.jpg&quot;%dir_name):
-                urllib.request.urlretrieve(header_img_url,outputDir+&quot;%s/0.jpg&quot;%dir_name)
-            #获取详细帖子中的照片
-            self.get_detail_imgs(detail_url,dir_name)
-
-
-#本地浏览器路径        
-browserPath = &quot;phantomjs.exe&quot;
-#主页路径
-homePage = &apos;https://mm.taobao.com/search_tstar_model.htm?&apos;
-#输出目录
-outputDir = &quot;/photos/&quot;   
-driver = webdriver.PhantomJS(executable_path = browserPath)
-#实例化类，执行获取数据
-taoObj = Taolvlang(driver,homePage,outputDir)
-taoObj.get_all_data()
-</code></pre><h2 id="五-项目地址"><a href="#五-项目地址" class="headerlink" title="五.项目地址"></a>五.项目地址</h2><p><a href="https://github.com/hust201010701/TaonvlangCrawler" target="_blank" rel="external">https://github.com/hust201010701/TaonvlangCrawler</a></p>
-<p>欢迎大家Star.</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;Python3-实现淘女郎照片爬虫-（完整版教程）&quot;&gt;&lt;a href=&quot;#Python3-实现淘女郎照片爬虫-（完整版教程）&quot; class=&quot;headerlink&quot; title=&quot;Python3 实现淘女郎照片爬虫 （完整版教程）&quot;&gt;&lt;/a&gt;Python3 实现淘
     
     </summary>
     
