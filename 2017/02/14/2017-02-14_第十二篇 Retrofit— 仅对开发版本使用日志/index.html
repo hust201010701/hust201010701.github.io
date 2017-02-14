@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  
+  <title>第十二篇 Retrofit— 仅对开发版本使用日志 | orzangleli | 活在梦里的程序员和设计师</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  <meta name="theme-color" content="#3F51B5">
+  
+  
+  <meta name="keywords" content="android,Retrofit">
+  <meta name="description" content="12. 第十二篇 Retrofit— 仅对开发版本使用日志
+
+一、 开发版和发布版区别
+二、使用不同的日志级别
+三、在Github中实战
+3.1 新建证书文件
+3.2 修改app中配置
+
+
+
+
+在前面的文章中，我们已经给你展示了用Retrofit2 启用请求和响应的日志功能。我们也说明了你应该只在开发版本中启用日志功能，推荐你发布版本应该禁用掉日志功能。本文我们就来介绍下如何自动完成这个功能。
+一">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第十二篇 Retrofit— 仅对开发版本使用日志">
+<meta property="og:url" content="http://www.orzangleli.com/2017/02/14/2017-02-14_第十二篇 Retrofit— 仅对开发版本使用日志/index.html">
+<meta property="og:site_name" content="orzangleli">
+<meta property="og:description" content="12. 第十二篇 Retrofit— 仅对开发版本使用日志
+
+一、 开发版和发布版区别
+二、使用不同的日志级别
+三、在Github中实战
+3.1 新建证书文件
+3.2 修改app中配置
+
+
+
+
+在前面的文章中，我们已经给你展示了用Retrofit2 启用请求和响应的日志功能。我们也说明了你应该只在开发版本中启用日志功能，推荐你发布版本应该禁用掉日志功能。本文我们就来介绍下如何自动完成这个功能。
+一">
+<meta property="og:image" content="http://7bvaky.com2.z0.glb.qiniucdn.com/2017-01-17_16_02_19_BuildVariants.png">
+<meta property="og:updated_time" content="2017-02-14T08:23:39.808Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="第十二篇 Retrofit— 仅对开发版本使用日志">
+<meta name="twitter:description" content="12. 第十二篇 Retrofit— 仅对开发版本使用日志
+
+一、 开发版和发布版区别
+二、使用不同的日志级别
+三、在Github中实战
+3.1 新建证书文件
+3.2 修改app中配置
+
+
+
+
+在前面的文章中，我们已经给你展示了用Retrofit2 启用请求和响应的日志功能。我们也说明了你应该只在开发版本中启用日志功能，推荐你发布版本应该禁用掉日志功能。本文我们就来介绍下如何自动完成这个功能。
+一">
+<meta name="twitter:image" content="http://7bvaky.com2.z0.glb.qiniucdn.com/2017-01-17_16_02_19_BuildVariants.png">
+  
+    <link rel="alternative" href="/atom.xml" title="orzangleli" type="application/atom+xml">
+  
+  <link rel="shortcut icon" href="/assets/favicon.ico">
+  <link rel="stylesheet" href="/css/style.css?v=1.2.1">
+</head>
+
+<body>
+  <div id="loading" class="active"></div>
+
+  <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/assets/avatar.gif">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">orzangleli</h5>
+          <a href="mailto:orzangleli@163.com" title="orzangleli@163.com" class="mail">orzangleli@163.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/hust201010701" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="http://weibo.com/androidjiqiaogonglue" target="_blank" >
+                <i class="icon icon-lg icon-weibo"></i>
+                Weibo
+              </a>
+            </li>
+        
+      </ul>
+
+      <footer class="footer">
+  <p><a rel="license" target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0;vertical-align:middle;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAAAPCAMAAABEF7i9AAAAllBMVEUAAAD///+rsapERER3d3eIiIjMzMzu7u4iIiKUmZO6v7rKzsoODg4RERFVVVUNDQ0NDg0PEA8zMzNLTEtbXltmZmZydnF9gn2AgICPkI+ZmZmqqqq7u7vFxsXIzMgNDQwZGRkgICAhISEkJSMnKCcuMC4xMzE5Ozk7PTtBQkFCQkJDQ0Nna2eGhoaHh4ezuLLGysbd3d1wVGpAAAAA4UlEQVR42q2T1xqCMAyFk7QsBQeKA9x7j/d/OSm22CpX0nzcpA1/T05aAOuBVkMAScQFHLnEwoCo2f1TnQIGoVMewjZEjVFN4GH1Ue1Cn2jWqwfsOOj6wDwGvotsl/c8lv7KIq1eLOsT0HMFHMIE/RZyHnlphryT9zyV+8WH5e8yQw3wnQvgAFxPTKUVi555SHR/lOfLMgVTeDlSfN+TaoUsiTyeIm+bCkHvCA2FUKG48LDtYBZBknsYP/G8NTw0gaaHyuQf4H5pecrB/FYCT2sL9zAfy1Xyjou6L8X2W7YcLyBZCRtnq/zfAAAAAElFTkSuQmCC" /></a></p>
+  <p>orzangleli &copy; 2016 - 2017</p>
+  <p>Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme
+  <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a></p>
+  <a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-2x icon-rss-square"></i></a>
+</footer>
+
+    </div>
+  </div>
+</aside>
+
+  <main id="main">
+    <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">第十二篇 Retrofit— 仅对开发版本使用日志</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container">
+        <h1 class="title">第十二篇 Retrofit— 仅对开发版本使用日志</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2017-02-13T16:00:00.000Z" itemprop="datePublished" class="page-time">
+  2017-02-14
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Retrofit教程/">Retrofit教程</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#12-第十二篇-Retrofit—-仅对开发版本使用日志"><span class="post-toc-number">1.</span> <span class="post-toc-text">12. 第十二篇 Retrofit— 仅对开发版本使用日志</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#一、-开发版和发布版区别"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">一、 开发版和发布版区别</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#二、使用不同的日志级别"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">二、使用不同的日志级别</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#三、在Github中实战"><span class="post-toc-number">1.3.</span> <span class="post-toc-text">三、在Github中实战</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#3-1-新建证书文件"><span class="post-toc-number">1.3.1.</span> <span class="post-toc-text">3.1 新建证书文件</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#3-2-修改app中配置"><span class="post-toc-number">1.3.2.</span> <span class="post-toc-text">3.2 修改app中配置</span></a></li></ol></li></ol></li></ol>
+        </nav>
+    </aside>
+    
+<article id="post-2017-02-14_第十二篇 Retrofit— 仅对开发版本使用日志" 
+  class="post-article article-type-post" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">第十二篇 Retrofit— 仅对开发版本使用日志</h1>
+        <div class="post-meta">
+            <time datetime="2017-02-13T16:00:00.000Z" itemprop="datePublished" class="post-time">
+  2017-02-14
+</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Retrofit教程/">Retrofit教程</a></li></ul>
+
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h1 id="12-第十二篇-Retrofit—-仅对开发版本使用日志"><a href="#12-第十二篇-Retrofit—-仅对开发版本使用日志" class="headerlink" title="12. 第十二篇 Retrofit— 仅对开发版本使用日志"></a>12. 第十二篇 Retrofit— 仅对开发版本使用日志</h1><!-- MarkdownTOC -->
+<ul>
+<li><a href="#一、-开发版和发布版区别">一、 开发版和发布版区别</a></li>
+<li><a href="#二、使用不同的日志级别">二、使用不同的日志级别</a></li>
+<li><a href="#三、在github中实战">三、在Github中实战</a><ul>
+<li><a href="#31-新建证书文件">3.1 新建证书文件</a></li>
+<li><a href="#32-修改app中配置">3.2 修改app中配置</a></li>
+</ul>
+</li>
+</ul>
+<!-- /MarkdownTOC -->
+<p>在前面的文章中，我们已经给你展示了用Retrofit2 启用请求和响应的日志功能。我们也说明了你应该只在开发版本中启用日志功能，推荐你发布版本应该禁用掉日志功能。本文我们就来介绍下如何自动完成这个功能。</p>
+<h2 id="一、-开发版和发布版区别"><a href="#一、-开发版和发布版区别" class="headerlink" title="一、 开发版和发布版区别"></a>一、 开发版和发布版区别</h2><p>自动化是增长开发者的注意力和生产率的最好工具之一。手动启用和禁用Retrofit日志功能可能是乏味重复的工作。而且增加了发布版本仍然记录日志的风险几率。所以，我们来看看自动实现这个过程：在开发过程中，日志记录功能被启用；发布版本就会禁用掉日志功能。</p>
+<p>解决方法如此简单：我们利用Android framework提供的<code>Build.DEBUG</code> boolean型变量。返回值为<code>true</code>代表开发版本，<code>false</code>代表发布版本。之前的文章中，我们的代码是这样的：</p>
+<pre><code>HttpLoggingInterceptor logging = new HttpLoggingInterceptor();  
+logging.setLevel(Level.BODY);
+
+OkHttpClient.Builder httpClient = new OkHttpClient.Builder();  
+httpClient.addInterceptor(logging);
+
+Retrofit retrofit = new Retrofit.Builder()  
+   .baseUrl(API_BASE_URL)
+   .addConverterFactory(GsonConverterFactory.create())
+   .client(httpClient.build())
+   .build();
+</code></pre><p>现在我们稍微改变下代码，实现仅在开发版本启用日志功能：</p>
+<pre><code>OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+
+if (BuildConfig.DEBUG) {  
+    HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+    logging.setLevel(Level.BODY);
+
+    httpClient.addInterceptor(logging);
+}
+
+Retrofit retrofit = new Retrofit.Builder()  
+   .baseUrl(API_BASE_URL)
+   .addConverterFactory(GsonConverterFactory.create())
+   .client(httpClient.build())
+   .build();
+</code></pre><p>它会只在开发版本添加日志拦截器。我们真的强烈推荐你把这种技术或者类似技术应用于你的APP中，这不会花很长时间，反而会每天为你省一点时间。你的时间很重要！</p>
+<h2 id="二、使用不同的日志级别"><a href="#二、使用不同的日志级别" class="headerlink" title="二、使用不同的日志级别"></a>二、使用不同的日志级别</h2><p>如果你在发布版本中仍然想看到一些日志信息，但是是使用另一种日志级别，你可以用下面这种方法。<br>我们再修改下代码：</p>
+<pre><code>OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+
+HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+
+if (BuildConfig.DEBUG) {  
+    // development build
+    logging.setLevel(Level.BODY);
+} else {
+    // production build
+    logging.setLevel(Level.BASIC);
+}
+
+httpClient.addInterceptor(logging);
+
+Retrofit retrofit = new Retrofit.Builder()  
+   .baseUrl(API_BASE_URL)
+   .addConverterFactory(GsonConverterFactory.create())
+   .client(httpClient.build())
+   .build();
+</code></pre><h2 id="三、在Github中实战"><a href="#三、在Github中实战" class="headerlink" title="三、在Github中实战"></a>三、在Github中实战</h2><h3 id="3-1-新建证书文件"><a href="#3-1-新建证书文件" class="headerlink" title="3.1 新建证书文件"></a>3.1 新建证书文件</h3><p>发布版本需要有用户的证书文件，调试版本使用的是默认的证书文件，所以需要建立自己的证书文件，如果之前已经建过的，可以跳过。</p>
+<p>点击菜单中 Build–Generate Signed APK,在弹出的对话框中选择 Create new… ,选择证书的保存位置，填好相关信息点击OK后关闭，然后关闭弹出的Generate Signed APK对话框，证书建立完成。</p>
+<h3 id="3-2-修改app中配置"><a href="#3-2-修改app中配置" class="headerlink" title="3.2 修改app中配置"></a>3.2 修改app中配置</h3><p>点击菜单File–Project Structure,选择Module app。</p>
+<ol>
+<li>点击Signing 选项卡，点击“+”号，填写刚刚的证书的路径和密码等内容。</li>
+<li>点击Build Types选项卡，选择release,然后在Signing Config下拉列表中选择上一步新建的config .</li>
+</ol>
+<p>还需要打开Build Variants ,将app 对应的变量修改为 release .打开Build Variants的方式如图：</p>
+<p><img src="http://7bvaky.com2.z0.glb.qiniucdn.com/2017-01-17_16_02_19_BuildVariants.png" alt=""></p>
+<p>修改之前的教程中的ServiceGenerator：</p>
+<pre><code>public class ServiceGenerator {
+
+    public static final String API_BASIC_URL = &quot;https://api.github.com/&quot;;
+    private static OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+
+    private static Retrofit.Builder builder =new Retrofit.Builder()
+            .baseUrl(API_BASIC_URL)
+            .addConverterFactory(GsonConverterFactory.create());
+
+    static HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+
+
+    public static &lt;S&gt; S createService(Class&lt;S&gt; serviceClass){
+        if (BuildConfig.DEBUG) {
+            logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+            httpClient.addInterceptor(logging);
+        }
+        Retrofit retrofit = builder.client(httpClient.build()).build();
+        return retrofit.create(serviceClass);
+    }
+
+}
+</code></pre><p>这样，如果版本不是调试版本，就不会有日志打印出来了。</p>
+<p>Enjoy Coding! 如果在阅读本教程的过程中有任何疑问或者需要帮助，可以随时在微博上联系我，我的微博是 <a href="http://weibo.com/androidjiqiaogonglue" target="_blank" rel="external">@orzanglei</a>。</p>
+
+        </div>
+        
+        <blockquote class="post-copyright">
+    <div class="content">
+        所有原创文章版权归orzangleli所有，转载需声明：<a href="/2017/02/14/2017-02-14_第十二篇 Retrofit— 仅对开发版本使用日志/" target="_blank" rel="external">http://www.orzangleli.com/2017/02/14/2017-02-14_第十二篇 Retrofit— 仅对开发版本使用日志/</a>
+    </div>
+    <footer>
+        <a href="http://www.orzangleli.com">
+            <img src="/assets/avatar.gif" alt="orzangleli">
+            orzangleli
+        </a>
+    </footer>
+</blockquote>
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Retrofit/">Retrofit</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/android/">android</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <div class="tit">分享到：</div>
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.orzangleli.com/2017/02/14/2017-02-14_第十二篇 Retrofit— 仅对开发版本使用日志/&title=《第十二篇 Retrofit— 仅对开发版本使用日志》 — orzangleli&pic=http://www.orzangleli.com/assets/avatar.gif" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.orzangleli.com/2017/02/14/2017-02-14_第十二篇 Retrofit— 仅对开发版本使用日志/&title=《第十二篇 Retrofit— 仅对开发版本使用日志》 — orzangleli&source=华中科技大学 本科10级 硕士14级 一个热爱技术的宅~" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.orzangleli.com/2017/02/14/2017-02-14_第十二篇 Retrofit— 仅对开发版本使用日志/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《第十二篇 Retrofit— 仅对开发版本使用日志》 — orzangleli&url=http://www.orzangleli.com/2017/02/14/2017-02-14_第十二篇 Retrofit— 仅对开发版本使用日志/&via=http://www.orzangleli.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.orzangleli.com/2017/02/14/2017-02-14_第十二篇 Retrofit— 仅对开发版本使用日志/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>   
+
+    
+<nav class="post-nav flex-row flex-justify-between flex-row-reverse">
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2017/02/13/2017-02-13_第十一篇 Retrofit— 使用日志级别调试请求/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">第十一篇 Retrofit— 使用日志级别调试请求</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+            
+    
+<div class="duoshuo" id="comments">
+	<div class="ds-thread" data-thread-key="2017-02-14_第十二篇 Retrofit— 仅对开发版本使用日志" data-title="第十二篇 Retrofit— 仅对开发版本使用日志" data-url="http://www.orzangleli.com/2017/02/14/2017-02-14_第十二篇 Retrofit— 仅对开发版本使用日志/"></div>
+</div>
+<script src="/js/embed.min.js?v=1.2.1"></script>
+<script src="//cdn.bootcss.com/marked/0.3.6/marked.min.js" async="async"></script>
+<script>
+var duoshuoQuery = {short_name:'orzangleli', theme: 'none'}
+</script>
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+  </main>
+  <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false }</script>
+
+
+
+<div class="global-share" id="globalShare">
+    <div class="tit">分享到：</div>
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.orzangleli.com/2017/02/14/2017-02-14_第十二篇 Retrofit— 仅对开发版本使用日志/&title=《第十二篇 Retrofit— 仅对开发版本使用日志》 — orzangleli&pic=http://www.orzangleli.com/assets/avatar.gif" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.orzangleli.com/2017/02/14/2017-02-14_第十二篇 Retrofit— 仅对开发版本使用日志/&title=《第十二篇 Retrofit— 仅对开发版本使用日志》 — orzangleli&source=华中科技大学 本科10级 硕士14级 一个热爱技术的宅~" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.orzangleli.com/2017/02/14/2017-02-14_第十二篇 Retrofit— 仅对开发版本使用日志/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《第十二篇 Retrofit— 仅对开发版本使用日志》 — orzangleli&url=http://www.orzangleli.com/2017/02/14/2017-02-14_第十二篇 Retrofit— 仅对开发版本使用日志/&via=http://www.orzangleli.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://www.orzangleli.com/2017/02/14/2017-02-14_第十二篇 Retrofit— 仅对开发版本使用日志/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="http://s.jiathis.com/qrcode.php?url=http://www.orzangleli.com/2017/02/14/2017-02-14_第十二篇 Retrofit— 仅对开发版本使用日志/" alt="微信分享二维码">
+</div>
+
+
+
+
+  <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script src="/js/main.min.js?v=1.2.1"></script>
+
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.2.1"></script>
+
+
+
+
+
+<script src="//s95.cnzz.com/z_stat.php?id=1260851403&web_id=1260851403"></script>
+
+
+
+
+
+</body>
+</html>

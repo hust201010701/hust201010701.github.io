@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://www.orzangleli.com/"/>
-  <updated>2017-02-13T12:32:05.226Z</updated>
+  <updated>2017-02-14T08:23:39.808Z</updated>
   <id>http://www.orzangleli.com/</id>
   
   <author>
@@ -14,6 +14,125 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>第十二篇 Retrofit— 仅对开发版本使用日志</title>
+    <link href="http://www.orzangleli.com/2017/02/14/2017-02-14_%E7%AC%AC%E5%8D%81%E4%BA%8C%E7%AF%87%20Retrofit%E2%80%94%20%E4%BB%85%E5%AF%B9%E5%BC%80%E5%8F%91%E7%89%88%E6%9C%AC%E4%BD%BF%E7%94%A8%E6%97%A5%E5%BF%97/"/>
+    <id>http://www.orzangleli.com/2017/02/14/2017-02-14_第十二篇 Retrofit— 仅对开发版本使用日志/</id>
+    <published>2017-02-13T16:00:00.000Z</published>
+    <updated>2017-02-14T08:23:39.808Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="12-第十二篇-Retrofit—-仅对开发版本使用日志"><a href="#12-第十二篇-Retrofit—-仅对开发版本使用日志" class="headerlink" title="12. 第十二篇 Retrofit— 仅对开发版本使用日志"></a>12. 第十二篇 Retrofit— 仅对开发版本使用日志</h1><!-- MarkdownTOC -->
+<ul>
+<li><a href="#一、-开发版和发布版区别">一、 开发版和发布版区别</a></li>
+<li><a href="#二、使用不同的日志级别">二、使用不同的日志级别</a></li>
+<li><a href="#三、在github中实战">三、在Github中实战</a><ul>
+<li><a href="#31-新建证书文件">3.1 新建证书文件</a></li>
+<li><a href="#32-修改app中配置">3.2 修改app中配置</a></li>
+</ul>
+</li>
+</ul>
+<!-- /MarkdownTOC -->
+<p>在前面的文章中，我们已经给你展示了用Retrofit2 启用请求和响应的日志功能。我们也说明了你应该只在开发版本中启用日志功能，推荐你发布版本应该禁用掉日志功能。本文我们就来介绍下如何自动完成这个功能。</p>
+<h2 id="一、-开发版和发布版区别"><a href="#一、-开发版和发布版区别" class="headerlink" title="一、 开发版和发布版区别"></a>一、 开发版和发布版区别</h2><p>自动化是增长开发者的注意力和生产率的最好工具之一。手动启用和禁用Retrofit日志功能可能是乏味重复的工作。而且增加了发布版本仍然记录日志的风险几率。所以，我们来看看自动实现这个过程：在开发过程中，日志记录功能被启用；发布版本就会禁用掉日志功能。</p>
+<p>解决方法如此简单：我们利用Android framework提供的<code>Build.DEBUG</code> boolean型变量。返回值为<code>true</code>代表开发版本，<code>false</code>代表发布版本。之前的文章中，我们的代码是这样的：</p>
+<pre><code>HttpLoggingInterceptor logging = new HttpLoggingInterceptor();  
+logging.setLevel(Level.BODY);
+
+OkHttpClient.Builder httpClient = new OkHttpClient.Builder();  
+httpClient.addInterceptor(logging);
+
+Retrofit retrofit = new Retrofit.Builder()  
+   .baseUrl(API_BASE_URL)
+   .addConverterFactory(GsonConverterFactory.create())
+   .client(httpClient.build())
+   .build();
+</code></pre><p>现在我们稍微改变下代码，实现仅在开发版本启用日志功能：</p>
+<pre><code>OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+
+if (BuildConfig.DEBUG) {  
+    HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+    logging.setLevel(Level.BODY);
+
+    httpClient.addInterceptor(logging);
+}
+
+Retrofit retrofit = new Retrofit.Builder()  
+   .baseUrl(API_BASE_URL)
+   .addConverterFactory(GsonConverterFactory.create())
+   .client(httpClient.build())
+   .build();
+</code></pre><p>它会只在开发版本添加日志拦截器。我们真的强烈推荐你把这种技术或者类似技术应用于你的APP中，这不会花很长时间，反而会每天为你省一点时间。你的时间很重要！</p>
+<h2 id="二、使用不同的日志级别"><a href="#二、使用不同的日志级别" class="headerlink" title="二、使用不同的日志级别"></a>二、使用不同的日志级别</h2><p>如果你在发布版本中仍然想看到一些日志信息，但是是使用另一种日志级别，你可以用下面这种方法。<br>我们再修改下代码：</p>
+<pre><code>OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+
+HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+
+if (BuildConfig.DEBUG) {  
+    // development build
+    logging.setLevel(Level.BODY);
+} else {
+    // production build
+    logging.setLevel(Level.BASIC);
+}
+
+httpClient.addInterceptor(logging);
+
+Retrofit retrofit = new Retrofit.Builder()  
+   .baseUrl(API_BASE_URL)
+   .addConverterFactory(GsonConverterFactory.create())
+   .client(httpClient.build())
+   .build();
+</code></pre><h2 id="三、在Github中实战"><a href="#三、在Github中实战" class="headerlink" title="三、在Github中实战"></a>三、在Github中实战</h2><h3 id="3-1-新建证书文件"><a href="#3-1-新建证书文件" class="headerlink" title="3.1 新建证书文件"></a>3.1 新建证书文件</h3><p>发布版本需要有用户的证书文件，调试版本使用的是默认的证书文件，所以需要建立自己的证书文件，如果之前已经建过的，可以跳过。</p>
+<p>点击菜单中 Build–Generate Signed APK,在弹出的对话框中选择 Create new… ,选择证书的保存位置，填好相关信息点击OK后关闭，然后关闭弹出的Generate Signed APK对话框，证书建立完成。</p>
+<h3 id="3-2-修改app中配置"><a href="#3-2-修改app中配置" class="headerlink" title="3.2 修改app中配置"></a>3.2 修改app中配置</h3><p>点击菜单File–Project Structure,选择Module app。</p>
+<ol>
+<li>点击Signing 选项卡，点击“+”号，填写刚刚的证书的路径和密码等内容。</li>
+<li>点击Build Types选项卡，选择release,然后在Signing Config下拉列表中选择上一步新建的config .</li>
+</ol>
+<p>还需要打开Build Variants ,将app 对应的变量修改为 release .打开Build Variants的方式如图：</p>
+<p><img src="http://7bvaky.com2.z0.glb.qiniucdn.com/2017-01-17_16_02_19_BuildVariants.png" alt=""></p>
+<p>修改之前的教程中的ServiceGenerator：</p>
+<pre><code>public class ServiceGenerator {
+
+    public static final String API_BASIC_URL = &quot;https://api.github.com/&quot;;
+    private static OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+
+    private static Retrofit.Builder builder =new Retrofit.Builder()
+            .baseUrl(API_BASIC_URL)
+            .addConverterFactory(GsonConverterFactory.create());
+
+    static HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+
+
+    public static &lt;S&gt; S createService(Class&lt;S&gt; serviceClass){
+        if (BuildConfig.DEBUG) {
+            logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+            httpClient.addInterceptor(logging);
+        }
+        Retrofit retrofit = builder.client(httpClient.build()).build();
+        return retrofit.create(serviceClass);
+    }
+
+}
+</code></pre><p>这样，如果版本不是调试版本，就不会有日志打印出来了。</p>
+<p>Enjoy Coding! 如果在阅读本教程的过程中有任何疑问或者需要帮助，可以随时在微博上联系我，我的微博是 <a href="http://weibo.com/androidjiqiaogonglue" target="_blank" rel="external">@orzanglei</a>。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;12-第十二篇-Retrofit—-仅对开发版本使用日志&quot;&gt;&lt;a href=&quot;#12-第十二篇-Retrofit—-仅对开发版本使用日志&quot; class=&quot;headerlink&quot; title=&quot;12. 第十二篇 Retrofit— 仅对开发版本使用日志&quot;&gt;&lt;/a&gt;1
+    
+    </summary>
+    
+      <category term="Retrofit教程" scheme="http://www.orzangleli.com/categories/Retrofit%E6%95%99%E7%A8%8B/"/>
+    
+    
+      <category term="android" scheme="http://www.orzangleli.com/tags/android/"/>
+    
+      <category term="Retrofit" scheme="http://www.orzangleli.com/tags/Retrofit/"/>
+    
+  </entry>
   
   <entry>
     <title>第十一篇 Retrofit— 使用日志级别调试请求</title>
@@ -1734,6 +1853,66 @@ collider.transform.position = bornPlace.position;
   </entry>
   
   <entry>
+    <title>使用Python将Jpeg Png Gif 图片转换为 webp格式</title>
+    <link href="http://www.orzangleli.com/2016/11/10/2016-11-10_Python%E5%B0%86Jpeg%20Png%20Gif%E8%BD%AC%E6%8D%A2%E4%B8%BAWebp%E6%A0%BC%E5%BC%8F/"/>
+    <id>http://www.orzangleli.com/2016/11/10/2016-11-10_Python将Jpeg Png Gif转换为Webp格式/</id>
+    <published>2016-11-09T16:00:00.000Z</published>
+    <updated>2016-11-10T14:05:29.034Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="使用Python将Jpeg-Png-Gif-图片转换为-webp格式"><a href="#使用Python将Jpeg-Png-Gif-图片转换为-webp格式" class="headerlink" title="使用Python将Jpeg Png Gif 图片转换为 webp格式"></a>使用Python将Jpeg Png Gif 图片转换为 webp格式</h1><h2 id="一-动机"><a href="#一-动机" class="headerlink" title="一.动机"></a>一.动机</h2><p>因为webp的优良特性：</p>
+<ul>
+<li><p>占空间小，节省带宽</p>
+</li>
+<li><p>总体加载速度快</p>
+</li>
+</ul>
+<p>这里有详细的介绍： 摘自 <a href="https://zh.wikipedia.org/wiki/WebP" target="_blank" rel="external">维基百科-WebP词条</a></p>
+<p>WebP（发音weppy）[6][7]，是一种同时提供了有损压缩与无损压缩（可逆压缩）的图片文件格式[8]，派生自视频编码格式VP8[9]，被认为是WebM多媒体格式的姊妹项目，是由Google在购买On2 Technologies后发展出来[10]，以BSD授权条款发布。[11]<br>WebP最初在2010年发布，目标是减少文件大小，但达到和JPEG格式相同的图片质量，希望能够减少图片档在网络上的发送时间。 [12]2011年11月8日，Google开始让WebP支持无损压缩和透明色（alpha通道）的功能，而在2012年8月16日的参考实做libwebp 0.2.0中正式支持[13][14]。根据Google较早的测试，WebP的无损压缩比网络上找到的PNG档少了45％的文件大小，即使这些PNG档在使用pngcrush和PNGOUT处理过，WebP还是可以减少28％的文件大小[15]。<br>WebP支持的像素最大数量是16383x16383。有损压缩的WebP仅支持8-bit的YUV 4:2:0格式。而无损压缩（可逆压缩）的WebP支持VP8L编码与8-bit之ARGB色彩空间。又无论是有损或无损压缩皆支持Alpha透明通道、ICC色彩配置、XMP诠释数据。<br>WebP有静态与动态两种模式。动态WebP（Animated WebP）支持有损与无损压缩、ICC色彩配置、XMP诠释数据、Alpha透明通道。而无损压缩的动态WebP亦支持8-bit之ARGB色彩空间。</p>
+<h2 id="二-方案实验"><a href="#二-方案实验" class="headerlink" title="二. 方案实验"></a>二. 方案实验</h2><h3 id="1-使用PIL-转换格式"><a href="#1-使用PIL-转换格式" class="headerlink" title="1. 使用PIL 转换格式"></a>1. 使用PIL 转换格式</h3><p>首先指出，PIL转换在大部分情况下都能起到很好的效果，比如讲jpeg转为webp，节省空间约90%。<br>首先安装PIL模块</p>
+<pre><code>pip install pillow
+</code></pre><p>然后在程序中 <code>localfile</code> 为图片路径</p>
+<pre><code>im = Image.open(localfile)
+f,ext = os.path.splitext(localfile.split(&quot;/&quot;)[-1])
+webp_path = &quot;%s.webp&quot;%f
+im.convert(&apos;RGB&apos;).save(webp_path, &quot;webp&quot;)
+</code></pre><p>这里需要注意需要将图片先转化为RGB模式，否则报错</p>
+<pre><code>cannot write mode P as WEBP
+</code></pre><p>现在，是时候说下PIL「失效」的情况了。</p>
+<ol>
+<li>将动图转为gif时，转化过程没有报错，但是打开后，只保存了第一帧的图片，变成了静态图。</li>
+<li>将 gif 转为 webp格式时，同样也只保存了第一帧。</li>
+</ol>
+<p>第一种情况我没有测试，但是在stackoverflow上可以看到有人提问过： <a href="http://stackoverflow.com/questions/24688802/saving-an-animated-gif-in-pillow" target="_blank" rel="external">Saving an animated GIF in Pillow</a> 。回答者是建议使用gifmaker 模块进行处理gif.</p>
+<p>第二张情况，我遇到了，所以可以证实。</p>
+<p>通过搜索，在官网上看到<a href="https://developers.google.com/speed/webp/docs/gif2webp" target="_blank" rel="external">gif2webp</a>,证明官网给出了gif转webp的解决方案，那我们就下载适合自己版本的库<a href="https://storage.googleapis.com/downloads.webmproject.org/releases/webp/index.html" target="_blank" rel="external"></a>.<br>解压后，将bin 目录下的 gif2webp.exe 复制到 工作目录下。接下来，我们使用它来转化格式。</p>
+<h3 id="2-使用gif2webp-exe转化格式"><a href="#2-使用gif2webp-exe转化格式" class="headerlink" title="2. 使用gif2webp.exe转化格式"></a>2. 使用gif2webp.exe转化格式</h3><p>根据官网给的文档<a href="https://developers.google.com/speed/webp/docs/gif2webp" target="_blank" rel="external">gif2webp</a>，我们可以很方便的使用下面的语句来实现：</p>
+<pre><code>f,ext = os.path.splitext(localfile.split(&quot;/&quot;)[-1])
+webp_path = &quot;%s.webp&quot;%f
+os.system(&quot;gif2webp.exe &quot;+ localfile + &quot; -quiet &quot; + &quot; -o &quot; + f + &quot;.webp&quot;)
+</code></pre><p>这里可能会提示：</p>
+<pre><code>GIF decode warning: invalid background color index. Assuming white background.
+</code></pre><p>转换过程持续好几秒，请耐心等待，转化完成后，工作目录下多一个webp文件.</p>
+<h2 id="三-效果比较"><a href="#三-效果比较" class="headerlink" title="三.效果比较"></a>三.效果比较</h2><center>左边是gif格式的               右边是webp格式</center>
+
+
+<p><img src="http://i.imgur.com/aFTWeSK.gif" alt="">   <img src="http://lxctest.qiniudn.com/2016-11-10_15:57:31_zhuanzhuan2.webp" alt=""></p>
+<p>你的肉眼能看出区别么？</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;使用Python将Jpeg-Png-Gif-图片转换为-webp格式&quot;&gt;&lt;a href=&quot;#使用Python将Jpeg-Png-Gif-图片转换为-webp格式&quot; class=&quot;headerlink&quot; title=&quot;使用Python将Jpeg Png Gif 图片
+    
+    </summary>
+    
+      <category term="python" scheme="http://www.orzangleli.com/categories/python/"/>
+    
+    
+      <category term="python" scheme="http://www.orzangleli.com/tags/python/"/>
+    
+  </entry>
+  
+  <entry>
     <title>自己动手造轮子系列———实现『转转APP』Indicator 效果</title>
     <link href="http://www.orzangleli.com/2016/11/10/2016-11-19_%E8%BD%AC%E8%BD%ACIndicator/"/>
     <id>http://www.orzangleli.com/2016/11/10/2016-11-19_转转Indicator/</id>
@@ -1850,66 +2029,6 @@ private Handler mHandler = new Handler() {
       <category term="android" scheme="http://www.orzangleli.com/tags/android/"/>
     
       <category term="自己动手造轮子系列" scheme="http://www.orzangleli.com/tags/%E8%87%AA%E5%B7%B1%E5%8A%A8%E6%89%8B%E9%80%A0%E8%BD%AE%E5%AD%90%E7%B3%BB%E5%88%97/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>使用Python将Jpeg Png Gif 图片转换为 webp格式</title>
-    <link href="http://www.orzangleli.com/2016/11/10/2016-11-10_Python%E5%B0%86Jpeg%20Png%20Gif%E8%BD%AC%E6%8D%A2%E4%B8%BAWebp%E6%A0%BC%E5%BC%8F/"/>
-    <id>http://www.orzangleli.com/2016/11/10/2016-11-10_Python将Jpeg Png Gif转换为Webp格式/</id>
-    <published>2016-11-09T16:00:00.000Z</published>
-    <updated>2016-11-10T14:05:29.034Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="使用Python将Jpeg-Png-Gif-图片转换为-webp格式"><a href="#使用Python将Jpeg-Png-Gif-图片转换为-webp格式" class="headerlink" title="使用Python将Jpeg Png Gif 图片转换为 webp格式"></a>使用Python将Jpeg Png Gif 图片转换为 webp格式</h1><h2 id="一-动机"><a href="#一-动机" class="headerlink" title="一.动机"></a>一.动机</h2><p>因为webp的优良特性：</p>
-<ul>
-<li><p>占空间小，节省带宽</p>
-</li>
-<li><p>总体加载速度快</p>
-</li>
-</ul>
-<p>这里有详细的介绍： 摘自 <a href="https://zh.wikipedia.org/wiki/WebP" target="_blank" rel="external">维基百科-WebP词条</a></p>
-<p>WebP（发音weppy）[6][7]，是一种同时提供了有损压缩与无损压缩（可逆压缩）的图片文件格式[8]，派生自视频编码格式VP8[9]，被认为是WebM多媒体格式的姊妹项目，是由Google在购买On2 Technologies后发展出来[10]，以BSD授权条款发布。[11]<br>WebP最初在2010年发布，目标是减少文件大小，但达到和JPEG格式相同的图片质量，希望能够减少图片档在网络上的发送时间。 [12]2011年11月8日，Google开始让WebP支持无损压缩和透明色（alpha通道）的功能，而在2012年8月16日的参考实做libwebp 0.2.0中正式支持[13][14]。根据Google较早的测试，WebP的无损压缩比网络上找到的PNG档少了45％的文件大小，即使这些PNG档在使用pngcrush和PNGOUT处理过，WebP还是可以减少28％的文件大小[15]。<br>WebP支持的像素最大数量是16383x16383。有损压缩的WebP仅支持8-bit的YUV 4:2:0格式。而无损压缩（可逆压缩）的WebP支持VP8L编码与8-bit之ARGB色彩空间。又无论是有损或无损压缩皆支持Alpha透明通道、ICC色彩配置、XMP诠释数据。<br>WebP有静态与动态两种模式。动态WebP（Animated WebP）支持有损与无损压缩、ICC色彩配置、XMP诠释数据、Alpha透明通道。而无损压缩的动态WebP亦支持8-bit之ARGB色彩空间。</p>
-<h2 id="二-方案实验"><a href="#二-方案实验" class="headerlink" title="二. 方案实验"></a>二. 方案实验</h2><h3 id="1-使用PIL-转换格式"><a href="#1-使用PIL-转换格式" class="headerlink" title="1. 使用PIL 转换格式"></a>1. 使用PIL 转换格式</h3><p>首先指出，PIL转换在大部分情况下都能起到很好的效果，比如讲jpeg转为webp，节省空间约90%。<br>首先安装PIL模块</p>
-<pre><code>pip install pillow
-</code></pre><p>然后在程序中 <code>localfile</code> 为图片路径</p>
-<pre><code>im = Image.open(localfile)
-f,ext = os.path.splitext(localfile.split(&quot;/&quot;)[-1])
-webp_path = &quot;%s.webp&quot;%f
-im.convert(&apos;RGB&apos;).save(webp_path, &quot;webp&quot;)
-</code></pre><p>这里需要注意需要将图片先转化为RGB模式，否则报错</p>
-<pre><code>cannot write mode P as WEBP
-</code></pre><p>现在，是时候说下PIL「失效」的情况了。</p>
-<ol>
-<li>将动图转为gif时，转化过程没有报错，但是打开后，只保存了第一帧的图片，变成了静态图。</li>
-<li>将 gif 转为 webp格式时，同样也只保存了第一帧。</li>
-</ol>
-<p>第一种情况我没有测试，但是在stackoverflow上可以看到有人提问过： <a href="http://stackoverflow.com/questions/24688802/saving-an-animated-gif-in-pillow" target="_blank" rel="external">Saving an animated GIF in Pillow</a> 。回答者是建议使用gifmaker 模块进行处理gif.</p>
-<p>第二张情况，我遇到了，所以可以证实。</p>
-<p>通过搜索，在官网上看到<a href="https://developers.google.com/speed/webp/docs/gif2webp" target="_blank" rel="external">gif2webp</a>,证明官网给出了gif转webp的解决方案，那我们就下载适合自己版本的库<a href="https://storage.googleapis.com/downloads.webmproject.org/releases/webp/index.html" target="_blank" rel="external"></a>.<br>解压后，将bin 目录下的 gif2webp.exe 复制到 工作目录下。接下来，我们使用它来转化格式。</p>
-<h3 id="2-使用gif2webp-exe转化格式"><a href="#2-使用gif2webp-exe转化格式" class="headerlink" title="2. 使用gif2webp.exe转化格式"></a>2. 使用gif2webp.exe转化格式</h3><p>根据官网给的文档<a href="https://developers.google.com/speed/webp/docs/gif2webp" target="_blank" rel="external">gif2webp</a>，我们可以很方便的使用下面的语句来实现：</p>
-<pre><code>f,ext = os.path.splitext(localfile.split(&quot;/&quot;)[-1])
-webp_path = &quot;%s.webp&quot;%f
-os.system(&quot;gif2webp.exe &quot;+ localfile + &quot; -quiet &quot; + &quot; -o &quot; + f + &quot;.webp&quot;)
-</code></pre><p>这里可能会提示：</p>
-<pre><code>GIF decode warning: invalid background color index. Assuming white background.
-</code></pre><p>转换过程持续好几秒，请耐心等待，转化完成后，工作目录下多一个webp文件.</p>
-<h2 id="三-效果比较"><a href="#三-效果比较" class="headerlink" title="三.效果比较"></a>三.效果比较</h2><center>左边是gif格式的               右边是webp格式</center>
-
-
-<p><img src="http://i.imgur.com/aFTWeSK.gif" alt="">   <img src="http://lxctest.qiniudn.com/2016-11-10_15:57:31_zhuanzhuan2.webp" alt=""></p>
-<p>你的肉眼能看出区别么？</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;使用Python将Jpeg-Png-Gif-图片转换为-webp格式&quot;&gt;&lt;a href=&quot;#使用Python将Jpeg-Png-Gif-图片转换为-webp格式&quot; class=&quot;headerlink&quot; title=&quot;使用Python将Jpeg Png Gif 图片
-    
-    </summary>
-    
-      <category term="python" scheme="http://www.orzangleli.com/categories/python/"/>
-    
-    
-      <category term="python" scheme="http://www.orzangleli.com/tags/python/"/>
     
   </entry>
   
@@ -2110,37 +2229,6 @@ blog.saveBlog()
     
     
       <category term="Python" scheme="http://www.orzangleli.com/tags/Python/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Windows 平台下的整站抓取工具  WinHTTrack Website Copier 使用</title>
-    <link href="http://www.orzangleli.com/2016/10/30/Windows%20%E5%B9%B3%E5%8F%B0%E4%B8%8B%E7%9A%84%E6%95%B4%E7%AB%99%E6%8A%93%E5%8F%96%E5%B7%A5%E5%85%B7%20%20WinHTTrack%20Website%20Copier%20%E4%BD%BF%E7%94%A8/"/>
-    <id>http://www.orzangleli.com/2016/10/30/Windows 平台下的整站抓取工具  WinHTTrack Website Copier 使用/</id>
-    <published>2016-10-29T16:00:00.000Z</published>
-    <updated>2016-11-03T11:19:55.162Z</updated>
-    
-    <content type="html"><![CDATA[<p>昨天晚上本来想看android文档，使用之前好久没用的Lantern，发现已经不能打开墙外网站了，于是就想着android官方文档很重要，而且可能随时会看，就想着自己做一个镜像网站。</p>
-<p>本来想的是使用Python爬虫，将developer.android.com上的所有guide网站目录下的网站爬取下来，然后在解析html内容，将所有的链接地址指向本地的相对地址，然后再下载html中的图片，flash,js,css等文件。</p>
-<p>但是当我爬取下来一个首页的html之后，发现图片可能还比较好分辨，css感觉规则很不明显，会有这种css格式出现：</p>
-<p>&lt;link rel=”stylesheet”<br>href=”//fonts.googleapis.com/css?family=Roboto+Condensed”&gt;</p>
-<p>一时间，感觉做一个python版的整站爬取工作，需要处理的细节还是很多，而我明天可能要回无锡，所以时间并不多，就在搜索引擎上找到一款软件：WinHTTracker.</p>
-<p>下载地址：<a href="http://www.httrack.com/page/2/" target="_blank" rel="external">http://www.httrack.com/page/2/</a> 网站做的挺简陋的。。。</p>
-<p>下载下来安装即可，进入软件可以设置语言，我选择的简体中文。</p>
-<p>首先需要设置工程名字，比如我的：AndroidOfficalDocument,下面的那个叫做工程目录可以不填，总文件保存位置选择一个空间较大的目录(因为不知道待爬取的网站的源码有多少空间，所以大点总比小的好)。</p>
-<p>然后就是等待镜像过程了~</p>
-<p><img src="http://lxctest.qiniudn.com/2016-10-30_11:41:10_QQ截图20161030114047.jpg?imageView2/0/w/900" alt=""></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;昨天晚上本来想看android文档，使用之前好久没用的Lantern，发现已经不能打开墙外网站了，于是就想着android官方文档很重要，而且可能随时会看，就想着自己做一个镜像网站。&lt;/p&gt;
-&lt;p&gt;本来想的是使用Python爬虫，将developer.android.com
-    
-    </summary>
-    
-      <category term="未分类" scheme="http://www.orzangleli.com/categories/%E6%9C%AA%E5%88%86%E7%B1%BB/"/>
-    
     
   </entry>
   
