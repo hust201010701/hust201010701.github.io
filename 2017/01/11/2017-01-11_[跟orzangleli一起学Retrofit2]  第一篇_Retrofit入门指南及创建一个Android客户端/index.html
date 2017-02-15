@@ -1,0 +1,785 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="android,Retrofit," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="orzangleli" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.2" />
+
+
+
+
+
+
+<meta name="description" content="1. [跟orzangleli一起学Retrofit2]  第一篇  Retrofit入门指南及创建一个Android客户端
+本系列文章是作者orzangleli基于FutureStudio中的教程经过亲自试验和修改，删除文章中关于1.9版本Retrofit的介绍，让初学者更加方便和清晰地学习Retrofit2.0，并对原文章中部分代码及API作了修改和补充，以达到正常试验效果。本系列文章所有权归">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第一篇_Retrofit入门指南及创建一个Android客户端">
+<meta property="og:url" content="http://www.orzangleli.com/2017/01/11/2017-01-11_[跟orzangleli一起学Retrofit2]  第一篇_Retrofit入门指南及创建一个Android客户端/index.html">
+<meta property="og:site_name" content="orzangleli">
+<meta property="og:description" content="1. [跟orzangleli一起学Retrofit2]  第一篇  Retrofit入门指南及创建一个Android客户端
+本系列文章是作者orzangleli基于FutureStudio中的教程经过亲自试验和修改，删除文章中关于1.9版本Retrofit的介绍，让初学者更加方便和清晰地学习Retrofit2.0，并对原文章中部分代码及API作了修改和补充，以达到正常试验效果。本系列文章所有权归">
+<meta property="og:image" content="http://7bvaky.com2.z0.glb.qiniucdn.com/2017-01-11_22_00_28_github_contributors.png">
+<meta property="og:updated_time" content="2017-01-14T14:59:44.278Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="第一篇_Retrofit入门指南及创建一个Android客户端">
+<meta name="twitter:description" content="1. [跟orzangleli一起学Retrofit2]  第一篇  Retrofit入门指南及创建一个Android客户端
+本系列文章是作者orzangleli基于FutureStudio中的教程经过亲自试验和修改，删除文章中关于1.9版本Retrofit的介绍，让初学者更加方便和清晰地学习Retrofit2.0，并对原文章中部分代码及API作了修改和补充，以达到正常试验效果。本系列文章所有权归">
+<meta name="twitter:image" content="http://7bvaky.com2.z0.glb.qiniucdn.com/2017-01-11_22_00_28_github_contributors.png">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://www.orzangleli.com/2017/01/11/2017-01-11_[跟orzangleli一起学Retrofit2]  第一篇_Retrofit入门指南及创建一个Android客户端/"/>
+
+
+  <title> 第一篇_Retrofit入门指南及创建一个Android客户端 | orzangleli </title>
+</head>
+
+<body itemscope itemtype="//schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="//schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">orzangleli</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">活在梦里的程序员和设计师</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="st-search-show-outputs">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <form class="site-search-form">
+  <input type="text" id="st-search-input" class="st-search-input st-default-search-input" />
+</form>
+
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+    (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+    e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install', 'NZ6NvgDMr2E5jAp_-RbY','2.0.0');
+</script>
+
+
+
+    </div>
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="//schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                第一篇_Retrofit入门指南及创建一个Android客户端
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-01-11T12:00:00+08:00" content="2017-01-11">
+              2017-01-11
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Retrofit教程/" itemprop="url" rel="index">
+                    <span itemprop="name">Retrofit教程</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="1-跟orzangleli一起学Retrofit2-第一篇-Retrofit入门指南及创建一个Android客户端"><a href="#1-跟orzangleli一起学Retrofit2-第一篇-Retrofit入门指南及创建一个Android客户端" class="headerlink" title="1. [跟orzangleli一起学Retrofit2]  第一篇  Retrofit入门指南及创建一个Android客户端"></a>1. [跟orzangleli一起学Retrofit2]  第一篇  Retrofit入门指南及创建一个Android客户端</h1><blockquote>
+<p>本系列文章是作者orzangleli基于<a href="https://futurestud.io/tutorials/retrofit-getting-started-and-android-client" target="_blank" rel="external">FutureStudio</a>中的教程经过亲自试验和修改，删除文章中关于1.9版本Retrofit的介绍，让初学者更加方便和清晰地学习Retrofit2.0，并对原文章中部分代码及API作了修改和补充，以达到正常试验效果。<br>本系列文章所有权归orzangleli.com所有，任何人有权转载，但需要标明出处。</p>
+</blockquote>
+<p>本文是Retrofit教程系列的第一篇。本系列通过使用一些案例深入了解Retrofit，并从功能和可扩展性的方面来测试Retrofit.</p>
+<h2 id="跟orzangleli一起学Retrofit2-系列总览"><a href="#跟orzangleli一起学Retrofit2-系列总览" class="headerlink" title="[跟orzangleli一起学Retrofit2]系列总览"></a>[跟orzangleli一起学Retrofit2]系列总览</h2><ol>
+<li>将Github作为Retrofit的测试对象</li>
+<li>入门指南及创建一个Android客户端</li>
+<li>API 基础</li>
+<li>创建一个持久化的Android客户端</li>
+<li>同步和异步请求</li>
+<li>在Request Body中发送对象</li>
+<li>添加自定义请求头</li>
+<li>Retrofit 2——在OkHttp Interceptor中管理请求头</li>
+</ol>
+<p>本篇文章我们将一起学习Retrofit的基础知识，以及对API或者HTTP请求创建一个Android 客户端。</p>
+<p>但是，这篇文章并没有涉及很多入门信息和也没有解释Retrofit究竟是什么。对于这些内容，请访问<a href="http://square.github.io/retrofit/" target="_blank" rel="external">projects homepage</a></p>
+<h2 id="Retrofit是什么"><a href="#Retrofit是什么" class="headerlink" title="Retrofit是什么"></a>Retrofit是什么</h2><p>Retrofit官方主页这样描述它：</p>
+<blockquote>
+<p>A type-safe REST client for Android and Java.(Android和Java的类型安全的REST客户端)</p>
+</blockquote>
+<p>本系列中你将学会使用注解描述HTTP请求，URL参数的替换和查询参数。另外，Retrofit还提供对multipart请求主体和文件的上传功能。</p>
+<h2 id="如何申明（API）请求"><a href="#如何申明（API）请求" class="headerlink" title="如何申明（API）请求"></a>如何申明（API）请求</h2><p>请访问阅读<a href="http://square.github.io/retrofit/#api-declaration" target="_blank" rel="external">Retrofit homepage</a>中API申明部分，好好理解如何构造请求。你将会找到所有重要的信息，而且他们都有着很详细的代码描述。</p>
+<h2 id="Android项目的准备工作"><a href="#Android项目的准备工作" class="headerlink" title="Android项目的准备工作"></a>Android项目的准备工作</h2><p>现在我们言归正传，如果你已经创建了你的Android项目，直接从下一段开始吧。如果没有，请先在你最新最喜欢的IDE中创建一个项目。我们喜欢使用Gradle作为构建系统，但是你也可以使用Maven.</p>
+<h3 id="申明依赖项：Gradle或者Maven"><a href="#申明依赖项：Gradle或者Maven" class="headerlink" title="申明依赖项：Gradle或者Maven"></a>申明依赖项：Gradle或者Maven</h3><p>现在我们把Retrofit添加到你项目的依赖项中。选择你使用的构建系统，在pom.xml或build.gradle中定义Retrofit及其依赖项。当运行命令构建你的代码时，构建系统则会为你的项目自动下载Retrofit库。我们建议将OkHttp配合Retrofit使用，OkHttp还对Okio有依赖性，所以Okio也需要声明依赖性。</p>
+<h4 id="Retrofit-1-9"><a href="#Retrofit-1-9" class="headerlink" title="Retrofit 1.9"></a><strong>Retrofit 1.9</strong></h4><p>本系列译文仅讲述Retrofit2.0,若需要了解之前的版本，请查看<a href="https://futurestud.io/tutorials/retrofit-getting-started-and-android-client" target="_blank" rel="external">英文原版</a>文章。</p>
+<h4 id="Retrofit-2"><a href="#Retrofit-2" class="headerlink" title="Retrofit 2"></a><strong>Retrofit 2</strong></h4><p><strong>pom.xml</strong></p>
+<pre><code>&lt;dependency&gt;  
+    &lt;groupId&gt;com.squareup.retrofit2&lt;/groupId&gt;
+    &lt;artifactId&gt;retrofit&lt;/artifactId&gt;
+    &lt;version&gt;2.1.0&lt;/version&gt;
+&lt;/dependency&gt;  
+&lt;dependency&gt;  
+    &lt;groupId&gt;com.squareup.retrofit2&lt;/groupId&gt;
+    &lt;artifactId&gt;converter-gson&lt;/artifactId&gt;
+    &lt;version&gt;2.1.0&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre><p><strong>build.gradle</strong></p>
+<pre><code>dependencies {  
+    // Retrofit &amp; OkHttp
+    compile &apos;com.squareup.retrofit2:retrofit:2.1.0&apos;
+    compile &apos;com.squareup.retrofit2:converter-gson:2.1.0&apos;
+}
+</code></pre><p>Retrofit 2默认使用OkHttp作为网络层，而且OkHttp也内置到Retrofit2中了，所以你是用OkHttp时不需要在项目中再次声明依赖项了，除非你对OkHttp的版本有特殊要求。（译者注：Retrofit，OkHttp,Okio都是Square公司出品的）</p>
+<p>现在，你的项目已经准备好整合Retrofit了，我们一起来创建一个持久的Android API/HTTP 客户端吧~</p>
+<h2 id="持久的Android-客户端"><a href="#持久的Android-客户端" class="headerlink" title="持久的Android 客户端"></a>持久的Android 客户端</h2><p>在对已经存在的Retrofit客户端的研究中，发现了<a href="https://github.com/bkiers/retrofit-oauth/tree/master/src/main/java/nl/bigo/retrofitoauth" target="_blank" rel="external">example repository of Bart Kiers</a>.实际上，这是个使用Retrofit进行OAuth认证的案例。但是，它提供一个可持久化Android客户端的所有必需的基本知识。这就是为什么我们以后会把它作为坚实基础，并且在以后需要使用认证的文章中拿它来扩展。</p>
+<p>下面的类定义了我们的android 客户端的基本信息：<strong>ServiceGenerator</strong></p>
+<h3 id="ServiceGenerator"><a href="#ServiceGenerator" class="headerlink" title="ServiceGenerator"></a>ServiceGenerator</h3><p><strong>ServiceGenerator</strong>就是我们的API/HTTP客户端的核心，目前来说，它只是定义了一个为给定类和接口创建REST适配器的方法。代码如下：</p>
+<pre><code>public class ServiceGenerator {
+
+    public static final String API_BASE_URL = &quot;http://your.api-base.url&quot;;
+
+    private static OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+
+    private static Retrofit.Builder builder =
+            new Retrofit.Builder()
+                    .baseUrl(API_BASE_URL)
+                    .addConverterFactory(GsonConverterFactory.create());
+
+    public static &lt;S&gt; S createService(Class&lt;S&gt; serviceClass) {
+        Retrofit retrofit = builder.client(httpClient.build()).build();
+        return retrofit.create(serviceClass);
+    }
+}
+</code></pre><p>这个 <code>ServiceGenerator</code> 类使用Retrofit的<code>RestAdapter</code>来创建一个新的带有基本API地址（base URL）的REST客户端.例如，Github的API基本地址是：<code>https://api.github.com/</code>。<code>serviceClass</code>指的是对API请求有注解的类或者接口。以下部分展示Retrofit的具体使用以及如何定义一个典型的客户端。</p>
+<h2 id="JSON-映射"><a href="#JSON-映射" class="headerlink" title="JSON 映射"></a>JSON 映射</h2><p>Retrofit 1.9 默认使用的是Google的Gson库。你所需要做的事就是定义你的响应对象的类，响应数据会自动被映射的。</p>
+<p>使用Retrofit2时，你需要明确地为Retrofit指定一个解析器。例如前面，我们已经添加了下面这行代码到<code>build.gradle</code>文件，导入Gson 解析器到Retrofit2中。</p>
+<pre><code>compile &apos;com.squareup.retrofit2:converter-gson:2.1.0&apos;  
+</code></pre><p>现在你需要添加你的解析器到Retrofit对象中。在Retrofit的builder中调用<code>.addConverterFactory(GsonConverterFactory.create())</code>整合Gson作为默认Json解析器。</p>
+<h2 id="使用Retrofit"><a href="#使用Retrofit" class="headerlink" title="使用Retrofit"></a>使用Retrofit</h2><p>好，我们器来看一个例子，定义一个REST客户端，从Github上请求数据。首先，我们得创建一个接口，定义一些需要的方法。</p>
+<h3 id="Github客户端"><a href="#Github客户端" class="headerlink" title="Github客户端"></a>Github客户端</h3><p>下面的代码定义了<code>GithubClient</code>接口，里面有一个方法请求获取某一个repository（仓库）的所有contributors（贡献者）。它还举例说明了Retrofit的参数替换功能的使用，当请求方法<code>contributors</code>时，会把GET注解参数中{owner} 和 {repo} 替换成给定的变量。</p>
+<pre><code>public interface GitHubClient {  
+    @GET(&quot;/repos/{owner}/{repo}/contributors&quot;)
+    Call&lt;List&lt;Contributor&gt;&gt; contributors(
+        @Path(&quot;owner&quot;) String owner,
+        @Path(&quot;repo&quot;) String repo
+    );
+}
+</code></pre><p>这里有一个<code>Contributor</code>类，这个类包含一些需要的，对应响应数据中的属性。</p>
+<pre><code>static class Contributor {  
+    String login;
+    int contributions;
+}
+</code></pre><p>完整代码如下：</p>
+<pre><code>public interface GitHubClient {  
+    @GET(&quot;/repos/{owner}/{repo}/contributors&quot;)
+    Call&lt;List&lt;Contributor&gt;&gt; contributors(
+        @Path(&quot;owner&quot;) String owner,
+        @Path(&quot;repo&quot;) String repo
+    );
+    static class Contributor {  
+        String login;
+        int contributions;
+    }
+}
+</code></pre><p>关于前面提到的JSON映射：<code>GitHubClient</code>中定义了一个叫<code>contributors</code>的方法，返回值类型是<code>Call&lt;List&lt;Contributor&gt;&gt;</code>。Retrofit确保服务响应映射正确。</p>
+<p><strong>译者注：</strong><code>Contributor</code>中定义的字段并不能随意命名，需要根据服务器返回的json格式的数据做出对应的调整。因为基本地址是：<a href="https://api.github.com/" target="_blank" rel="external">https://api.github.com/</a>，我们手动补全获取所有贡献者的API地址，以我的<a href="https://github.com/hust201010701/CouponView/" target="_blank" rel="external">CouponView</a>为例，完整的请求地址是 <a href="https://api.github.com/repos/hust201010701/CouponView/contributors" target="_blank" rel="external">https://api.github.com/repos/hust201010701/CouponView/contributors</a>.我们通过观察返回数据（如下图所示），选取其中的login和contributions作为我们想提取的数据，当然你可以自己再添加其他的关键字。</p>
+<p><img src="http://7bvaky.com2.z0.glb.qiniucdn.com/2017-01-11_22_00_28_github_contributors.png" alt=""></p>
+<h2 id="API请求案例"><a href="#API请求案例" class="headerlink" title="API请求案例"></a>API请求案例</h2><p>下面这一段举例说明了使用<code>ServiceGenerator</code>初始化你的客户端，具体指的就是Github客户端，用创建的这个客户端获取仓库的贡献者。这个片段修改自<a href="https://github.com/square/retrofit/tree/master/samples/src/main/java/com/example/retrofit" target="_blank" rel="external">Retrofit github-client example</a>。</p>
+<p>你需要手动在<code>ServiceGenerator</code>中定义基本地址为<code>https://api.github.com/</code>，你还可以在<code>ServiceGenerator</code>中再创建一个包含两个参数的<code>createService()</code>，这两个参数分别是客户端类和基本地址。</p>
+<p>首先你需要在AndroidManifest.xml中声明权限（有些权限是以后会用到的）：</p>
+<pre><code>&lt;uses-permission android:name=&quot;android.permission.INTERNET&quot;&gt;&lt;/uses-permission&gt;
+&lt;uses-permission android:name=&quot;android.permission.READ_EXTERNAL_STORAGE&quot;&gt;&lt;/uses-permission&gt;
+&lt;uses-permission android:name=&quot;android.permission.MOUNT_UNMOUNT_FILESYSTEMS&quot;&gt;&lt;/uses-permission&gt;
+&lt;uses-permission android:name=&quot;android.permission.WRITE_EXTERNAL_STORAGE&quot;&gt;&lt;/uses-permission&gt;
+</code></pre><p>如果你是android 6.0以上系统，还需要在java代码中申请权限，相关代码请自行搜索：<code>Android6.0 申请读写权限</code></p>
+<p>在MainActivity中增加以下代码：</p>
+<pre><code>new Thread(new Runnable(){
+            @Override
+            public void run() {
+
+                GithubClient client = ServiceGenerator.createService(GithubClient.class);
+                Call&lt;List&lt;GithubClient.Contributor&gt;&gt; call= client.contributors(&quot;square&quot;,&quot;retrofit&quot;);
+
+                contributors = new ArrayList&lt;GithubClient.Contributor&gt;();
+
+                try {
+                    contributors = call.execute().body();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                for(GithubClient.Contributor contributor : contributors)
+                {
+                    i(contributor.login+&quot;(&quot;+contributor.contributions+&quot;)&quot;);
+                }
+
+            }
+        }).start();
+</code></pre><h2 id="下节预告"><a href="#下节预告" class="headerlink" title="下节预告"></a>下节预告</h2><p>下一篇文章我们将学习如何使用Retrofit实现基本的认证。我们将给出程序案例，实现带有用户名、邮箱、密码等的web服务或API的认证。进一步地，后面的文章会介绍带token的API认证（包括OAuth）。</p>
+<p>希望你能喜欢这个系列的文章。</p>
+<p>本文是由orzangleli翻译，原文地址：<a href="https://futurestud.io/tutorials/retrofit-getting-started-and-android-client" target="_blank" rel="external">Getting Started and Creating an Android Client</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/android/" rel="tag">#android</a>
+          
+            <a href="/tags/Retrofit/" rel="tag">#Retrofit</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/01/10/2017-01-10_[跟orzangleli一起学Retrofit2]  第零篇_将Github作为Retrofit的测试对象/" rel="next" title="第零篇_将Github作为Retrofit的测试对象">
+                <i class="fa fa-chevron-left"></i> 第零篇_将Github作为Retrofit的测试对象
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/01/11/2017-01-11_[跟orzangleli一起学Retrofit2]  第二篇__API描述的基础知识/" rel="prev" title="第二篇__API描述的基础知识">
+                第二篇__API描述的基础知识 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="//schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="orzangleli" />
+          <p class="site-author-name" itemprop="name">orzangleli</p>
+          <p class="site-description motion-element" itemprop="description">华中科技大学 本科10级 硕士14级 一个热爱技术的宅~</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">60</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">15</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-跟orzangleli一起学Retrofit2-第一篇-Retrofit入门指南及创建一个Android客户端"><span class="nav-number">1.</span> <span class="nav-text">1. [跟orzangleli一起学Retrofit2]  第一篇  Retrofit入门指南及创建一个Android客户端</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#跟orzangleli一起学Retrofit2-系列总览"><span class="nav-number">1.1.</span> <span class="nav-text">[跟orzangleli一起学Retrofit2]系列总览</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Retrofit是什么"><span class="nav-number">1.2.</span> <span class="nav-text">Retrofit是什么</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#如何申明（API）请求"><span class="nav-number">1.3.</span> <span class="nav-text">如何申明（API）请求</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Android项目的准备工作"><span class="nav-number">1.4.</span> <span class="nav-text">Android项目的准备工作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#申明依赖项：Gradle或者Maven"><span class="nav-number">1.4.1.</span> <span class="nav-text">申明依赖项：Gradle或者Maven</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Retrofit-1-9"><span class="nav-number">1.4.1.1.</span> <span class="nav-text">Retrofit 1.9</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Retrofit-2"><span class="nav-number">1.4.1.2.</span> <span class="nav-text">Retrofit 2</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#持久的Android-客户端"><span class="nav-number">1.5.</span> <span class="nav-text">持久的Android 客户端</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ServiceGenerator"><span class="nav-number">1.5.1.</span> <span class="nav-text">ServiceGenerator</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#JSON-映射"><span class="nav-number">1.6.</span> <span class="nav-text">JSON 映射</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用Retrofit"><span class="nav-number">1.7.</span> <span class="nav-text">使用Retrofit</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Github客户端"><span class="nav-number">1.7.1.</span> <span class="nav-text">Github客户端</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#API请求案例"><span class="nav-number">1.8.</span> <span class="nav-text">API请求案例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#下节预告"><span class="nav-number">1.9.</span> <span class="nav-text">下节预告</span></a></li></ol></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">orzangleli</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.2"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>

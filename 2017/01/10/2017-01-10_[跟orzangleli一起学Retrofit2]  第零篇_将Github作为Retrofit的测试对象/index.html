@@ -1,0 +1,725 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="android,Retrofit," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="orzangleli" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.2" />
+
+
+
+
+
+
+<meta name="description" content="[Retrofit 2 番外篇]将Github作为Retrofit的测试对象目录
+
+一、 申请认证token
+二、 准备原始数据
+2.1 创建你的第一个仓库
+2.2 关注一些人
+2.3 创建Issues
+2.4 Star 自己的仓库
+
+
+三、 Github API大全
+四、 善后工作
+
+
+本文将阐述，将Github作为Retrofit 2学习时的测试对象要做的准备工作。因为在[跟orzanglel">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第零篇_将Github作为Retrofit的测试对象">
+<meta property="og:url" content="http://www.orzangleli.com/2017/01/10/2017-01-10_[跟orzangleli一起学Retrofit2]  第零篇_将Github作为Retrofit的测试对象/index.html">
+<meta property="og:site_name" content="orzangleli">
+<meta property="og:description" content="[Retrofit 2 番外篇]将Github作为Retrofit的测试对象目录
+
+一、 申请认证token
+二、 准备原始数据
+2.1 创建你的第一个仓库
+2.2 关注一些人
+2.3 创建Issues
+2.4 Star 自己的仓库
+
+
+三、 Github API大全
+四、 善后工作
+
+
+本文将阐述，将Github作为Retrofit 2学习时的测试对象要做的准备工作。因为在[跟orzanglel">
+<meta property="og:image" content="http://7bvaky.com2.z0.glb.qiniucdn.com/2017-01-13_10_59_43_创建仓库.png">
+<meta property="og:image" content="http://7bvaky.com2.z0.glb.qiniucdn.com/2017-01-13_11_24_03_创建Issue.png">
+<meta property="og:updated_time" content="2017-01-14T14:56:59.135Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="第零篇_将Github作为Retrofit的测试对象">
+<meta name="twitter:description" content="[Retrofit 2 番外篇]将Github作为Retrofit的测试对象目录
+
+一、 申请认证token
+二、 准备原始数据
+2.1 创建你的第一个仓库
+2.2 关注一些人
+2.3 创建Issues
+2.4 Star 自己的仓库
+
+
+三、 Github API大全
+四、 善后工作
+
+
+本文将阐述，将Github作为Retrofit 2学习时的测试对象要做的准备工作。因为在[跟orzanglel">
+<meta name="twitter:image" content="http://7bvaky.com2.z0.glb.qiniucdn.com/2017-01-13_10_59_43_创建仓库.png">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://www.orzangleli.com/2017/01/10/2017-01-10_[跟orzangleli一起学Retrofit2]  第零篇_将Github作为Retrofit的测试对象/"/>
+
+
+  <title> 第零篇_将Github作为Retrofit的测试对象 | orzangleli </title>
+</head>
+
+<body itemscope itemtype="//schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="//schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">orzangleli</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">活在梦里的程序员和设计师</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="st-search-show-outputs">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <form class="site-search-form">
+  <input type="text" id="st-search-input" class="st-search-input st-default-search-input" />
+</form>
+
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+    (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+    e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install', 'NZ6NvgDMr2E5jAp_-RbY','2.0.0');
+</script>
+
+
+
+    </div>
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="//schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                第零篇_将Github作为Retrofit的测试对象
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-01-10T00:00:00+08:00" content="2017-01-10">
+              2017-01-10
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Retrofit教程/" itemprop="url" rel="index">
+                    <span itemprop="name">Retrofit教程</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Retrofit-2-番外篇-将Github作为Retrofit的测试对象"><a href="#Retrofit-2-番外篇-将Github作为Retrofit的测试对象" class="headerlink" title="[Retrofit 2 番外篇]将Github作为Retrofit的测试对象"></a>[Retrofit 2 番外篇]将Github作为Retrofit的测试对象</h1><p><strong>目录</strong><br><!-- MarkdownTOC --></p>
+<ul>
+<li><a href="#一、-申请认证token">一、 申请认证token</a></li>
+<li><a href="#二、-准备原始数据">二、 准备原始数据</a><ul>
+<li><a href="#21-创建你的第一个仓库">2.1 创建你的第一个仓库</a></li>
+<li><a href="#22-关注一些人">2.2 关注一些人</a></li>
+<li><a href="#23-创建issues">2.3 创建Issues</a></li>
+<li><a href="#24-star-自己的仓库">2.4 Star 自己的仓库</a></li>
+</ul>
+</li>
+<li><a href="#三、-github-api大全">三、 Github API大全</a></li>
+<li><a href="#四、-善后工作">四、 善后工作</a></li>
+</ul>
+<!-- /MarkdownTOC -->
+<p>本文将阐述，将Github作为Retrofit 2学习时的测试对象要做的准备工作。因为在<strong>[跟orzangleli一起学Retrofit2]</strong>这个教程中，译者将全部使用Github中的API进行测试实验。</p>
+<h2 id="一、-申请认证token"><a href="#一、-申请认证token" class="headerlink" title="一、 申请认证token"></a>一、 申请认证token</h2><p>因为Github中的部分API是需要认证的，Github中认证有多种方式，但是token认证较为方便，所以选择token认证。我们到<a href="https://github.com/settings/tokens" target="_blank" rel="external">这个网页</a>获取token,我建议你新建一个全新的token,命名为RetrofitTest,然后勾上所有的权限，最后点击生成,然后你可以看到一串字符串，这个字符串就是token,将它保存在一个你可以随时找到的位置，<strong>因为这个token只会显示一次，以后在找就找不到了。</strong></p>
+<h2 id="二、-准备原始数据"><a href="#二、-准备原始数据" class="headerlink" title="二、 准备原始数据"></a>二、 准备原始数据</h2><h3 id="2-1-创建你的第一个仓库"><a href="#2-1-创建你的第一个仓库" class="headerlink" title="2.1 创建你的第一个仓库"></a>2.1 创建你的第一个仓库</h3><p>如果你之前创建过仓库可以不用再看这一段。</p>
+<p>如图所示，新建一个仓库，命名为RetrofitTest。<br><img src="http://7bvaky.com2.z0.glb.qiniucdn.com/2017-01-13_10_59_43_创建仓库.png" alt=""></p>
+<h3 id="2-2-关注一些人"><a href="#2-2-关注一些人" class="headerlink" title="2.2 关注一些人"></a>2.2 关注一些人</h3><p>因为后面的教程中，会有关于Following API的测试，我们建议你关注一些人。当然我希望你能够关注我的Github:<a href="https://github.com/hust201010701" target="_blank" rel="external">@hust201010701</a>,这里我还推荐一些大牛的Github:</p>
+<ul>
+<li><a href="https://github.com/hust201010701" target="_blank" rel="external">@hust201010701</a> : 本教程译者（非大牛，正在朝大牛方向努力）</li>
+<li><a href="https://github.com/JakeWharton" target="_blank" rel="external">JakeWharton</a>: Square Inc.的大牛</li>
+<li><a href="https://github.com/hongyangAndroid" target="_blank" rel="external">hongyangAndroid</a>: 鸿洋</li>
+<li><a href="https://github.com/kymjs" target="_blank" rel="external">kymjs</a>: 张涛-开源实验室</li>
+</ul>
+<h3 id="2-3-创建Issues"><a href="#2-3-创建Issues" class="headerlink" title="2.3 创建Issues"></a>2.3 创建Issues</h3><p>找到自己刚刚创建的RetrofitTest仓库，然后如图所示，创建一个Issue,Issue的标题可以和图中一样，方便标识，Issue的内容可以自由发挥，随意填写。</p>
+<p><img src="http://7bvaky.com2.z0.glb.qiniucdn.com/2017-01-13_11_24_03_创建Issue.png" alt=""></p>
+<h3 id="2-4-Star-自己的仓库"><a href="#2-4-Star-自己的仓库" class="headerlink" title="2.4 Star 自己的仓库"></a>2.4 Star 自己的仓库</h3><p>在进入RetrofitTest仓库详情页时，右上方的Star按钮，可以自己点一下，这样就相当于自己粉了自己的项目。这样我们以后通过API获取关注者时就不会返回空数据了。</p>
+<h2 id="三、-Github-API大全"><a href="#三、-Github-API大全" class="headerlink" title="三、 Github API大全"></a>三、 Github API大全</h2><p>Github的所有API可以从<a href="https://api.github.com/" target="_blank" rel="external">https://api.github.com/</a>获取到。</p>
+<p>另外，<a href="https://developer.github.com/v3/" target="_blank" rel="external">Github开发者页</a>也对Github的API有详细的描述，有兴趣的可以自己深入研究。</p>
+<h2 id="四、-善后工作"><a href="#四、-善后工作" class="headerlink" title="四、 善后工作"></a>四、 善后工作</h2><p>本教程如果学习完了，你又不想让Github中的仓库有任何风险，你可以自行进入<a href="https://github.com/settings/tokens" target="_blank" rel="external">https://github.com/settings/tokens</a>删除之前创建的RetrofitTest token。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/android/" rel="tag">#android</a>
+          
+            <a href="/tags/Retrofit/" rel="tag">#Retrofit</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/01/07/2017-01-07_Python节日倒计时软件/" rel="next" title="Python节日倒计时软件">
+                <i class="fa fa-chevron-left"></i> Python节日倒计时软件
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/01/11/2017-01-11_[跟orzangleli一起学Retrofit2]  第一篇_Retrofit入门指南及创建一个Android客户端/" rel="prev" title="第一篇_Retrofit入门指南及创建一个Android客户端">
+                第一篇_Retrofit入门指南及创建一个Android客户端 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="//schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="orzangleli" />
+          <p class="site-author-name" itemprop="name">orzangleli</p>
+          <p class="site-description motion-element" itemprop="description">华中科技大学 本科10级 硕士14级 一个热爱技术的宅~</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">60</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">15</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Retrofit-2-番外篇-将Github作为Retrofit的测试对象"><span class="nav-number">1.</span> <span class="nav-text">[Retrofit 2 番外篇]将Github作为Retrofit的测试对象</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、-申请认证token"><span class="nav-number">1.1.</span> <span class="nav-text">一、 申请认证token</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、-准备原始数据"><span class="nav-number">1.2.</span> <span class="nav-text">二、 准备原始数据</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-创建你的第一个仓库"><span class="nav-number">1.2.1.</span> <span class="nav-text">2.1 创建你的第一个仓库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-关注一些人"><span class="nav-number">1.2.2.</span> <span class="nav-text">2.2 关注一些人</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-创建Issues"><span class="nav-number">1.2.3.</span> <span class="nav-text">2.3 创建Issues</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-Star-自己的仓库"><span class="nav-number">1.2.4.</span> <span class="nav-text">2.4 Star 自己的仓库</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、-Github-API大全"><span class="nav-number">1.3.</span> <span class="nav-text">三、 Github API大全</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四、-善后工作"><span class="nav-number">1.4.</span> <span class="nav-text">四、 善后工作</span></a></li></ol></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">orzangleli</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.2"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>

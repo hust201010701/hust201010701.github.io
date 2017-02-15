@@ -1,0 +1,838 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="android," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="orzangleli" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.2" />
+
+
+
+
+
+
+<meta name="description" content="Snackbar 使用详解及源码解析
+本文全部内容为orzangleli原创，未经允许禁止转载。
+
+简介：本文将详细介绍Snackbar的使用方法，源码解析以及如何不修改源码的情况下完成Snackbar的顶部显示。
+1. 什么是Snackbar?官网上是这么解释Snackbar的功能和特点：
+
+Snackbars provide lightweight feedback about an oper">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Snackbar 使用详解及源码解析">
+<meta property="og:url" content="http://www.orzangleli.com/2016/07/14/Snackbar 使用详解及源码解析/index.html">
+<meta property="og:site_name" content="orzangleli">
+<meta property="og:description" content="Snackbar 使用详解及源码解析
+本文全部内容为orzangleli原创，未经允许禁止转载。
+
+简介：本文将详细介绍Snackbar的使用方法，源码解析以及如何不修改源码的情况下完成Snackbar的顶部显示。
+1. 什么是Snackbar?官网上是这么解释Snackbar的功能和特点：
+
+Snackbars provide lightweight feedback about an oper">
+<meta property="og:image" content="http://img.blog.csdn.net/20150114103321515">
+<meta property="og:image" content="http://i.imgur.com/XzhgXE4.png">
+<meta property="og:image" content="http://www.orzangleli.com/wp-content/uploads/2016/07/demo.gif">
+<meta property="og:updated_time" content="2016-11-03T11:19:51.752Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Snackbar 使用详解及源码解析">
+<meta name="twitter:description" content="Snackbar 使用详解及源码解析
+本文全部内容为orzangleli原创，未经允许禁止转载。
+
+简介：本文将详细介绍Snackbar的使用方法，源码解析以及如何不修改源码的情况下完成Snackbar的顶部显示。
+1. 什么是Snackbar?官网上是这么解释Snackbar的功能和特点：
+
+Snackbars provide lightweight feedback about an oper">
+<meta name="twitter:image" content="http://img.blog.csdn.net/20150114103321515">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://www.orzangleli.com/2016/07/14/Snackbar 使用详解及源码解析/"/>
+
+
+  <title> Snackbar 使用详解及源码解析 | orzangleli </title>
+</head>
+
+<body itemscope itemtype="//schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="//schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">orzangleli</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">活在梦里的程序员和设计师</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="st-search-show-outputs">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <form class="site-search-form">
+  <input type="text" id="st-search-input" class="st-search-input st-default-search-input" />
+</form>
+
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+    (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+    e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install', 'NZ6NvgDMr2E5jAp_-RbY','2.0.0');
+</script>
+
+
+
+    </div>
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="//schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Snackbar 使用详解及源码解析
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-07-14T00:00:00+08:00" content="2016-07-14">
+              2016-07-14
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Snackbar-使用详解及源码解析"><a href="#Snackbar-使用详解及源码解析" class="headerlink" title="Snackbar 使用详解及源码解析"></a>Snackbar 使用详解及源码解析</h1><blockquote>
+<p>本文全部内容为orzangleli原创，未经允许禁止转载。</p>
+</blockquote>
+<p><em>简介：本文将详细介绍Snackbar的使用方法，源码解析以及如何不修改源码的情况下完成Snackbar的顶部显示。</em></p>
+<h2 id="1-什么是Snackbar"><a href="#1-什么是Snackbar" class="headerlink" title="1. 什么是Snackbar?"></a>1. 什么是Snackbar?</h2><p>官网上是这么解释Snackbar的功能和特点：</p>
+<blockquote>
+<p>Snackbars provide lightweight feedback about an operation. They show a brief<br>message at the bottom of the screen on mobile and lower left on larger<br>devices. Snackbars appear above all other elements on screen and only one can<br>be displayed at a time.</p>
+</blockquote>
+<p>&gt;</p>
+<blockquote>
+<p>They automatically disappear after a timeout or after user interaction<br>elsewhere on the screen, particularly after interactions that summon a new<br>surface or activity. Snackbars can be swiped off screen.</p>
+</blockquote>
+<p>&gt;</p>
+<blockquote>
+<p>Snackbars can contain an action which is set via setAction(CharSequence,<br>android.view.View.OnClickListener).</p>
+</blockquote>
+<p>&gt;</p>
+<blockquote>
+<p>To be notified when a snackbar has been shown or dismissed, you can provide<br>a Snackbar.Callback via setCallback(Callback).</p>
+</blockquote>
+<p>Snackbar是一个轻量级的交互反馈控件，可以在手机的屏幕下方或者更大设备（例如平板）的左下方显示一个简短的信息，Snackbar会显示在所有元素之上，而且只持续一段时间。</p>
+<p>它们会在超时或者用户与交互屏幕其他地方交互后自动消失，特别是在和一个新的surface和activity交互之后。Sanckbar可以被滑动移除屏幕。</p>
+<p>为了知道何时snackbar已经被显示或者关闭，你可以通过setCallback(Callback)提供一个Snackbar.Callback（反馈）。</p>
+<p>一般意义上，Snackbar的效果如图所示（图片摘自<a href="http://blog.csdn.net/jdsjlzx/article/details/46892363" target="_blank" rel="external">博客</a>）。</p>
+<p><img src="http://img.blog.csdn.net/20150114103321515" alt=""></p>
+<h2 id="2-怎么使用Snackbar"><a href="#2-怎么使用Snackbar" class="headerlink" title="2. 怎么使用Snackbar"></a>2. 怎么使用Snackbar</h2><h3 id="1-常量"><a href="#1-常量" class="headerlink" title="1). 常量"></a>1). 常量</h3><p><em>int</em> <strong>LENGTH_INDEFINITE</strong> 无限期的显示snackbar (这里只是说不会自动消失，用户仍可通过右滑移除)</p>
+<p><em>int</em> <strong>LENGTH_LONG</strong> 长时间的显示snackbar (类似于Toast)</p>
+<p><em>int</em> <strong>LENGTH_SHORT</strong> 短时间的显示snackbar (类似于Toast)</p>
+<h3 id="2-内部类"><a href="#2-内部类" class="headerlink" title="2). 内部类"></a>2). 内部类</h3><p>Snackbar.Callback是Snackbar的内部类，这个类有两个方法需要重写，<code>onDismissed</code> 和 <code>onShown</code><br>，下面的例子一看就明白：</p>
+<pre><code>snackbar.setCallback(new Snackbar.Callback() {
+    @Override
+    public void onDismissed(Snackbar snackbar, int event) {
+        super.onDismissed(snackbar, event);
+        Toast.makeText(MainActivity.this,&quot;通过Callback监听到snackbar消失&quot;,Toast.LENGTH_SHORT).show();
+    }
+    @Override
+    public void onShown(Snackbar snackbar) {
+        super.onShown(snackbar);
+        Toast.makeText(MainActivity.this,&quot;通过Callback监听到snackbar显示&quot;,Toast.LENGTH_SHORT).show();
+    }
+});
+</code></pre><h3 id="3-公开方法"><a href="#3-公开方法" class="headerlink" title="3). 公开方法"></a>3). 公开方法</h3><p><img src="http://i.imgur.com/XzhgXE4.png" alt=""></p>
+<p>重点说下几个方法： 1.<code>make(View view, CharSequence text, int duration)</code> 和 <code>make(View
+view, int resId, int duration)</code> 实际上是两种初始化Snackbar的方法，只不过第二种使用的是text的id而已。</p>
+<p>2.<code>setAction(CharSequence text, View.OnClickListener listener)</code><br>是给Snackbar增加一个动作按钮，按钮的响应用过OnClickListenr重写。最典型的用途是，在用户完成一个操作时，Snackbar提示用户操作成功，按钮显示撤销操作。</p>
+<p>3.<code>setActionTextColor(int color)</code> 动作按钮的文本颜色可以设置，默认的颜色是主题的colorAccent颜色。</p>
+<h3 id="4）-使用Snackbar"><a href="#4）-使用Snackbar" class="headerlink" title="4）.使用Snackbar"></a>4）.使用Snackbar</h3><p>使用SnackBar非常简单，代码如下：</p>
+<pre><code>Snackbar snackbar = Snackbar.make(view, &quot;张三：今天晚上干嘛？&quot;, Snackbar.LENGTH_LONG)
+    .setAction(&quot;关闭&quot;, new View.OnClickListener()
+    {
+        @Override
+        public void onClick(View v) {
+
+        }
+    });
+</code></pre><h2 id="4-阅读源码并自定义Snackbar"><a href="#4-阅读源码并自定义Snackbar" class="headerlink" title="4.阅读源码并自定义Snackbar"></a>4.阅读源码并自定义Snackbar</h2><h3 id="1）-右滑的说明"><a href="#1）-右滑的说明" class="headerlink" title="1）. 右滑的说明"></a>1）. 右滑的说明</h3><blockquote>
+<p>补充说明下：Snackbar 只能在CoordinatorLayout布局下才能执行右滑删除，在其他布局下右滑手势无效。这一点可以从下面代码中得到解释。</p>
+</blockquote>
+<p>在使用make方法构造Snackbar时，会调用下面的方法：</p>
+<pre><code>@NonNull
+public static Snackbar make(@NonNull View view, @NonNull CharSequence text,@Duration int duration) {
+    Snackbar snackbar = new Snackbar(findSuitableParent(view));
+    snackbar.setText(text);
+    snackbar.setDuration(duration);
+    return snackbar;
+}
+</code></pre><p>其中<code>findSuitableParent(view)</code>是一个寻找父布局的方法，它会在寻找到CoordinatorLayout或者id为android.R.id.content的FrameLayout时停止寻找，否则就返回默认的布局。</p>
+<pre><code>private static ViewGroup findSuitableParent(View view) {
+    ViewGroup fallback = null;
+    do {
+        if (view instanceof CoordinatorLayout) {
+            // We&apos;ve found a CoordinatorLayout, use it
+            return (ViewGroup) view;
+        } else if (view instanceof FrameLayout) {
+            if (view.getId() == android.R.id.content) {
+                // If we&apos;ve hit the decor content view, then we didn&apos;t find a CoL in the
+                // hierarchy, so use it.
+                return (ViewGroup) view;
+            } else {
+                // It&apos;s not the content view but we&apos;ll use it as our fallback
+                fallback = (ViewGroup) view;
+            }
+        }
+
+        if (view != null) {
+            // Else, we will loop and crawl up the view hierarchy and try to find a parent
+            final ViewParent parent = view.getParent();
+            view = parent instanceof View ? (View) parent : null;
+        }
+    } while (view != null);
+
+    // If we reach here then we didn&apos;t find a CoL or a suitable content view so we&apos;ll fallback
+    return fallback;
+}
+</code></pre><p>而且监听右滑操作的Behavior是继承自SwipeDismissBehavior，而SwipeDismissBehavior继承自CoordinatorLayout.Behavior，所以只有在CoordinatorLayout布局下的Snackbar才能被监听到右滑事件。</p>
+<h3 id="2）-自定义Snackbar"><a href="#2）-自定义Snackbar" class="headerlink" title="2）.自定义Snackbar"></a>2）.自定义Snackbar</h3><p>看源码后会发现Snackbar预留出的接口方法太少了，不足以满足日常需求，现在我就几个常见的需求做单独说明。</p>
+<h4 id="a-Snackbar顶部显示"><a href="#a-Snackbar顶部显示" class="headerlink" title="a. Snackbar顶部显示"></a>a. Snackbar顶部显示</h4><pre><code>//顶部显示Snackbar
+    button1.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Snackbar snackbar = Snackbar.make(v, &quot;张三：今天晚上干嘛？&quot;, Snackbar.LENGTH_LONG)
+                    .setAction(&quot;关闭&quot;, new View.OnClickListener()
+                    {
+                        @Override
+                        public void onClick(View v) {
+
+                        }
+                    });
+            CoordinatorLayout.LayoutParams ly = new CoordinatorLayout.LayoutParams(FrameLayout.LayoutParams.FILL_PARENT,200);
+            ly .gravity = Gravity.TOP;
+            snackbar.getView().setLayoutParams(ly);
+
+            snackbar.show();
+        }
+    });
+</code></pre><h4 id="b-修改Snackbar背景颜色和文字颜色"><a href="#b-修改Snackbar背景颜色和文字颜色" class="headerlink" title="b.修改Snackbar背景颜色和文字颜色"></a>b.修改Snackbar背景颜色和文字颜色</h4><pre><code>//修改Snackbar背景颜色和文字颜色
+    button2.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Snackbar snackbar = Snackbar.make(v, &quot;张三：今天晚上干嘛？&quot;, Snackbar.LENGTH_LONG)
+                    .setAction(&quot;关闭&quot;, new View.OnClickListener()
+                    {
+                        @Override
+                        public void onClick(View v) {
+
+                        }
+                    });
+            //设置动作按钮文本颜色
+            snackbar.setActionTextColor(Color.BLACK);
+            //设置背景颜色
+            snackbar.getView().setBackgroundColor(Color.WHITE);
+
+            Snackbar.SnackbarLayout snackbarLayout = (Snackbar.SnackbarLayout)snackbar.getView();
+            //设置消息文本字体颜色
+            ((TextView)snackbarLayout.findViewById(R.id.snackbar_text)).setTextColor(Color.BLACK);
+            //同理可以对动作按钮进行相关设置
+            //((Button)snackbarLayout.findViewById(R.id.snackbar_action)).setBackgroundResource(R.mipmap.ic_launcher);
+            snackbar.show();
+        }
+    });
+</code></pre><h4 id="c-增加内容到Snackbar"><a href="#c-增加内容到Snackbar" class="headerlink" title="c.增加内容到Snackbar"></a>c.增加内容到Snackbar</h4><pre><code>//增加内容到Snackbar
+    button3.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Snackbar snackbar = Snackbar.make(v, &quot;张三：今天晚上干嘛？&quot;, Snackbar.LENGTH_LONG)
+                    .setAction(&quot;关闭&quot;, new View.OnClickListener()
+                    {
+                        @Override
+                        public void onClick(View v) {
+
+                        }
+                    });
+            View add_view = LayoutInflater.from(v.getContext()).inflate(R.layout.custom_layout
+                    , null);
+
+            LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            p.gravity = Gravity.CENTER_VERTICAL; //数字表示新加的布局在SnackBar中的位置，从0开始,取决于你SnackBar里面有多少个子View
+
+            Snackbar.SnackbarLayout snackbarLayout = (Snackbar.SnackbarLayout)snackbar.getView();
+            snackbarLayout.addView(add_view, 0, p);
+
+
+            snackbar.show();
+        }
+    });
+</code></pre><p>效果图如图所示。</p>
+<p><img src="http://www.orzangleli.com/wp-content/uploads/2016/07/demo.gif" alt="demo"></p>
+<h2 id="写在最后"><a href="#写在最后" class="headerlink" title="写在最后"></a>写在最后</h2><p>本文使用的代码在github上可以获取到，地址：</p>
+<p><a href="https://github.com/hust201010701/SnackbarCustomUsage/" target="_blank" rel="external">https://github.com/hust201010701/SnackbarCustomUsage/</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/android/" rel="tag">#android</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/07/12/Android 面试基础知识总结（原创）/" rel="next" title="Android 面试基础知识总结（原创）">
+                <i class="fa fa-chevron-left"></i> Android 面试基础知识总结（原创）
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/07/24/Android 动态设置状态栏颜色/" rel="prev" title="Android 动态设置状态栏颜色">
+                Android 动态设置状态栏颜色 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="//schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="orzangleli" />
+          <p class="site-author-name" itemprop="name">orzangleli</p>
+          <p class="site-description motion-element" itemprop="description">华中科技大学 本科10级 硕士14级 一个热爱技术的宅~</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">60</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">15</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Snackbar-使用详解及源码解析"><span class="nav-number">1.</span> <span class="nav-text">Snackbar 使用详解及源码解析</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-什么是Snackbar"><span class="nav-number">1.1.</span> <span class="nav-text">1. 什么是Snackbar?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-怎么使用Snackbar"><span class="nav-number">1.2.</span> <span class="nav-text">2. 怎么使用Snackbar</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-常量"><span class="nav-number">1.2.1.</span> <span class="nav-text">1). 常量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-内部类"><span class="nav-number">1.2.2.</span> <span class="nav-text">2). 内部类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-公开方法"><span class="nav-number">1.2.3.</span> <span class="nav-text">3). 公开方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4）-使用Snackbar"><span class="nav-number">1.2.4.</span> <span class="nav-text">4）.使用Snackbar</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-阅读源码并自定义Snackbar"><span class="nav-number">1.3.</span> <span class="nav-text">4.阅读源码并自定义Snackbar</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1）-右滑的说明"><span class="nav-number">1.3.1.</span> <span class="nav-text">1）. 右滑的说明</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2）-自定义Snackbar"><span class="nav-number">1.3.2.</span> <span class="nav-text">2）.自定义Snackbar</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#a-Snackbar顶部显示"><span class="nav-number">1.3.2.1.</span> <span class="nav-text">a. Snackbar顶部显示</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#b-修改Snackbar背景颜色和文字颜色"><span class="nav-number">1.3.2.2.</span> <span class="nav-text">b.修改Snackbar背景颜色和文字颜色</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#c-增加内容到Snackbar"><span class="nav-number">1.3.2.3.</span> <span class="nav-text">c.增加内容到Snackbar</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#写在最后"><span class="nav-number">1.4.</span> <span class="nav-text">写在最后</span></a></li></ol></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">orzangleli</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.2"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>

@@ -1,0 +1,690 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="unity3D," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="orzangleli" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.2" />
+
+
+
+
+
+
+<meta name="description" content="HingeJoint(铰链关节)什么是铰链
+铰链（英:hinge），又称合页,是用来连接两个固体，并允许两者之间做转动的机械装置。铰链可能由可移动的组件构成，或者由可折叠的材料构成。最常见的是门窗上安装的铰链。
+
+
+开始制作自己的铰链
+在unity3D中新建一个Cube,然后将X轴方向的scale调整为10，然后添加RigidBody (刚体)组件，取消掉Use Gravity选项，设置x=0
+将">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Unity3D中铰链(HingeJoint)组件的使用">
+<meta property="og:url" content="http://www.orzangleli.com/2016/06/13/Unity3D中铰链(HingeJoint)组件的使用/index.html">
+<meta property="og:site_name" content="orzangleli">
+<meta property="og:description" content="HingeJoint(铰链关节)什么是铰链
+铰链（英:hinge），又称合页,是用来连接两个固体，并允许两者之间做转动的机械装置。铰链可能由可移动的组件构成，或者由可折叠的材料构成。最常见的是门窗上安装的铰链。
+
+
+开始制作自己的铰链
+在unity3D中新建一个Cube,然后将X轴方向的scale调整为10，然后添加RigidBody (刚体)组件，取消掉Use Gravity选项，设置x=0
+将">
+<meta property="og:image" content="http://image.cn.made-in-
+china.com/2f0j01EenQVjiWaYqG/%E5%90%88%E9%A1%B5.jpg">
+<meta property="og:image" content="http://i.imgur.com/Psmz53y.jpg">
+<meta property="og:image" content="http://i.imgur.com/eW9fCrh.jpg">
+<meta property="og:image" content="http://i.imgur.com/7bKDPqE.gif">
+<meta property="og:updated_time" content="2016-11-03T11:19:49.143Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Unity3D中铰链(HingeJoint)组件的使用">
+<meta name="twitter:description" content="HingeJoint(铰链关节)什么是铰链
+铰链（英:hinge），又称合页,是用来连接两个固体，并允许两者之间做转动的机械装置。铰链可能由可移动的组件构成，或者由可折叠的材料构成。最常见的是门窗上安装的铰链。
+
+
+开始制作自己的铰链
+在unity3D中新建一个Cube,然后将X轴方向的scale调整为10，然后添加RigidBody (刚体)组件，取消掉Use Gravity选项，设置x=0
+将">
+<meta name="twitter:image" content="http://image.cn.made-in-
+china.com/2f0j01EenQVjiWaYqG/%E5%90%88%E9%A1%B5.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://www.orzangleli.com/2016/06/13/Unity3D中铰链(HingeJoint)组件的使用/"/>
+
+
+  <title> Unity3D中铰链(HingeJoint)组件的使用 | orzangleli </title>
+</head>
+
+<body itemscope itemtype="//schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="//schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">orzangleli</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">活在梦里的程序员和设计师</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="st-search-show-outputs">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <form class="site-search-form">
+  <input type="text" id="st-search-input" class="st-search-input st-default-search-input" />
+</form>
+
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+    (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+    e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install', 'NZ6NvgDMr2E5jAp_-RbY','2.0.0');
+</script>
+
+
+
+    </div>
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="//schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Unity3D中铰链(HingeJoint)组件的使用
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-06-13T00:00:00+08:00" content="2016-06-13">
+              2016-06-13
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/unity3D/" itemprop="url" rel="index">
+                    <span itemprop="name">unity3D</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="HingeJoint-铰链关节"><a href="#HingeJoint-铰链关节" class="headerlink" title="HingeJoint(铰链关节)"></a>HingeJoint(铰链关节)</h2><h3 id="什么是铰链"><a href="#什么是铰链" class="headerlink" title="什么是铰链"></a>什么是铰链</h3><blockquote>
+<p>铰链（英:<br>hinge），又称合页,是用来连接两个固体，并允许两者之间做转动的机械装置。铰链可能由可移动的组件构成，或者由可折叠的材料构成。最常见的是门窗上安装的铰链。</p>
+</blockquote>
+<p><img src="http://image.cn.made-in-
+china.com/2f0j01EenQVjiWaYqG/%E5%90%88%E9%A1%B5.jpg" alt=""></p>
+<h3 id="开始制作自己的铰链"><a href="#开始制作自己的铰链" class="headerlink" title="开始制作自己的铰链"></a>开始制作自己的铰链</h3><ul>
+<li>在unity3D中新建一个Cube,然后将X轴方向的scale调整为10，然后添加RigidBody (刚体)组件，取消掉Use Gravity选项，设置x=0</li>
+<li>将Cube选中，按住Ctrl+D复制一份，然后将新的Cube移动到x=-10的位置</li>
+<li>给第一个Cube添加FixedJoint，不需要修改其中属性，完成后应该与下图一致</li>
+</ul>
+<p><img src="http://i.imgur.com/Psmz53y.jpg" alt=""></p>
+<ul>
+<li>给第二个Cube(1)添加HingeJoint，将Cube拖到Connected Body中，然后修改锚点为局部坐标下的(-0.5,0,0),同时设置旋转轴，为z轴(0,0,1),系统会自动计算出第一个Cube的锚点位置，完成后应该如下图。</li>
+</ul>
+<p><img src="http://i.imgur.com/eW9fCrh.jpg" alt=""></p>
+<h3 id="让铰链运动起来"><a href="#让铰链运动起来" class="headerlink" title="让铰链运动起来"></a>让铰链运动起来</h3><p>因为铰链是一种物理结构，使用到物理引擎，所以控制铰链运动时，不可以使用transfrom,只能添加一个物理上的力或者速度，这里我们添加恒力。<br>因为要使铰链结构再xy平面内旋转，所以添加一个沿着局部坐标系下的y轴的力Relative Force(0,1,0),1代表单位力，可以改成其他数值。</p>
+<h3 id="运动效果"><a href="#运动效果" class="headerlink" title="运动效果"></a>运动效果</h3><p>直接上图吧</p>
+<p><img src="http://i.imgur.com/7bKDPqE.gif" alt=""></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/unity3D/" rel="tag">#unity3D</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/06/12/VIVE普通车床车削2   完善与优化/" rel="next" title="VIVE普通车床车削2   完善与优化">
+                <i class="fa fa-chevron-left"></i> VIVE普通车床车削2   完善与优化
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/06/14/使用Github中的项目 SwipeBackLayout 侧滑关闭 黑屏解决方案/" rel="prev" title="使用Github中的项目 SwipeBackLayout 侧滑关闭 黑屏解决方案">
+                使用Github中的项目 SwipeBackLayout 侧滑关闭 黑屏解决方案 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="//schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="orzangleli" />
+          <p class="site-author-name" itemprop="name">orzangleli</p>
+          <p class="site-description motion-element" itemprop="description">华中科技大学 本科10级 硕士14级 一个热爱技术的宅~</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">60</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">15</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#HingeJoint-铰链关节"><span class="nav-number">1.</span> <span class="nav-text">HingeJoint(铰链关节)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是铰链"><span class="nav-number">1.1.</span> <span class="nav-text">什么是铰链</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#开始制作自己的铰链"><span class="nav-number">1.2.</span> <span class="nav-text">开始制作自己的铰链</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#让铰链运动起来"><span class="nav-number">1.3.</span> <span class="nav-text">让铰链运动起来</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#运动效果"><span class="nav-number">1.4.</span> <span class="nav-text">运动效果</span></a></li></ol></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">orzangleli</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.2"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>
