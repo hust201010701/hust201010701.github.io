@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://www.orzangleli.com/"/>
-  <updated>2017-02-14T08:23:39.808Z</updated>
+  <updated>2017-02-17T00:43:38.530Z</updated>
   <id>http://www.orzangleli.com/</id>
   
   <author>
@@ -14,6 +14,222 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>第十三篇 Retrofit—如何上传文件到服务器</title>
+    <link href="http://www.orzangleli.com/2017/02/17/2017-02-17_%E7%AC%AC%E5%8D%81%E4%B8%89%E7%AF%87%20Retrofit%E2%80%94%E5%A6%82%E4%BD%95%E4%B8%8A%E4%BC%A0%E6%96%87%E4%BB%B6%E5%88%B0%E6%9C%8D%E5%8A%A1%E5%99%A8/"/>
+    <id>http://www.orzangleli.com/2017/02/17/2017-02-17_第十三篇 Retrofit—如何上传文件到服务器/</id>
+    <published>2017-02-16T16:00:00.000Z</published>
+    <updated>2017-02-17T00:43:38.530Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="第十三篇-Retrofit2——如何上传文件到服务器"><a href="#第十三篇-Retrofit2——如何上传文件到服务器" class="headerlink" title="第十三篇 Retrofit2——如何上传文件到服务器"></a>第十三篇 Retrofit2——如何上传文件到服务器</h1><!-- MarkdownTOC -->
+<ul>
+<li><a href="#一、用retrofit-2上传文件">一、用Retrofit 2上传文件</a></li>
+<li><a href="#二、android-客户端代码">二、Android 客户端代码</a></li>
+<li><a href="#三、记住content-type">三、记住Content-Type</a></li>
+<li><a href="#四、示例hapi文件上传服务器">四、示例Hapi文件上传服务器</a></li>
+<li><a href="#五、文件上传实战">五、文件上传实战</a></li>
+</ul>
+<!-- /MarkdownTOC -->
+<h2 id="一、用Retrofit-2上传文件"><a href="#一、用Retrofit-2上传文件" class="headerlink" title="一、用Retrofit 2上传文件"></a>一、用Retrofit 2上传文件</h2><p>Retrofit 2在处理文件上传的方式上与Retrofit v1有很大不同。在我们深入学习Retrofit 2中的文件上传的相关内容之前，简单回顾Retrofit v1中的使用的<code>TypedFile</code>类来上传文件。在Retrofit 2中这个类已经被移除了。而且Retrofit 2把OkHttp作为网络层，因此使用OkHttp的类来实现文件上传。</p>
+<p>在Retrofit 2中，你需要使用OkHttp的<code>RequestBody</code>或<code>MultipartBody.Part</code>类，把你的文件封装到请求体中。下面来看看文件上传接口的定义。</p>
+<pre><code>public interface FileUploadService {  
+    @Multipart
+    @POST(&quot;upload&quot;)
+    Call&lt;ResponseBody&gt; upload(@Part(&quot;description&quot;) RequestBody description,
+                              @Part MultipartBody.Part file);
+}
+</code></pre><p>我们逐个分析上面的定义，先从<code>description</code>开始。<code>description</code>就是一个包裹在<code>RequestBody</code>实例中的字符串的值。然后，请求中的<code>@Part</code>描述的是真实的<code>file</code>。我们使用<code>MultipartBody.Part</code>来允许我们除了发送二进制文件数据外还能发送真实的文件名。下面你将看到如何创建<code>file</code>对象。</p>
+<h2 id="二、Android-客户端代码"><a href="#二、Android-客户端代码" class="headerlink" title="二、Android 客户端代码"></a>二、Android 客户端代码</h2><p>到现在，你使用Retrofit已经定义过必要的service接口了。现在你可以向文件上传上面探索了。我们使用<code>ServiceGenerator</code>类生成一个服务客户端。我们已经在本系列第一篇文章中介绍过了<code>ServiceGenerator</code>类。</p>
+<p>下面的代码片段将展示把文件地址作为参数的<code>uploadFile(Uri fileUri)</code>方法。如果你用intent来选择文件，你可以在<code>onActivityResult()</code>方法中获得文件的地址，这个地址就是你要传递给<code>uploadFile(Uri fileUri)</code>方法的参数。</p>
+<pre><code>private void uploadFile(Uri fileUri) {  
+    // 创建文件上传客户端
+    FileUploadService service =
+            ServiceGenerator.createService(FileUploadService.class);
+
+    // https://github.com/iPaulPro/aFileChooser/blob/master/aFileChooser/src/com/ipaulpro/afilechooser/utils/FileUtils.java
+    // use the FileUtils to get the actual file by uri
+    File file = FileUtils.getFile(this, fileUri);
+
+    // 根据文件创建请求体
+    RequestBody requestFile =
+            RequestBody.create(MediaType.parse(&quot;multipart/form-data&quot;), file);
+
+    // MultipartBody.Part 还可以上传文件名
+    MultipartBody.Part body =
+            MultipartBody.Part.createFormData(&quot;picture&quot;, file.getName(), requestFile);
+
+    // 在 multipart request中再添加一部分内容
+    String descriptionString = &quot;hello, this is description speaking&quot;;
+    RequestBody description =
+            RequestBody.create(
+                    MediaType.parse(&quot;multipart/form-data&quot;), descriptionString);
+
+    // 最后执行请求
+    Call&lt;ResponseBody&gt; call = service.upload(description, body);
+    call.enqueue(new Callback&lt;ResponseBody&gt;() {
+        @Override
+        public void onResponse(Call&lt;ResponseBody&gt; call,
+                               Response&lt;ResponseBody&gt; response) {
+            Log.v(&quot;Upload&quot;, &quot;success&quot;);
+        }
+
+        @Override
+        public void onFailure(Call&lt;ResponseBody&gt; call, Throwable t) {
+            Log.e(&quot;Upload error:&quot;, t.getMessage());
+        }
+    });
+}
+</code></pre><p>上面的代码片段展示了如何初始化<code>body</code>和<code>description</code>,以及如何使用文件上传service.之前提到，<code>RequestBody</code>是OkHttp中的类。它的<code>.create()</code>方法需要两个参数：从<code>multipart/form-data</code>解析的媒体文件类型和真实的数据。</p>
+<p>除了<code>description</code>，你还可以添加文件到<code>MultipartBody.Part</code>实例中。这个文件就是你从客户端上传文件时需要的文件。而且，你可以使用<code>createFormData()</code>把原始的文件名添加到请求中，服务器在后端接收后可以使用它。</p>
+<h2 id="三、记住Content-Type"><a href="#三、记住Content-Type" class="headerlink" title="三、记住Content-Type"></a>三、记住Content-Type</h2><p>请注意Retrofit的<code>Content-Type</code>内容类型。如果你在OkHttp客户端中拦截请求，并把内容类型修改为<code>application/json</code>,你的服务器在反序列化过程可能出现问题。请确保你在请求头中没有声明你再发送JSON数据，而是在发送<code>multipart/form-data</code>.</p>
+<h2 id="四、示例Hapi文件上传服务器"><a href="#四、示例Hapi文件上传服务器" class="headerlink" title="四、示例Hapi文件上传服务器"></a>四、示例Hapi文件上传服务器</h2><p>讲的是hapi服务器配合Retrofit使用，因为内容不涉及Android,有兴趣的自行查看：</p>
+<p><a href="https://futurestud.io/tutorials/retrofit-2-how-to-upload-files-to-server#exemplaryhapiserverforfileuploads" target="_blank" rel="external">https://futurestud.io/tutorials/retrofit-2-how-to-upload-files-to-server#exemplaryhapiserverforfileuploads</a></p>
+<h2 id="五、文件上传实战"><a href="#五、文件上传实战" class="headerlink" title="五、文件上传实战"></a>五、文件上传实战</h2><p>我们使用第三方文件上传API。为什么不使用Github的呢？我找了半天也没找到Github上传文件的API,如果各位找到，麻烦通知我一下。我们使用<a href="http://www.tietuku.com/" target="_blank" rel="external">http://www.tietuku.com/</a>这个图床，上传图片文件来试验文件上传功能，需要自行登录网站。</p>
+<ol>
+<li>注册登录网站，网站服务免费的。</li>
+<li>进入<a href="http://www.tietuku.com/manager/createtoken" target="_blank" rel="external">http://www.tietuku.com/manager/createtoken</a>，选择目标相册，上传方式为本地上传，点击立即生成即可获得token.</li>
+<li>进入<a href="http://www.tietuku.com/manager/album" target="_blank" rel="external">http://www.tietuku.com/manager/album</a>获得相册的ID.</li>
+</ol>
+<p>首先，我们要把<code>ServiceGenerator</code>中的基础API地址修改我们使用的图床的API地址：<a href="http://up.imgapi.com" target="_blank" rel="external">http://up.imgapi.com</a>。</p>
+<p>然后，我们使用的客户端不再是之前一直使用的GithubClient了，我们新建一个接口<code>FileUploadService</code>。内容为：</p>
+<pre><code>public interface FileUploadService {
+    @Multipart
+    @POST(&quot;/&quot;)
+    Call&lt;ResponseBody&gt; upload(@Part(&quot;Token&quot;) RequestBody token,
+                              @Part MultipartBody.Part file,
+                              @Query(&quot;deadline&quot;) long deadline,
+                              @Query(&quot;aid&quot;) int aid,
+                              @Query(&quot;from&quot;) String from,
+                              @Query(&quot;httptype&quot;) int httptype
+    );
+}
+</code></pre><p>参数均为<a href="http://www.tietuku.com/doc" target="_blank" rel="external">API文档</a>中规定的数据。</p>
+<p>在MainActivity中调用文件上传接口时，如果是Android 6.0系统及其之上需要检查读写权限，所以代码比较长：</p>
+<pre><code>public class MainActivity extends AppCompatActivity {
+
+    List&lt;TaskService.Task&gt; tasks ;
+    private static String TAG = &quot;ILearnRetrofit&quot;;
+    TextView textView;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        Utils.init(this);
+
+        textView = (TextView)this.findViewById(R.id.textView);
+
+        initPermission();
+
+    }
+
+    private void initPermission() {
+        int permission = ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE);
+
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            //需不需要解释的dialog
+            if (shouldRequest()) return;
+            //请求权限
+            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+        }
+        else{
+            if(isFileExists(Environment.getExternalStorageDirectory()+File.separator+&quot;Download&quot;+File.separator+&quot;qq2.png&quot;)) {
+                ToastUtils.showLongToast(&quot;存在&quot;);
+                uploadFile(Environment.getExternalStorageDirectory() + File.separator + &quot;Download&quot; + File.separator + &quot;qq2.png&quot;);
+            }
+        }
+    }
+    private boolean shouldRequest() {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+            //显示一个对话框，给用户解释
+            explainDialog();
+            return true;
+        }
+        return false;
+    }
+    private void explainDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(&quot;应用需要获取您的文件权限,是否授权？&quot;)
+                .setPositiveButton(&quot;确定&quot;, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //请求权限
+                        ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+                    }
+                }).setNegativeButton(&quot;取消&quot;, null)
+                .create().show();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 1 &amp;&amp; grantResults.length &gt; 0) {
+            boolean granted = grantResults[0] == PackageManager.PERMISSION_GRANTED;//是否授权，可以根据permission作为标记
+            if(granted){
+                if(isFileExists(Environment.getExternalStorageDirectory()+File.separator+&quot;Download&quot;+File.separator+&quot;qq2.png&quot;)) {
+                    ToastUtils.showLongToast(&quot;存在&quot;);
+                    uploadFile(Environment.getExternalStorageDirectory() + File.separator + &quot;Download&quot; + File.separator + &quot;qq2.png&quot;);
+                }
+            }
+
+        }
+    }
+
+    public void uploadFile(String fileUri){
+
+        FileUploadService service = ServiceGenerator.createService(FileUploadService.class);
+        File file = FileUtils.getFileByPath(fileUri);
+
+        RequestBody requestFile = RequestBody.create(MediaType.parse(&quot;image/png&quot;),file);
+
+        MultipartBody.Part body = MultipartBody.Part.createFormData(&quot;file&quot;,file.getName(),requestFile);
+
+        String tokenString = &quot;XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX&quot;;
+        RequestBody token = RequestBody.create(MediaType.parse(&quot;multipart-data&quot;),tokenString);
+
+        Call&lt;ResponseBody&gt; call = service.upload(token,
+                body,1420041660,xxxxxx,&quot;file&quot;,2
+                );
+        call.enqueue(new Callback&lt;ResponseBody&gt;() {
+            @Override
+            public void onResponse(Call&lt;ResponseBody&gt; call, Response&lt;ResponseBody&gt; response) {
+                d(TAG,&quot;success:&quot;+response.raw());
+                textView.setText(&quot;success:&quot;+response);
+            }
+
+            @Override
+            public void onFailure(Call&lt;ResponseBody&gt; call, Throwable t) {
+                d(TAG,&quot;fail:&quot;+t.getMessage());
+                textView.setText(&quot;fail:&quot;+t.getMessage());
+            }
+        });
+
+    }
+
+}
+</code></pre><p>最后，我们在后台检查下是否上传成功了。</p>
+<p><img src="http://7bvaky.com2.z0.glb.qiniucdn.com/2017-01-18_17_15_52_upload_file.png" alt=""></p>
+<p>的确，可以看到上传的文件了，证明上传成功了。</p>
+<blockquote>
+<p>本篇教程所有源码参见此网页：[留白]</p>
+</blockquote>
+<p>Enjoy Coding! 如果在阅读本教程的过程中有任何疑问或者需要帮助，可以随时在微博上联系我，我的微博是 <a href="http://weibo.com/androidjiqiaogonglue" target="_blank" rel="external">@orzanglei</a>。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;第十三篇-Retrofit2——如何上传文件到服务器&quot;&gt;&lt;a href=&quot;#第十三篇-Retrofit2——如何上传文件到服务器&quot; class=&quot;headerlink&quot; title=&quot;第十三篇 Retrofit2——如何上传文件到服务器&quot;&gt;&lt;/a&gt;第十三篇 Ret
+    
+    </summary>
+    
+      <category term="Retrofit教程" scheme="http://www.orzangleli.com/categories/Retrofit%E6%95%99%E7%A8%8B/"/>
+    
+    
+      <category term="android" scheme="http://www.orzangleli.com/tags/android/"/>
+    
+      <category term="Retrofit" scheme="http://www.orzangleli.com/tags/Retrofit/"/>
+    
+  </entry>
   
   <entry>
     <title>第十二篇 Retrofit— 仅对开发版本使用日志</title>
@@ -1853,66 +2069,6 @@ collider.transform.position = bornPlace.position;
   </entry>
   
   <entry>
-    <title>使用Python将Jpeg Png Gif 图片转换为 webp格式</title>
-    <link href="http://www.orzangleli.com/2016/11/10/2016-11-10_Python%E5%B0%86Jpeg%20Png%20Gif%E8%BD%AC%E6%8D%A2%E4%B8%BAWebp%E6%A0%BC%E5%BC%8F/"/>
-    <id>http://www.orzangleli.com/2016/11/10/2016-11-10_Python将Jpeg Png Gif转换为Webp格式/</id>
-    <published>2016-11-09T16:00:00.000Z</published>
-    <updated>2016-11-10T14:05:29.034Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="使用Python将Jpeg-Png-Gif-图片转换为-webp格式"><a href="#使用Python将Jpeg-Png-Gif-图片转换为-webp格式" class="headerlink" title="使用Python将Jpeg Png Gif 图片转换为 webp格式"></a>使用Python将Jpeg Png Gif 图片转换为 webp格式</h1><h2 id="一-动机"><a href="#一-动机" class="headerlink" title="一.动机"></a>一.动机</h2><p>因为webp的优良特性：</p>
-<ul>
-<li><p>占空间小，节省带宽</p>
-</li>
-<li><p>总体加载速度快</p>
-</li>
-</ul>
-<p>这里有详细的介绍： 摘自 <a href="https://zh.wikipedia.org/wiki/WebP" target="_blank" rel="external">维基百科-WebP词条</a></p>
-<p>WebP（发音weppy）[6][7]，是一种同时提供了有损压缩与无损压缩（可逆压缩）的图片文件格式[8]，派生自视频编码格式VP8[9]，被认为是WebM多媒体格式的姊妹项目，是由Google在购买On2 Technologies后发展出来[10]，以BSD授权条款发布。[11]<br>WebP最初在2010年发布，目标是减少文件大小，但达到和JPEG格式相同的图片质量，希望能够减少图片档在网络上的发送时间。 [12]2011年11月8日，Google开始让WebP支持无损压缩和透明色（alpha通道）的功能，而在2012年8月16日的参考实做libwebp 0.2.0中正式支持[13][14]。根据Google较早的测试，WebP的无损压缩比网络上找到的PNG档少了45％的文件大小，即使这些PNG档在使用pngcrush和PNGOUT处理过，WebP还是可以减少28％的文件大小[15]。<br>WebP支持的像素最大数量是16383x16383。有损压缩的WebP仅支持8-bit的YUV 4:2:0格式。而无损压缩（可逆压缩）的WebP支持VP8L编码与8-bit之ARGB色彩空间。又无论是有损或无损压缩皆支持Alpha透明通道、ICC色彩配置、XMP诠释数据。<br>WebP有静态与动态两种模式。动态WebP（Animated WebP）支持有损与无损压缩、ICC色彩配置、XMP诠释数据、Alpha透明通道。而无损压缩的动态WebP亦支持8-bit之ARGB色彩空间。</p>
-<h2 id="二-方案实验"><a href="#二-方案实验" class="headerlink" title="二. 方案实验"></a>二. 方案实验</h2><h3 id="1-使用PIL-转换格式"><a href="#1-使用PIL-转换格式" class="headerlink" title="1. 使用PIL 转换格式"></a>1. 使用PIL 转换格式</h3><p>首先指出，PIL转换在大部分情况下都能起到很好的效果，比如讲jpeg转为webp，节省空间约90%。<br>首先安装PIL模块</p>
-<pre><code>pip install pillow
-</code></pre><p>然后在程序中 <code>localfile</code> 为图片路径</p>
-<pre><code>im = Image.open(localfile)
-f,ext = os.path.splitext(localfile.split(&quot;/&quot;)[-1])
-webp_path = &quot;%s.webp&quot;%f
-im.convert(&apos;RGB&apos;).save(webp_path, &quot;webp&quot;)
-</code></pre><p>这里需要注意需要将图片先转化为RGB模式，否则报错</p>
-<pre><code>cannot write mode P as WEBP
-</code></pre><p>现在，是时候说下PIL「失效」的情况了。</p>
-<ol>
-<li>将动图转为gif时，转化过程没有报错，但是打开后，只保存了第一帧的图片，变成了静态图。</li>
-<li>将 gif 转为 webp格式时，同样也只保存了第一帧。</li>
-</ol>
-<p>第一种情况我没有测试，但是在stackoverflow上可以看到有人提问过： <a href="http://stackoverflow.com/questions/24688802/saving-an-animated-gif-in-pillow" target="_blank" rel="external">Saving an animated GIF in Pillow</a> 。回答者是建议使用gifmaker 模块进行处理gif.</p>
-<p>第二张情况，我遇到了，所以可以证实。</p>
-<p>通过搜索，在官网上看到<a href="https://developers.google.com/speed/webp/docs/gif2webp" target="_blank" rel="external">gif2webp</a>,证明官网给出了gif转webp的解决方案，那我们就下载适合自己版本的库<a href="https://storage.googleapis.com/downloads.webmproject.org/releases/webp/index.html" target="_blank" rel="external"></a>.<br>解压后，将bin 目录下的 gif2webp.exe 复制到 工作目录下。接下来，我们使用它来转化格式。</p>
-<h3 id="2-使用gif2webp-exe转化格式"><a href="#2-使用gif2webp-exe转化格式" class="headerlink" title="2. 使用gif2webp.exe转化格式"></a>2. 使用gif2webp.exe转化格式</h3><p>根据官网给的文档<a href="https://developers.google.com/speed/webp/docs/gif2webp" target="_blank" rel="external">gif2webp</a>，我们可以很方便的使用下面的语句来实现：</p>
-<pre><code>f,ext = os.path.splitext(localfile.split(&quot;/&quot;)[-1])
-webp_path = &quot;%s.webp&quot;%f
-os.system(&quot;gif2webp.exe &quot;+ localfile + &quot; -quiet &quot; + &quot; -o &quot; + f + &quot;.webp&quot;)
-</code></pre><p>这里可能会提示：</p>
-<pre><code>GIF decode warning: invalid background color index. Assuming white background.
-</code></pre><p>转换过程持续好几秒，请耐心等待，转化完成后，工作目录下多一个webp文件.</p>
-<h2 id="三-效果比较"><a href="#三-效果比较" class="headerlink" title="三.效果比较"></a>三.效果比较</h2><center>左边是gif格式的               右边是webp格式</center>
-
-
-<p><img src="http://i.imgur.com/aFTWeSK.gif" alt="">   <img src="http://lxctest.qiniudn.com/2016-11-10_15:57:31_zhuanzhuan2.webp" alt=""></p>
-<p>你的肉眼能看出区别么？</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;使用Python将Jpeg-Png-Gif-图片转换为-webp格式&quot;&gt;&lt;a href=&quot;#使用Python将Jpeg-Png-Gif-图片转换为-webp格式&quot; class=&quot;headerlink&quot; title=&quot;使用Python将Jpeg Png Gif 图片
-    
-    </summary>
-    
-      <category term="python" scheme="http://www.orzangleli.com/categories/python/"/>
-    
-    
-      <category term="python" scheme="http://www.orzangleli.com/tags/python/"/>
-    
-  </entry>
-  
-  <entry>
     <title>自己动手造轮子系列———实现『转转APP』Indicator 效果</title>
     <link href="http://www.orzangleli.com/2016/11/10/2016-11-19_%E8%BD%AC%E8%BD%ACIndicator/"/>
     <id>http://www.orzangleli.com/2016/11/10/2016-11-19_转转Indicator/</id>
@@ -2033,6 +2189,66 @@ private Handler mHandler = new Handler() {
   </entry>
   
   <entry>
+    <title>使用Python将Jpeg Png Gif 图片转换为 webp格式</title>
+    <link href="http://www.orzangleli.com/2016/11/10/2016-11-10_Python%E5%B0%86Jpeg%20Png%20Gif%E8%BD%AC%E6%8D%A2%E4%B8%BAWebp%E6%A0%BC%E5%BC%8F/"/>
+    <id>http://www.orzangleli.com/2016/11/10/2016-11-10_Python将Jpeg Png Gif转换为Webp格式/</id>
+    <published>2016-11-09T16:00:00.000Z</published>
+    <updated>2016-11-10T14:05:29.034Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="使用Python将Jpeg-Png-Gif-图片转换为-webp格式"><a href="#使用Python将Jpeg-Png-Gif-图片转换为-webp格式" class="headerlink" title="使用Python将Jpeg Png Gif 图片转换为 webp格式"></a>使用Python将Jpeg Png Gif 图片转换为 webp格式</h1><h2 id="一-动机"><a href="#一-动机" class="headerlink" title="一.动机"></a>一.动机</h2><p>因为webp的优良特性：</p>
+<ul>
+<li><p>占空间小，节省带宽</p>
+</li>
+<li><p>总体加载速度快</p>
+</li>
+</ul>
+<p>这里有详细的介绍： 摘自 <a href="https://zh.wikipedia.org/wiki/WebP" target="_blank" rel="external">维基百科-WebP词条</a></p>
+<p>WebP（发音weppy）[6][7]，是一种同时提供了有损压缩与无损压缩（可逆压缩）的图片文件格式[8]，派生自视频编码格式VP8[9]，被认为是WebM多媒体格式的姊妹项目，是由Google在购买On2 Technologies后发展出来[10]，以BSD授权条款发布。[11]<br>WebP最初在2010年发布，目标是减少文件大小，但达到和JPEG格式相同的图片质量，希望能够减少图片档在网络上的发送时间。 [12]2011年11月8日，Google开始让WebP支持无损压缩和透明色（alpha通道）的功能，而在2012年8月16日的参考实做libwebp 0.2.0中正式支持[13][14]。根据Google较早的测试，WebP的无损压缩比网络上找到的PNG档少了45％的文件大小，即使这些PNG档在使用pngcrush和PNGOUT处理过，WebP还是可以减少28％的文件大小[15]。<br>WebP支持的像素最大数量是16383x16383。有损压缩的WebP仅支持8-bit的YUV 4:2:0格式。而无损压缩（可逆压缩）的WebP支持VP8L编码与8-bit之ARGB色彩空间。又无论是有损或无损压缩皆支持Alpha透明通道、ICC色彩配置、XMP诠释数据。<br>WebP有静态与动态两种模式。动态WebP（Animated WebP）支持有损与无损压缩、ICC色彩配置、XMP诠释数据、Alpha透明通道。而无损压缩的动态WebP亦支持8-bit之ARGB色彩空间。</p>
+<h2 id="二-方案实验"><a href="#二-方案实验" class="headerlink" title="二. 方案实验"></a>二. 方案实验</h2><h3 id="1-使用PIL-转换格式"><a href="#1-使用PIL-转换格式" class="headerlink" title="1. 使用PIL 转换格式"></a>1. 使用PIL 转换格式</h3><p>首先指出，PIL转换在大部分情况下都能起到很好的效果，比如讲jpeg转为webp，节省空间约90%。<br>首先安装PIL模块</p>
+<pre><code>pip install pillow
+</code></pre><p>然后在程序中 <code>localfile</code> 为图片路径</p>
+<pre><code>im = Image.open(localfile)
+f,ext = os.path.splitext(localfile.split(&quot;/&quot;)[-1])
+webp_path = &quot;%s.webp&quot;%f
+im.convert(&apos;RGB&apos;).save(webp_path, &quot;webp&quot;)
+</code></pre><p>这里需要注意需要将图片先转化为RGB模式，否则报错</p>
+<pre><code>cannot write mode P as WEBP
+</code></pre><p>现在，是时候说下PIL「失效」的情况了。</p>
+<ol>
+<li>将动图转为gif时，转化过程没有报错，但是打开后，只保存了第一帧的图片，变成了静态图。</li>
+<li>将 gif 转为 webp格式时，同样也只保存了第一帧。</li>
+</ol>
+<p>第一种情况我没有测试，但是在stackoverflow上可以看到有人提问过： <a href="http://stackoverflow.com/questions/24688802/saving-an-animated-gif-in-pillow" target="_blank" rel="external">Saving an animated GIF in Pillow</a> 。回答者是建议使用gifmaker 模块进行处理gif.</p>
+<p>第二张情况，我遇到了，所以可以证实。</p>
+<p>通过搜索，在官网上看到<a href="https://developers.google.com/speed/webp/docs/gif2webp" target="_blank" rel="external">gif2webp</a>,证明官网给出了gif转webp的解决方案，那我们就下载适合自己版本的库<a href="https://storage.googleapis.com/downloads.webmproject.org/releases/webp/index.html" target="_blank" rel="external"></a>.<br>解压后，将bin 目录下的 gif2webp.exe 复制到 工作目录下。接下来，我们使用它来转化格式。</p>
+<h3 id="2-使用gif2webp-exe转化格式"><a href="#2-使用gif2webp-exe转化格式" class="headerlink" title="2. 使用gif2webp.exe转化格式"></a>2. 使用gif2webp.exe转化格式</h3><p>根据官网给的文档<a href="https://developers.google.com/speed/webp/docs/gif2webp" target="_blank" rel="external">gif2webp</a>，我们可以很方便的使用下面的语句来实现：</p>
+<pre><code>f,ext = os.path.splitext(localfile.split(&quot;/&quot;)[-1])
+webp_path = &quot;%s.webp&quot;%f
+os.system(&quot;gif2webp.exe &quot;+ localfile + &quot; -quiet &quot; + &quot; -o &quot; + f + &quot;.webp&quot;)
+</code></pre><p>这里可能会提示：</p>
+<pre><code>GIF decode warning: invalid background color index. Assuming white background.
+</code></pre><p>转换过程持续好几秒，请耐心等待，转化完成后，工作目录下多一个webp文件.</p>
+<h2 id="三-效果比较"><a href="#三-效果比较" class="headerlink" title="三.效果比较"></a>三.效果比较</h2><center>左边是gif格式的               右边是webp格式</center>
+
+
+<p><img src="http://i.imgur.com/aFTWeSK.gif" alt="">   <img src="http://lxctest.qiniudn.com/2016-11-10_15:57:31_zhuanzhuan2.webp" alt=""></p>
+<p>你的肉眼能看出区别么？</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;使用Python将Jpeg-Png-Gif-图片转换为-webp格式&quot;&gt;&lt;a href=&quot;#使用Python将Jpeg-Png-Gif-图片转换为-webp格式&quot; class=&quot;headerlink&quot; title=&quot;使用Python将Jpeg Png Gif 图片
+    
+    </summary>
+    
+      <category term="python" scheme="http://www.orzangleli.com/categories/python/"/>
+    
+    
+      <category term="python" scheme="http://www.orzangleli.com/tags/python/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Plugin is too old, please update to a more recent version解决方法</title>
     <link href="http://www.orzangleli.com/2016/11/04/2016-11-04_Plugin%20is%20too%20old,%20please%20update%20to%20a%20more%20recent%20version%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95/"/>
     <id>http://www.orzangleli.com/2016/11/04/2016-11-04_Plugin is too old, please update to a more recent version解决方法/</id>
@@ -2072,163 +2288,6 @@ private Handler mHandler = new Handler() {
     
     
       <category term="android" scheme="http://www.orzangleli.com/tags/android/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Python 实用技巧————博客文档备份及格式转化</title>
-    <link href="http://www.orzangleli.com/2016/11/03/Python%E5%AE%9E%E6%88%98_%E5%8D%9A%E5%AE%A2%E5%A4%87%E4%BB%BD%E5%8F%8A%E6%A0%BC%E5%BC%8F%E8%BD%AC%E6%8D%A2/"/>
-    <id>http://www.orzangleli.com/2016/11/03/Python实战_博客备份及格式转换/</id>
-    <published>2016-11-02T16:00:00.000Z</published>
-    <updated>2017-01-10T14:15:05.074Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="1-为什么要备份博客文章？"><a href="#1-为什么要备份博客文章？" class="headerlink" title="1. 为什么要备份博客文章？"></a>1. 为什么要备份博客文章？</h2><p>备份博客文章原因有很多，其中很重要的一点就是担心服务器数据丢失。我购买的是主机公园的香港主机，当时图便宜，也图方便（不需要备案），因此购买此主机，购买之后发现使用很是不方便：</p>
-<ol>
-<li><p>一方面速度很慢，打开主页都需要几秒钟，而且有时候我的浏览器已经有缓存了，打开还是很慢；</p>
-</li>
-<li><p>二是服务器时不时的挂掉，服务商还做过几次空间迁移。</p>
-</li>
-</ol>
-<p>正因为这些原因，让用户体验很差，网友们通过搜索引擎搜索到之后，打开网站等待时间过长，一般来说就会直接关闭网页了。另一方面，空间中的文章也处于一种不安全的状态，随时可能找不到备份文件。</p>
-<h2 id="2-为什么要放弃wordpress？"><a href="#2-为什么要放弃wordpress？" class="headerlink" title="2. 为什么要放弃wordpress？"></a>2. 为什么要放弃wordpress？</h2><p>之前建博客的重点是有一个可以保存自己文章的位置，可以随时记录，随时查阅，但是作为一个极简主义者，实在受不了wp的臃肿设计，而且使用几个插件之后网页巨卡无比，让人无法接受。</p>
-<p>在知乎和google上搜索“个人编程博客框架”时，很多推荐了Hexo，这是一个基于Node.js的博客框架，非常好用，对于日常博客类网站十分适合。</p>
-<h2 id="3-Hexo的安装和配置教程"><a href="#3-Hexo的安装和配置教程" class="headerlink" title="3.Hexo的安装和配置教程"></a>3.Hexo的安装和配置教程</h2><p>参见这位大神的教程： <a href="http://blog.niices.com/Hexo-Blog-Github-Page-Coding-Page-Domain/" target="_blank" rel="external">niices</a></p>
-<h2 id="4-博客备份原理及步骤"><a href="#4-博客备份原理及步骤" class="headerlink" title="4.博客备份原理及步骤"></a>4.博客备份原理及步骤</h2><p>下面进入正题。</p>
-<h3 id="4-1-博客备份原理"><a href="#4-1-博客备份原理" class="headerlink" title="4.1 博客备份原理"></a>4.1 博客备份原理</h3><p>首先需要知道wp站点有大量的css和js，是动态网站，无法使用urllib直接获取网站源码。<br>这里使用selenium 中的webdriver 配合phantomjs.exe ，这是一个真实的浏览器访问网站，所以不需要添加任何UA标识等。<br>在wp的首页，使用浏览器访问主页，按F12或者右键审查元素，查看文章标题的class.(不同的主题可能略微有些不同)</p>
-<p><img src="http://7xrrni.com1.z0.glb.clouddn.com/2016-11-03_14:24:52_1.jpg?imageView2/0/w/800" alt=""></p>
-<p>可以知道文章的标题由 <code>&lt;h2 class=&quot;entry-title&quot;&gt;</code> 包含，再使用selenium获取网页源码之后，使用BeautifulSoup可以定位到这个标签：</p>
-<pre><code>titles =soup.findAll(class_=&quot;entry-title&quot;)
-</code></pre><p>因为主页中有很多文章，所以有很多类似的标题，我们需要将所有的都获取到。</p>
-<pre><code>for title in titles:
-        address = title.find(&quot;a&quot;)[&quot;href&quot;]
-        self.articles.add(address)
-</code></pre><p><code>self.articles</code> 是一个set集合。用于保存所有文章的url,通过上面的代码可以将每篇文章中的代码保存到<code>self.articles</code>中    </p>
-<p>这是获取主页的第一页的所有文章，还有第2页等。所以定义一个函数，根据页码获取文章地址：</p>
-<pre><code>def getArticlesByPageIndex(self,pageIndex):
-    self.browser.get(&quot;http://www.orzangleli.com/page/%d/&quot;%pageIndex)
-    time.sleep(6)
-    soup = BeautifulSoup(self.browser.page_source,&quot;html5lib&quot;)
-    titles =soup.findAll(class_=&quot;entry-title&quot;)
-    for title in titles:
-        address = title.find(&quot;a&quot;)[&quot;href&quot;]
-        self.articles.add(address)
-        print(address)
-</code></pre><p>通过一个for循环完成所有页面的文章url添加，之所以是<code>i+1</code>,是因为range(3)表示{0，1，2}：</p>
-<pre><code>def getAllArticles(self):
-        for i in range(self.pages):
-            self.getArticlesByPageIndex(i+1)
-</code></pre><p>这样，所有文章的url都存在<code>self.articles</code>中了，在浏览器中访问一个文章，观察文章的中信息，同样通过bs4可以获取文章的标题，发表时间，分类目录，hexo中的md文档还需要指明tag，这里我用分类代替，而分类使用之前分类的第一个分类代替，这些信息还要以特定格式保存在md中，下面代码负责返回一个md文档中head：</p>
-<pre><code>def mdheader(self,title,date,tags,category):
-        head = &quot;&quot;&quot;---
-title: %s
-date: %s
-tags:
-%scategories: %s
----&quot;&quot;&quot;%(title,date,tags,category)
-        return head
-</code></pre><p>获取到文章的正文内容后，使用html2text将html语言转为markdown语言。html2text的文档在：<a href="https://pypi.python.org/pypi/html2text/2016.9.19" target="_blank" rel="external">html2text</a>，将head和html2text转化的内容连接，组成完整的md文档。</p>
-<p>入口函数为：</p>
-<pre><code>def saveBlog(self):
-        self.getAllArticles()
-        for url in self.articles:
-            self.save2md(url)
-</code></pre><p>在最外层使用下面代码初始化类：<br>    browser = webdriver.PhantomJS(executable_path =”phantomjs.exe”)<br>    blog = Blog(browser,5)<br>    blog.saveBlog()</p>
-<p>完整代码：</p>
-<pre><code>import requests
-from selenium import webdriver
-import time
-import html2text
-from bs4 import BeautifulSoup
-
-
-class Blog():
-    def __init__(self,browser,pages):
-        self.browser = browser
-        self.pages = pages
-        self.articles = set()
-
-    def getArticlesByPageIndex(self,pageIndex):
-        self.browser.get(&quot;http://www.orzangleli.com/page/%d/&quot;%pageIndex)
-        time.sleep(6)
-        soup = BeautifulSoup(self.browser.page_source,&quot;html5lib&quot;)
-        #print(self.browser.page_source)
-        titles =soup.findAll(class_=&quot;entry-title&quot;)
-        for title in titles:
-            address = title.find(&quot;a&quot;)[&quot;href&quot;]
-            self.articles.add(address)
-            print(address)
-
-    def getAllArticles(self):
-        for i in range(self.pages):
-            self.getArticlesByPageIndex(i+1)
-
-    def save2md(self,page_address):
-        self.browser.get(page_address)
-        time.sleep(6)
-        #需要事先在wp后台关闭禁用掉代码高亮显示插件
-
-        soup = BeautifulSoup(self.browser.page_source,&quot;html5lib&quot;)
-        title = soup.find(class_=&quot;entry-title&quot;).text
-        date = soup.find(class_=&quot;updated&quot;)[&quot;datetime&quot;].split(&quot;T&quot;)[0]
-        content = soup.find(class_=&quot;entry-content&quot;)
-        #获取标签
-        categorys = soup.findAll(&quot;a&quot;,{&quot;rel&quot;:&quot;category tag&quot;})
-        tags = &quot;&quot;
-        for category in categorys:
-            if category.text.startswith(&quot;未分类&quot;):
-                break
-            tags = &quot;%s- %s\n&quot;%(tags,category.text)
-
-        head = self.mdheader(title,date,tags,categorys[0].text)        
-        #print(content)
-
-        mdcontent = html2text.html2text(str(content))
-        #给md文档加上头
-        mdcontent = &quot;%s\n%s&quot;%(head,mdcontent)
-        #删除作者署名信息
-        mdcontent = mdcontent.split(&quot;![](http://2.gravatar.com/avatar/e9a1c2c77d47ac4dcfeb1fa2fc1c936a?s=42&amp;d=mm&amp;r=g)&quot;)[0]
-
-        with open(&quot;%s_%s.md&quot;%(date,title),&quot;w+&quot;,encoding=&quot;utf-8&quot;) as file:
-            file.write(mdcontent)
-            file.close()
-
-    def saveBlog(self):
-        self.getAllArticles()
-        for url in self.articles:
-            self.save2md(url)
-
-
-    def mdheader(self,title,date,tags,category):
-        head = &quot;&quot;&quot;---
-title: %s
-date: %s
-tags:
-%scategories: %s
----&quot;&quot;&quot;%(title,date,tags,category)
-        return head
-
-
-browser = webdriver.PhantomJS(executable_path =&quot;phantomjs.exe&quot;)
-blog = Blog(browser,5)
-blog.saveBlog()
-</code></pre><p>附上，我将博客上所有文章保存下来的截图，幸福感满满~，待会可以使用hexo提交到hust201010701.github.io上：</p>
-<p><img src="http://7xrrni.com1.z0.glb.clouddn.com/2016-11-03_15:10:25_3.jpg?imageView2/0/w/1000" alt=""></p>
-<p>源码地址：<a href="https://github.com/hust201010701/WpBlogToMarkdownFile.git" target="_blank" rel="external">WpBlogToMarkdownFile.git</a></p>
-<h2 id="5-为什么Python这么强大？"><a href="#5-为什么Python这么强大？" class="headerlink" title="5. 为什么Python这么强大？"></a>5. 为什么Python这么强大？</h2><p>从上面的完整代码就可以看出，python代码使用了77行，实现了整个需求，真的是：<strong>人生苦短，我用python.</strong> </p>
-<p>Pyhton的强大的内置库和第三方库，让轮子不再重复制造，完成一个网页源码的数据获取只需要两三行代码，请问除了python还有谁？</p>
-<p>学习代码这么长时间，之间一直使用C++,java,android,C#，没有哪种语言能够真真切切地解决生活中的麻烦事，直到遇到了python，庆幸~</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h2 id=&quot;1-为什么要备份博客文章？&quot;&gt;&lt;a href=&quot;#1-为什么要备份博客文章？&quot; class=&quot;headerlink&quot; title=&quot;1. 为什么要备份博客文章？&quot;&gt;&lt;/a&gt;1. 为什么要备份博客文章？&lt;/h2&gt;&lt;p&gt;备份博客文章原因有很多，其中很重要的一点就是担心
-    
-    </summary>
-    
-      <category term="Python" scheme="http://www.orzangleli.com/categories/Python/"/>
-    
-    
-      <category term="Python" scheme="http://www.orzangleli.com/tags/Python/"/>
     
   </entry>
   
