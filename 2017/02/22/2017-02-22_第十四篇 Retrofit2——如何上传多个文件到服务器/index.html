@@ -86,42 +86,25 @@
 
 
 
-<meta name="description" content="10. 可选的查询参数
-
-一、 Retrofit查询参数
-二、 可选的查询参数
-三、 在Github中实战
-
-
-前几篇文章，带你领略了添加自定义请求头的技术方法。现在，我们来看看在Retofit中如何让参数可选。
-一、 Retrofit查询参数Retrofit使用注解定义查询参数。方法参数前面定义的注解，指定了要查询的参数的名字。在请求执行时，我们要查询的参数就会传递到URL中。现在我们来看个具体">
+<meta name="description" content="第十四篇 Retrofit2——如何上传多个文件到服务器一、用Retrofit 2上传多个文件在开始多文件上传的细节之前，请确保你已经理解了《如何上传文件到服务器》中的所有原理，这样，多文件上传的方式将是十分相似。
+首先，我们得为多文件上传扩展FileUploadService接口。
+public interface FileUploadService {  
+    // previous co">
 <meta property="og:type" content="article">
-<meta property="og:title" content="第十篇 Retrofit—可选的查询参数">
-<meta property="og:url" content="http://www.orzangleli.com/2017/01/18/2017-01-18_第十篇 Retrofit—可选的查询参数/index.html">
+<meta property="og:title" content="第十四篇 Retrofit2——如何上传多个文件到服务器">
+<meta property="og:url" content="http://www.orzangleli.com/2017/02/22/2017-02-22_第十四篇 Retrofit2——如何上传多个文件到服务器/index.html">
 <meta property="og:site_name" content="orzangleli">
-<meta property="og:description" content="10. 可选的查询参数
-
-一、 Retrofit查询参数
-二、 可选的查询参数
-三、 在Github中实战
-
-
-前几篇文章，带你领略了添加自定义请求头的技术方法。现在，我们来看看在Retofit中如何让参数可选。
-一、 Retrofit查询参数Retrofit使用注解定义查询参数。方法参数前面定义的注解，指定了要查询的参数的名字。在请求执行时，我们要查询的参数就会传递到URL中。现在我们来看个具体">
-<meta property="og:image" content="http://7bvaky.com2.z0.glb.qiniucdn.com/2017-01-15_12_28_02_搜索仓库.png">
-<meta property="og:updated_time" content="2017-01-18T13:50:30.310Z">
+<meta property="og:description" content="第十四篇 Retrofit2——如何上传多个文件到服务器一、用Retrofit 2上传多个文件在开始多文件上传的细节之前，请确保你已经理解了《如何上传文件到服务器》中的所有原理，这样，多文件上传的方式将是十分相似。
+首先，我们得为多文件上传扩展FileUploadService接口。
+public interface FileUploadService {  
+    // previous co">
+<meta property="og:updated_time" content="2017-02-23T00:40:25.072Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="第十篇 Retrofit—可选的查询参数">
-<meta name="twitter:description" content="10. 可选的查询参数
-
-一、 Retrofit查询参数
-二、 可选的查询参数
-三、 在Github中实战
-
-
-前几篇文章，带你领略了添加自定义请求头的技术方法。现在，我们来看看在Retofit中如何让参数可选。
-一、 Retrofit查询参数Retrofit使用注解定义查询参数。方法参数前面定义的注解，指定了要查询的参数的名字。在请求执行时，我们要查询的参数就会传递到URL中。现在我们来看个具体">
-<meta name="twitter:image" content="http://7bvaky.com2.z0.glb.qiniucdn.com/2017-01-15_12_28_02_搜索仓库.png">
+<meta name="twitter:title" content="第十四篇 Retrofit2——如何上传多个文件到服务器">
+<meta name="twitter:description" content="第十四篇 Retrofit2——如何上传多个文件到服务器一、用Retrofit 2上传多个文件在开始多文件上传的细节之前，请确保你已经理解了《如何上传文件到服务器》中的所有原理，这样，多文件上传的方式将是十分相似。
+首先，我们得为多文件上传扩展FileUploadService接口。
+public interface FileUploadService {  
+    // previous co">
 
 
 
@@ -142,10 +125,10 @@
 
 
 
-  <link rel="canonical" href="http://www.orzangleli.com/2017/01/18/2017-01-18_第十篇 Retrofit—可选的查询参数/"/>
+  <link rel="canonical" href="http://www.orzangleli.com/2017/02/22/2017-02-22_第十四篇 Retrofit2——如何上传多个文件到服务器/"/>
 
 
-  <title> 第十篇 Retrofit—可选的查询参数 | orzangleli </title>
+  <title> 第十四篇 Retrofit2——如何上传多个文件到服务器 | orzangleli </title>
 </head>
 
 <body itemscope itemtype="//schema.org/WebPage" lang="zh-Hans">
@@ -311,7 +294,7 @@
             
             
               
-                第十篇 Retrofit—可选的查询参数
+                第十四篇 Retrofit2——如何上传多个文件到服务器
               
             
           </h1>
@@ -323,8 +306,8 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2017-01-18T00:00:00+08:00" content="2017-01-18">
-              2017-01-18
+            <time itemprop="dateCreated" datetime="2017-02-22T00:00:00+08:00" content="2017-02-22">
+              2017-02-22
             </time>
           </span>
 
@@ -353,8 +336,8 @@
             
               <span class="post-comments-count">
                 &nbsp; | &nbsp;
-                <a href="/2017/01/18/2017-01-18_第十篇 Retrofit—可选的查询参数/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/01/18/2017-01-18_第十篇 Retrofit—可选的查询参数/" itemprop="commentsCount"></span>
+                <a href="/2017/02/22/2017-02-22_第十四篇 Retrofit2——如何上传多个文件到服务器/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/02/22/2017-02-22_第十四篇 Retrofit2——如何上传多个文件到服务器/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -364,7 +347,7 @@
 
           
           
-             <span id="/2017/01/18/2017-01-18_第十篇 Retrofit—可选的查询参数/" class="leancloud_visitors" data-flag-title="第十篇 Retrofit—可选的查询参数">
+             <span id="/2017/02/22/2017-02-22_第十四篇 Retrofit2——如何上传多个文件到服务器/" class="leancloud_visitors" data-flag-title="第十四篇 Retrofit2——如何上传多个文件到服务器">
                &nbsp; | &nbsp;
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -386,120 +369,79 @@
       
 
       
-        <h1 id="10-可选的查询参数"><a href="#10-可选的查询参数" class="headerlink" title="10. 可选的查询参数"></a>10. 可选的查询参数</h1><!-- MarkdownTOC -->
-<ul>
-<li><a href="#一、-retrofit查询参数">一、 Retrofit查询参数</a></li>
-<li><a href="#二、-可选的查询参数">二、 可选的查询参数</a></li>
-<li><a href="#三、-在github中实战">三、 在Github中实战</a></li>
-</ul>
-<!-- /MarkdownTOC -->
-<p>前几篇文章，带你领略了添加自定义请求头的技术方法。现在，我们来看看在Retofit中如何让参数可选。</p>
-<h2 id="一、-Retrofit查询参数"><a href="#一、-Retrofit查询参数" class="headerlink" title="一、 Retrofit查询参数"></a>一、 Retrofit查询参数</h2><p>Retrofit使用注解定义查询参数。方法参数前面定义的注解，指定了要查询的参数的名字。在请求执行时，我们要查询的参数就会传递到URL中。现在我们来看个具体的例子。下面的代码讲的就是一个以<code>/tasks</code>作为API endpoint的请求，它提供了一个选项<code>sort</code>参数以达到排序的目的。</p>
-<p>public interface TaskService {<br>    @GET(“/tasks”)<br>    Call<list<task>&gt; getTasks(@Query(“sort”) String order);<br>}</list<task></p>
-<p>假设你的API的基本地址是：<code>https://your.api.com</code>,请求就使用上面的<code>TaskService</code>调用<code>getTasks</code>方法，最终形成的请求的URL是这样的：</p>
-<pre><code>https://your.api.com/tasks?sort=value-of-order-parameter
-</code></pre><h2 id="二、-可选的查询参数"><a href="#二、-可选的查询参数" class="headerlink" title="二、 可选的查询参数"></a>二、 可选的查询参数</h2><p>根据API的设计原则，<code>sort</code>参数应该是可选的。如果你不想在请求中传递这个参数，你可以在方法调用的时候直接传递<strong><code>null</code></strong>给<code>order</code>。</p>
-<pre><code>service.getTasks(null);  
-</code></pre><p>Retrofit会跳过<code>null</code>参数，并且在实现请求的时候忽略它们。记住，你不可以把<code>null</code>传递给这几种类型:<code>int</code>,<code>float</code>,<code>long</code>等。但是如果你使用的是<code>Integer</code>,<code>Float</code>,<code>Long</code>，那么就可以传递<code>null</code>了。</p>
-<p>下面的例子描述的就是给之前提到的集中数据类型定义的请求客户端。</p>
-<pre><code>public interface TaskService {  
-    @GET(&quot;/tasks&quot;)
-    Call&lt;List&lt;Task&gt;&gt; getTasks(
-        @Query(&quot;sort&quot;) String order,
-        @Query(&quot;page&quot;) Integer page);
+        <h1 id="第十四篇-Retrofit2——如何上传多个文件到服务器"><a href="#第十四篇-Retrofit2——如何上传多个文件到服务器" class="headerlink" title="第十四篇 Retrofit2——如何上传多个文件到服务器"></a>第十四篇 Retrofit2——如何上传多个文件到服务器</h1><h2 id="一、用Retrofit-2上传多个文件"><a href="#一、用Retrofit-2上传多个文件" class="headerlink" title="一、用Retrofit 2上传多个文件"></a>一、用Retrofit 2上传多个文件</h2><p>在开始多文件上传的细节之前，请确保你已经理解了《如何上传文件到服务器》中的所有原理，这样，多文件上传的方式将是十分相似。</p>
+<p>首先，我们得为多文件上传扩展<code>FileUploadService</code>接口。</p>
+<pre><code>public interface FileUploadService {  
+    // previous code for single file uploads
+    @Multipart
+    @POST(&quot;upload&quot;)
+    Call&lt;ResponseBody&gt; uploadFile(
+            @Part(&quot;description&quot;) RequestBody description,
+            @Part MultipartBody.Part file);
+
+    // new code for multiple files
+    @Multipart
+    @POST(&quot;upload&quot;)
+    Call&lt;ResponseBody&gt; uploadMultipleFiles(
+            @Part(&quot;description&quot;) RequestBody description,
+            @Part MultipartBody.Part file1,
+            @Part MultipartBody.Part file2);
 }
-</code></pre><p>现在，你可以给<code>order</code>或<code>page</code>中任何一个参数传递<code>null</code>了。</p>
-<pre><code>service.getTasks(null, null); 
-</code></pre><p>这样就是了，可选参数的查询，让我们总结下：实现可选参数的方法就是在定义客户端接口时，如果参数类型是<code>int</code>,’long’等基本数据类型，需要把这个参数的类型修改为其包装类，如<code>Integer</code>,<code>Long</code>等，如果本身就是封装的类，那在接口定义时就不需要处理。然后在调用客户端接口中的方法时，可以使用<code>null</code>传递给某些参数，这样在API请求时，就会自动忽略值为<code>null</code>的参数，从而达到参数可选的功能。</p>
-<h2 id="三、-在Github中实战"><a href="#三、-在Github中实战" class="headerlink" title="三、 在Github中实战"></a>三、 在Github中实战</h2><p>我们以Github中<code>Search repositories</code>仓库搜索的API为例，展示下可选查询参数的demo.<br>从<a href="https://developer.github.com/v3/search/#search-repositories" target="_blank" rel="external">https://developer.github.com/v3/search/#search-repositories</a>中，我们可以找到搜索仓库的API使用方法。</p>
-<pre><code>GET /search/repositories
-</code></pre><table>
-<thead>
-<tr>
-<th style="text-align:center">Name</th>
-<th style="text-align:center">Type</th>
-<th style="text-align:center">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">q</td>
-<td style="text-align:center">string</td>
-<td style="text-align:center">搜索的关键字</td>
-</tr>
-<tr>
-<td style="text-align:center">sort</td>
-<td style="text-align:center">string</td>
-<td style="text-align:center">排序依据参数，可以是 <code>stars</code>, <code>forks</code>, 或者 <code>updated</code>. 默认是按匹配的程度排序。</td>
-</tr>
-<tr>
-<td style="text-align:center">order</td>
-<td style="text-align:center">string</td>
-<td style="text-align:center">决定搜索结果的排序是增序还是减序，可以是asc或 desc. 默认是: desc（减序）</td>
-</tr>
-</tbody>
-</table>
-<p>好，现在我们把GithubClient接口修改下，注意请求方式是<code>GET</code>：</p>
-<pre><code>public interface GithubClient {
-    @GET(&quot;/search/repositories&quot;)
-    Call&lt;ResponseBody&gt; searchRepos(
-            @Query(&quot;q&quot;) String keywords,
-            @Query(&quot;sort&quot;) String sort,
-            @Query(&quot;order&quot;) String order
-    );
+</code></pre><p>对比上面接口中的<code>uploadFile()</code>方法和<code>uploadMultipleFiles()</code>方法，你可以很明显的发现区别。Retrofit 2中添加新的文件十分简单。在接口定义的方面，我们仅仅需要添加一个新的参数<code>@Part MultipartBody.Part file2</code>。<code>uploadMultipleFiles()</code>现在就只能支持两个文件了。你可以自己调整<code>MultipartBody.Part</code>的数量。后面的教程，我们会看看如何添加动态的数量的文件到你的请求中。</p>
+<p>接口声明结束，已经完成了一半的工作。另一半就是在Activity或Fragment中实现了。因为我们现在在进行多文件上传，所以我们实现两个帮助方法，让代码更健壮：</p>
+<pre><code>public static final String MULTIPART_FORM_DATA = &quot;multipart/form-data&quot;;
+
+@NonNull
+private RequestBody createPartFromString(String descriptionString) {  
+    return RequestBody.create(
+            MediaType.parse(MULTIPART_FORM_DATA), descriptionString);
 }
-</code></pre><p>MainActivity中测试时，可以将<code>searchRepos(...)</code>方法中的第二个和第三个参数修改为<code>null</code>。</p>
-<pre><code>public class MainActivity extends AppCompatActivity {
-    private final static String TAG = &quot;ILearnRetrofit&quot;;
+
+@NonNull
+private MultipartBody.Part prepareFilePart(String partName, Uri fileUri) {  
+    // https://github.com/iPaulPro/aFileChooser/blob/master/aFileChooser/src/com/ipaulpro/afilechooser/utils/FileUtils.java
+    // use the FileUtils to get the actual file by uri
+    File file = FileUtils.getFile(this, fileUri);
+
+    // create RequestBody instance from file
+    RequestBody requestFile =
+        RequestBody.create(MediaType.parse(MULTIPART_FORM_DATA), file);
+
+    // MultipartBody.Part is used to send also the actual file name
+    return MultipartBody.Part.createFormData(partName, file.getName(), requestFile);
+}
+</code></pre><p><code>createPartFromString()</code>方法在文件上传时发送描述。<code>prepareFilePart()</code>方法创建了一个<code>MultipartBody.Part</code>对象，可以包含一个文件。在Retrofit 2中上传文件都需要包裹在<code>MultipartBody.Part</code>中。</p>
+<p>下面使用这两个帮助方法来发送两个文件：</p>
+<pre><code>Uri file1Uri = ... // get it from a file chooser or a camera intent  
+Uri file2Uri = ... // get it from a file chooser or a camera intent
+
+// create upload service client
+FileUploadService service =  
+        ServiceGenerator.createService(FileUploadService.class);
+
+// create part for file (photo, video, ...)
+MultipartBody.Part body1 = prepareFilePart(&quot;video&quot;, file1Uri);  
+MultipartBody.Part body2 = prepareFilePart(&quot;thumbnail&quot;, file2Uri);
+
+// add another part within the multipart request
+RequestBody description = createPartFromString(&quot;hello, this is description speaking&quot;);
+
+// finally, execute the request
+Call&lt;ResponseBody&gt; call = service.uploadMultipleFiles(description, body1, body2);  
+call.enqueue(new Callback&lt;ResponseBody&gt;() {  
+    @Override
+    public void onResponse(Call&lt;ResponseBody&gt; call,
+            Response&lt;ResponseBody&gt; response) {
+        Log.v(&quot;Upload&quot;, &quot;success&quot;);
+    }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        Utils.init(this);
-
-        GithubClient client = ServiceGenerator.createService(GithubClient.class);
-        Call&lt;ResponseBody&gt; call = client.searchRepos(&quot;Retrofit&quot;,&quot;updated&quot;,null);  // 搜索包含`Retrofit`关键字的仓库，按照更新时间排序，排序方式按照默认的减序
-        call.enqueue(new Callback&lt;ResponseBody&gt;() {
-            @Override
-            public void onResponse(Call&lt;ResponseBody&gt; call, Response&lt;ResponseBody&gt; response) {
-                try {
-                    if (response.isSuccessful())
-                        i(TAG, &quot;搜索成功：&quot; + response.body().string() );
-                    else
-                        i(TAG, &quot;搜索失败：&quot; + response.errorBody().string());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            @Override
-            public void onFailure(Call&lt;ResponseBody&gt; call, Throwable t) {
-                i(TAG, &quot;搜索失败：&quot; + t.getMessage());
-            }
-        });
-
+    public void onFailure(Call&lt;ResponseBody&gt; call, Throwable t) {
+        Log.e(&quot;Upload error:&quot;, t.getMessage());
     }
-}
-</code></pre><p>正常的返回数据在控制台中可以看到打印（因为logcat打印有4k长度限制,所以直接看到的json格式并不是完整的）：</p>
-<p><img src="http://7bvaky.com2.z0.glb.qiniucdn.com/2017-01-15_12_28_02_搜索仓库.png" alt=""></p>
-<p>因为<code>sort</code>和<code>order</code>是可选参数，如果不填写，是有默认值可以继续正常使用的，这也就是为什么<code>q</code>参数不能传递<code>null</code>，虽然程序可以正常执行，但是API端返回数据有误，报错如下：</p>
-<pre><code>搜索失败：
-{
-    &quot;message&quot;: &quot;Validation Failed&quot;,
-    &quot;errors&quot;: [
-        {
-            &quot;resource&quot;: &quot;Search&quot;,
-            &quot;field&quot;: &quot;q&quot;,
-            &quot;code&quot;: &quot;missing&quot;
-        }
-    ],
-    &quot;documentation_url&quot;: &quot;https://developer.github.com/v3/search&quot;
-}
-</code></pre><blockquote>
-<p>本教程所有源码参见此网页：[留白]</p>
-</blockquote>
-<p>Enjoy Coding! 如果在阅读本教程的过程中有任何疑问或者需要帮助，可以随时在微博上联系我，我的微博是 <a href="http://weibo.com/androidjiqiaogonglue" target="_blank" rel="external">@orzanglei</a>。</p>
-
+});
+</code></pre><p>现在你要做的就是在一个请求中发送两个文件，当然你也可以再添加一个或者多个文件到接口中，用这种方式，你可以想发送多少文件都可以。</p>
+<h2 id="二、用图床实战"><a href="#二、用图床实战" class="headerlink" title="二、用图床实战"></a>二、用图床实战</h2>
       
     </div>
 
@@ -553,17 +495,13 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/01/17/2017-01-17_9 第九篇 Retrofit—同一key多重value字段/" rel="next" title="9 第九篇 Retrofit—同一key多重value字段">
-                <i class="fa fa-chevron-left"></i> 9 第九篇 Retrofit—同一key多重value字段
+              <a href="/2017/02/17/2017-02-17_第十三篇 Retrofit—如何上传文件到服务器/" rel="next" title="第十三篇 Retrofit—如何上传文件到服务器">
+                <i class="fa fa-chevron-left"></i> 第十三篇 Retrofit—如何上传文件到服务器
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/02/13/2017-02-13_第十一篇 Retrofit— 使用日志级别调试请求/" rel="prev" title="第十一篇 Retrofit— 使用日志级别调试请求">
-                第十一篇 Retrofit— 使用日志级别调试请求 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -578,10 +516,10 @@
 
     <div class="post-spread">
       
-        <div class="ds-share flat" data-thread-key="2017/01/18/2017-01-18_第十篇 Retrofit—可选的查询参数/"
-     data-title="第十篇 Retrofit—可选的查询参数"
+        <div class="ds-share flat" data-thread-key="2017/02/22/2017-02-22_第十四篇 Retrofit2——如何上传多个文件到服务器/"
+     data-title="第十四篇 Retrofit2——如何上传多个文件到服务器"
      data-content=""
-     data-url="http://www.orzangleli.com/2017/01/18/2017-01-18_第十篇 Retrofit—可选的查询参数/">
+     data-url="http://www.orzangleli.com/2017/02/22/2017-02-22_第十四篇 Retrofit2——如何上传多个文件到服务器/">
   <div class="ds-share-inline">
     <ul  class="ds-share-icons-16">
 
@@ -608,8 +546,8 @@
           
   <div class="comments" id="comments">
     
-      <div class="ds-thread" data-thread-key="2017/01/18/2017-01-18_第十篇 Retrofit—可选的查询参数/"
-           data-title="第十篇 Retrofit—可选的查询参数" data-url="http://www.orzangleli.com/2017/01/18/2017-01-18_第十篇 Retrofit—可选的查询参数/">
+      <div class="ds-thread" data-thread-key="2017/02/22/2017-02-22_第十四篇 Retrofit2——如何上传多个文件到服务器/"
+           data-title="第十四篇 Retrofit2——如何上传多个文件到服务器" data-url="http://www.orzangleli.com/2017/02/22/2017-02-22_第十四篇 Retrofit2——如何上传多个文件到服务器/">
       </div>
     
   </div>
@@ -707,7 +645,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#10-可选的查询参数"><span class="nav-number">1.</span> <span class="nav-text">10. 可选的查询参数</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、-Retrofit查询参数"><span class="nav-number">1.1.</span> <span class="nav-text">一、 Retrofit查询参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、-可选的查询参数"><span class="nav-number">1.2.</span> <span class="nav-text">二、 可选的查询参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、-在Github中实战"><span class="nav-number">1.3.</span> <span class="nav-text">三、 在Github中实战</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#第十四篇-Retrofit2——如何上传多个文件到服务器"><span class="nav-number">1.</span> <span class="nav-text">第十四篇 Retrofit2——如何上传多个文件到服务器</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、用Retrofit-2上传多个文件"><span class="nav-number">1.1.</span> <span class="nav-text">一、用Retrofit 2上传多个文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、用图床实战"><span class="nav-number">1.2.</span> <span class="nav-text">二、用图床实战</span></a></li></ol></li></ol></div>
             
           </div>
         </section>

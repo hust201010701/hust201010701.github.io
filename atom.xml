@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://www.orzangleli.com/"/>
-  <updated>2017-02-17T01:33:00.471Z</updated>
+  <updated>2017-02-23T00:40:25.072Z</updated>
   <id>http://www.orzangleli.com/</id>
   
   <author>
@@ -14,6 +14,102 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>第十四篇 Retrofit2——如何上传多个文件到服务器</title>
+    <link href="http://www.orzangleli.com/2017/02/22/2017-02-22_%E7%AC%AC%E5%8D%81%E5%9B%9B%E7%AF%87%20Retrofit2%E2%80%94%E2%80%94%E5%A6%82%E4%BD%95%E4%B8%8A%E4%BC%A0%E5%A4%9A%E4%B8%AA%E6%96%87%E4%BB%B6%E5%88%B0%E6%9C%8D%E5%8A%A1%E5%99%A8/"/>
+    <id>http://www.orzangleli.com/2017/02/22/2017-02-22_第十四篇 Retrofit2——如何上传多个文件到服务器/</id>
+    <published>2017-02-21T16:00:00.000Z</published>
+    <updated>2017-02-23T00:40:25.072Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="第十四篇-Retrofit2——如何上传多个文件到服务器"><a href="#第十四篇-Retrofit2——如何上传多个文件到服务器" class="headerlink" title="第十四篇 Retrofit2——如何上传多个文件到服务器"></a>第十四篇 Retrofit2——如何上传多个文件到服务器</h1><h2 id="一、用Retrofit-2上传多个文件"><a href="#一、用Retrofit-2上传多个文件" class="headerlink" title="一、用Retrofit 2上传多个文件"></a>一、用Retrofit 2上传多个文件</h2><p>在开始多文件上传的细节之前，请确保你已经理解了《如何上传文件到服务器》中的所有原理，这样，多文件上传的方式将是十分相似。</p>
+<p>首先，我们得为多文件上传扩展<code>FileUploadService</code>接口。</p>
+<pre><code>public interface FileUploadService {  
+    // previous code for single file uploads
+    @Multipart
+    @POST(&quot;upload&quot;)
+    Call&lt;ResponseBody&gt; uploadFile(
+            @Part(&quot;description&quot;) RequestBody description,
+            @Part MultipartBody.Part file);
+
+    // new code for multiple files
+    @Multipart
+    @POST(&quot;upload&quot;)
+    Call&lt;ResponseBody&gt; uploadMultipleFiles(
+            @Part(&quot;description&quot;) RequestBody description,
+            @Part MultipartBody.Part file1,
+            @Part MultipartBody.Part file2);
+}
+</code></pre><p>对比上面接口中的<code>uploadFile()</code>方法和<code>uploadMultipleFiles()</code>方法，你可以很明显的发现区别。Retrofit 2中添加新的文件十分简单。在接口定义的方面，我们仅仅需要添加一个新的参数<code>@Part MultipartBody.Part file2</code>。<code>uploadMultipleFiles()</code>现在就只能支持两个文件了。你可以自己调整<code>MultipartBody.Part</code>的数量。后面的教程，我们会看看如何添加动态的数量的文件到你的请求中。</p>
+<p>接口声明结束，已经完成了一半的工作。另一半就是在Activity或Fragment中实现了。因为我们现在在进行多文件上传，所以我们实现两个帮助方法，让代码更健壮：</p>
+<pre><code>public static final String MULTIPART_FORM_DATA = &quot;multipart/form-data&quot;;
+
+@NonNull
+private RequestBody createPartFromString(String descriptionString) {  
+    return RequestBody.create(
+            MediaType.parse(MULTIPART_FORM_DATA), descriptionString);
+}
+
+@NonNull
+private MultipartBody.Part prepareFilePart(String partName, Uri fileUri) {  
+    // https://github.com/iPaulPro/aFileChooser/blob/master/aFileChooser/src/com/ipaulpro/afilechooser/utils/FileUtils.java
+    // use the FileUtils to get the actual file by uri
+    File file = FileUtils.getFile(this, fileUri);
+
+    // create RequestBody instance from file
+    RequestBody requestFile =
+        RequestBody.create(MediaType.parse(MULTIPART_FORM_DATA), file);
+
+    // MultipartBody.Part is used to send also the actual file name
+    return MultipartBody.Part.createFormData(partName, file.getName(), requestFile);
+}
+</code></pre><p><code>createPartFromString()</code>方法在文件上传时发送描述。<code>prepareFilePart()</code>方法创建了一个<code>MultipartBody.Part</code>对象，可以包含一个文件。在Retrofit 2中上传文件都需要包裹在<code>MultipartBody.Part</code>中。</p>
+<p>下面使用这两个帮助方法来发送两个文件：</p>
+<pre><code>Uri file1Uri = ... // get it from a file chooser or a camera intent  
+Uri file2Uri = ... // get it from a file chooser or a camera intent
+
+// create upload service client
+FileUploadService service =  
+        ServiceGenerator.createService(FileUploadService.class);
+
+// create part for file (photo, video, ...)
+MultipartBody.Part body1 = prepareFilePart(&quot;video&quot;, file1Uri);  
+MultipartBody.Part body2 = prepareFilePart(&quot;thumbnail&quot;, file2Uri);
+
+// add another part within the multipart request
+RequestBody description = createPartFromString(&quot;hello, this is description speaking&quot;);
+
+// finally, execute the request
+Call&lt;ResponseBody&gt; call = service.uploadMultipleFiles(description, body1, body2);  
+call.enqueue(new Callback&lt;ResponseBody&gt;() {  
+    @Override
+    public void onResponse(Call&lt;ResponseBody&gt; call,
+            Response&lt;ResponseBody&gt; response) {
+        Log.v(&quot;Upload&quot;, &quot;success&quot;);
+    }
+
+    @Override
+    public void onFailure(Call&lt;ResponseBody&gt; call, Throwable t) {
+        Log.e(&quot;Upload error:&quot;, t.getMessage());
+    }
+});
+</code></pre><p>现在你要做的就是在一个请求中发送两个文件，当然你也可以再添加一个或者多个文件到接口中，用这种方式，你可以想发送多少文件都可以。</p>
+<h2 id="二、用图床实战"><a href="#二、用图床实战" class="headerlink" title="二、用图床实战"></a>二、用图床实战</h2>]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;第十四篇-Retrofit2——如何上传多个文件到服务器&quot;&gt;&lt;a href=&quot;#第十四篇-Retrofit2——如何上传多个文件到服务器&quot; class=&quot;headerlink&quot; title=&quot;第十四篇 Retrofit2——如何上传多个文件到服务器&quot;&gt;&lt;/a&gt;第十
+    
+    </summary>
+    
+      <category term="Retrofit教程" scheme="http://www.orzangleli.com/categories/Retrofit%E6%95%99%E7%A8%8B/"/>
+    
+    
+      <category term="android" scheme="http://www.orzangleli.com/tags/android/"/>
+    
+      <category term="Retrofit" scheme="http://www.orzangleli.com/tags/Retrofit/"/>
+    
+  </entry>
   
   <entry>
     <title>第十三篇 Retrofit—如何上传文件到服务器</title>
@@ -2097,66 +2193,6 @@ private Handler mHandler = new Handler() {
       <category term="android" scheme="http://www.orzangleli.com/tags/android/"/>
     
       <category term="自己动手造轮子系列" scheme="http://www.orzangleli.com/tags/%E8%87%AA%E5%B7%B1%E5%8A%A8%E6%89%8B%E9%80%A0%E8%BD%AE%E5%AD%90%E7%B3%BB%E5%88%97/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>使用Python将Jpeg Png Gif 图片转换为 webp格式</title>
-    <link href="http://www.orzangleli.com/2016/11/10/2016-11-10_Python%E5%B0%86Jpeg%20Png%20Gif%E8%BD%AC%E6%8D%A2%E4%B8%BAWebp%E6%A0%BC%E5%BC%8F/"/>
-    <id>http://www.orzangleli.com/2016/11/10/2016-11-10_Python将Jpeg Png Gif转换为Webp格式/</id>
-    <published>2016-11-09T16:00:00.000Z</published>
-    <updated>2016-11-10T14:05:29.034Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="使用Python将Jpeg-Png-Gif-图片转换为-webp格式"><a href="#使用Python将Jpeg-Png-Gif-图片转换为-webp格式" class="headerlink" title="使用Python将Jpeg Png Gif 图片转换为 webp格式"></a>使用Python将Jpeg Png Gif 图片转换为 webp格式</h1><h2 id="一-动机"><a href="#一-动机" class="headerlink" title="一.动机"></a>一.动机</h2><p>因为webp的优良特性：</p>
-<ul>
-<li><p>占空间小，节省带宽</p>
-</li>
-<li><p>总体加载速度快</p>
-</li>
-</ul>
-<p>这里有详细的介绍： 摘自 <a href="https://zh.wikipedia.org/wiki/WebP" target="_blank" rel="external">维基百科-WebP词条</a></p>
-<p>WebP（发音weppy）[6][7]，是一种同时提供了有损压缩与无损压缩（可逆压缩）的图片文件格式[8]，派生自视频编码格式VP8[9]，被认为是WebM多媒体格式的姊妹项目，是由Google在购买On2 Technologies后发展出来[10]，以BSD授权条款发布。[11]<br>WebP最初在2010年发布，目标是减少文件大小，但达到和JPEG格式相同的图片质量，希望能够减少图片档在网络上的发送时间。 [12]2011年11月8日，Google开始让WebP支持无损压缩和透明色（alpha通道）的功能，而在2012年8月16日的参考实做libwebp 0.2.0中正式支持[13][14]。根据Google较早的测试，WebP的无损压缩比网络上找到的PNG档少了45％的文件大小，即使这些PNG档在使用pngcrush和PNGOUT处理过，WebP还是可以减少28％的文件大小[15]。<br>WebP支持的像素最大数量是16383x16383。有损压缩的WebP仅支持8-bit的YUV 4:2:0格式。而无损压缩（可逆压缩）的WebP支持VP8L编码与8-bit之ARGB色彩空间。又无论是有损或无损压缩皆支持Alpha透明通道、ICC色彩配置、XMP诠释数据。<br>WebP有静态与动态两种模式。动态WebP（Animated WebP）支持有损与无损压缩、ICC色彩配置、XMP诠释数据、Alpha透明通道。而无损压缩的动态WebP亦支持8-bit之ARGB色彩空间。</p>
-<h2 id="二-方案实验"><a href="#二-方案实验" class="headerlink" title="二. 方案实验"></a>二. 方案实验</h2><h3 id="1-使用PIL-转换格式"><a href="#1-使用PIL-转换格式" class="headerlink" title="1. 使用PIL 转换格式"></a>1. 使用PIL 转换格式</h3><p>首先指出，PIL转换在大部分情况下都能起到很好的效果，比如讲jpeg转为webp，节省空间约90%。<br>首先安装PIL模块</p>
-<pre><code>pip install pillow
-</code></pre><p>然后在程序中 <code>localfile</code> 为图片路径</p>
-<pre><code>im = Image.open(localfile)
-f,ext = os.path.splitext(localfile.split(&quot;/&quot;)[-1])
-webp_path = &quot;%s.webp&quot;%f
-im.convert(&apos;RGB&apos;).save(webp_path, &quot;webp&quot;)
-</code></pre><p>这里需要注意需要将图片先转化为RGB模式，否则报错</p>
-<pre><code>cannot write mode P as WEBP
-</code></pre><p>现在，是时候说下PIL「失效」的情况了。</p>
-<ol>
-<li>将动图转为gif时，转化过程没有报错，但是打开后，只保存了第一帧的图片，变成了静态图。</li>
-<li>将 gif 转为 webp格式时，同样也只保存了第一帧。</li>
-</ol>
-<p>第一种情况我没有测试，但是在stackoverflow上可以看到有人提问过： <a href="http://stackoverflow.com/questions/24688802/saving-an-animated-gif-in-pillow" target="_blank" rel="external">Saving an animated GIF in Pillow</a> 。回答者是建议使用gifmaker 模块进行处理gif.</p>
-<p>第二张情况，我遇到了，所以可以证实。</p>
-<p>通过搜索，在官网上看到<a href="https://developers.google.com/speed/webp/docs/gif2webp" target="_blank" rel="external">gif2webp</a>,证明官网给出了gif转webp的解决方案，那我们就下载适合自己版本的库<a href="https://storage.googleapis.com/downloads.webmproject.org/releases/webp/index.html" target="_blank" rel="external"></a>.<br>解压后，将bin 目录下的 gif2webp.exe 复制到 工作目录下。接下来，我们使用它来转化格式。</p>
-<h3 id="2-使用gif2webp-exe转化格式"><a href="#2-使用gif2webp-exe转化格式" class="headerlink" title="2. 使用gif2webp.exe转化格式"></a>2. 使用gif2webp.exe转化格式</h3><p>根据官网给的文档<a href="https://developers.google.com/speed/webp/docs/gif2webp" target="_blank" rel="external">gif2webp</a>，我们可以很方便的使用下面的语句来实现：</p>
-<pre><code>f,ext = os.path.splitext(localfile.split(&quot;/&quot;)[-1])
-webp_path = &quot;%s.webp&quot;%f
-os.system(&quot;gif2webp.exe &quot;+ localfile + &quot; -quiet &quot; + &quot; -o &quot; + f + &quot;.webp&quot;)
-</code></pre><p>这里可能会提示：</p>
-<pre><code>GIF decode warning: invalid background color index. Assuming white background.
-</code></pre><p>转换过程持续好几秒，请耐心等待，转化完成后，工作目录下多一个webp文件.</p>
-<h2 id="三-效果比较"><a href="#三-效果比较" class="headerlink" title="三.效果比较"></a>三.效果比较</h2><center>左边是gif格式的               右边是webp格式</center>
-
-
-<p><img src="http://i.imgur.com/aFTWeSK.gif" alt="">   <img src="http://lxctest.qiniudn.com/2016-11-10_15:57:31_zhuanzhuan2.webp" alt=""></p>
-<p>你的肉眼能看出区别么？</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;使用Python将Jpeg-Png-Gif-图片转换为-webp格式&quot;&gt;&lt;a href=&quot;#使用Python将Jpeg-Png-Gif-图片转换为-webp格式&quot; class=&quot;headerlink&quot; title=&quot;使用Python将Jpeg Png Gif 图片
-    
-    </summary>
-    
-      <category term="python" scheme="http://www.orzangleli.com/categories/python/"/>
-    
-    
-      <category term="python" scheme="http://www.orzangleli.com/tags/python/"/>
     
   </entry>
   
