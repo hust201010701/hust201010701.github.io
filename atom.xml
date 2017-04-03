@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://www.orzangleli.com/"/>
-  <updated>2017-04-03T13:55:30.843Z</updated>
+  <updated>2017-04-03T14:24:38.583Z</updated>
   <id>http://www.orzangleli.com/</id>
   
   <author>
@@ -20,14 +20,14 @@
     <link href="http://www.orzangleli.com/2017/04/03/2017-04-03_Android%20%E7%94%A8%20Retrofit%202%20%E5%AE%9E%E7%8E%B0%E5%A4%9A%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E5%AE%9E%E6%88%98/"/>
     <id>http://www.orzangleli.com/2017/04/03/2017-04-03_Android 用 Retrofit 2 实现多文件上传实战/</id>
     <published>2017-04-02T16:00:00.000Z</published>
-    <updated>2017-04-03T13:55:30.843Z</updated>
+    <updated>2017-04-03T14:24:38.583Z</updated>
     
     <content type="html"><![CDATA[<p>前一段时间我翻译了Future Studio的Retrofit2教程，从中也学习到了一些Retrofit2的使用方法，如果你最近也打算入手学习，我博客上Retrofit教程，你也许可以参考下：<a href="http://www.orzangleli.com/categories/Retrofit%E6%95%99%E7%A8%8B/">Retrofit教程</a> 。</p>
 <p>本文作为阶段性小结，将使用结合Python中的Flask框架实现Android端多文件上传功能。如果读者没有使用过Python中的Flask也没有关系，可以只看Android客户端部分，毕竟客户端工程师只使用API也是可以的。</p>
 <h2 id="1-实验效果"><a href="#1-实验效果" class="headerlink" title="1. 实验效果"></a>1. 实验效果</h2><ul>
-<li><p>Android端操作截图<br><img src="https://user-gold-cdn.xitu.io/2017/4/3/e89c0564dc96184c6382b6d5e4ebc8c1" alt=""></p>
+<li><p>Android端操作截图<br><img src="http://7bvaky.com2.z0.glb.qiniucdn.com/2017-04-03_22_22_26_GIF.gif" alt=""></p>
 </li>
-<li><p>Server端接收到的图片<br><img src="https://user-gold-cdn.xitu.io/2017/4/3/1334fbdcd988f901e2ea930025d368c8" alt=""></p>
+<li><p>Server端接收到的图片<br><img src="http://7bvaky.com2.z0.glb.qiniucdn.com/2017-04-03_22_22_26_server_cap.jpg" alt=""></p>
 </li>
 </ul>
 <h2 id="2-Server端实战"><a href="#2-Server端实战" class="headerlink" title="2. Server端实战"></a>2. Server端实战</h2><p>Server端负责接收保存客户端上传来的图片并提供访问图片的能力，Server有很多技术可以实现，Python作为一门具有强大的第三方库的语言，拥有很多web服务框架，如Flask,Django等。笔者采用Flask框架，Flask是微框架，实现小型功能十分方便，笔者实现的多文件上传功能，程序不超过30行。</p>
@@ -59,7 +59,7 @@ compile &apos;com.lzy.widget:imagepicker:0.4.1&apos;
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">FlaskClient</span> </span>&#123;</div><div class="line">    <span class="comment">//上传图片</span></div><div class="line">    <span class="meta">@Multipart</span></div><div class="line">    <span class="meta">@POST</span>(<span class="string">"/upload"</span>)</div><div class="line">    <span class="function">Call&lt;UploadResult&gt; <span class="title">uploadMultipleFiles</span><span class="params">(</span></span></div><div class="line">            @PartMap Map&lt;String,RequestBody&gt; files);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>上传文件需要使用<code>@Multipart</code>关键字注解，<code>@POST</code>表明HTTP请求方式为POST,<code>/upload</code>为请求服务器的相对地址，<code>uploadMultipleFiles</code>是自定义的方法名，参数为<code>Map&lt;String,RequestBody&gt; files</code>即多个文件组成的Map对象，<code>@PartMap</code>表明这是多文件上传，如果单文件可以使用<code>@Part MultipartBody.Part file</code>,方法的返回类型默认为<code>Response</code>,由于我们已经开发了Server端，所以知道Server端的返回数据格式为Json，因此我们针对返回数据格式新建一个UploadResut类。</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UploadResult</span> </span>&#123;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">int</span> code;    <span class="comment">// 1</span></div><div class="line">    <span class="keyword">public</span> List&lt;String&gt; image_urls;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>界面布局如图所示：<br><img src="https://user-gold-cdn.xitu.io/2017/4/3/6896153895ee0f0fed33ab43e5b75bf6" alt=""></p>
+<p>界面布局如图所示：<br><img src="http://7bvaky.com2.z0.glb.qiniucdn.com/2017-04-03_18_44_55_layout.jpg" alt=""></p>
 <p>点击Upload按钮后执行上传操作，核心的方法：</p>
 <pre><code>public void uploadFiles() {
     if(imagesList.size() == 0) {
