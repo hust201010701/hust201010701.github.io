@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://www.orzangleli.com/"/>
-  <updated>2017-02-23T00:40:25.072Z</updated>
+  <updated>2017-04-03T13:55:30.843Z</updated>
   <id>http://www.orzangleli.com/</id>
   
   <author>
@@ -14,6 +14,102 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Android 用 Retrofit 2 实现多文件上传实战</title>
+    <link href="http://www.orzangleli.com/2017/04/03/2017-04-03_Android%20%E7%94%A8%20Retrofit%202%20%E5%AE%9E%E7%8E%B0%E5%A4%9A%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E5%AE%9E%E6%88%98/"/>
+    <id>http://www.orzangleli.com/2017/04/03/2017-04-03_Android 用 Retrofit 2 实现多文件上传实战/</id>
+    <published>2017-04-02T16:00:00.000Z</published>
+    <updated>2017-04-03T13:55:30.843Z</updated>
+    
+    <content type="html"><![CDATA[<p>前一段时间我翻译了Future Studio的Retrofit2教程，从中也学习到了一些Retrofit2的使用方法，如果你最近也打算入手学习，我博客上Retrofit教程，你也许可以参考下：<a href="http://www.orzangleli.com/categories/Retrofit%E6%95%99%E7%A8%8B/">Retrofit教程</a> 。</p>
+<p>本文作为阶段性小结，将使用结合Python中的Flask框架实现Android端多文件上传功能。如果读者没有使用过Python中的Flask也没有关系，可以只看Android客户端部分，毕竟客户端工程师只使用API也是可以的。</p>
+<h2 id="1-实验效果"><a href="#1-实验效果" class="headerlink" title="1. 实验效果"></a>1. 实验效果</h2><ul>
+<li><p>Android端操作截图<br><img src="https://user-gold-cdn.xitu.io/2017/4/3/e89c0564dc96184c6382b6d5e4ebc8c1" alt=""></p>
+</li>
+<li><p>Server端接收到的图片<br><img src="https://user-gold-cdn.xitu.io/2017/4/3/1334fbdcd988f901e2ea930025d368c8" alt=""></p>
+</li>
+</ul>
+<h2 id="2-Server端实战"><a href="#2-Server端实战" class="headerlink" title="2. Server端实战"></a>2. Server端实战</h2><p>Server端负责接收保存客户端上传来的图片并提供访问图片的能力，Server有很多技术可以实现，Python作为一门具有强大的第三方库的语言，拥有很多web服务框架，如Flask,Django等。笔者采用Flask框架，Flask是微框架，实现小型功能十分方便，笔者实现的多文件上传功能，程序不超过30行。</p>
+<p>下面具体来看看。</p>
+<h3 id="2-1-环境安装"><a href="#2-1-环境安装" class="headerlink" title="2.1 环境安装"></a>2.1 环境安装</h3><p>笔者使用的Python版本为3.4，可以去 <a href="https://www.python.org/downloads/release/python-340/" target="_blank" rel="external">Python3.4下载</a> 选择下载适合自己系统的版本。完整安装Python教程请自行搜索。</p>
+<p>Python安装完成后需要安装Server端程序依赖库。通过pip安装：</p>
+<pre><code>pip install Flask
+pip install werkzeug
+</code></pre><h3 id="2-2-程序实现"><a href="#2-2-程序实现" class="headerlink" title="2.2 程序实现"></a>2.2 程序实现</h3><p>首先要引入依赖库：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> Flask,request,send_from_directory,jsonify</div><div class="line"><span class="keyword">import</span> os</div><div class="line"><span class="keyword">from</span> werkzeug <span class="keyword">import</span> secure_filename</div></pre></td></tr></table></figure>
+<p>本实验需要上传文件，需要将所上传文件的文件类型以及文件名做出限制，防止某些破坏服务器的程序运行，另外有些非法文件名如：<br><code>filename = &quot;../../../../home/username/.bashrc&quot;</code><br>如果黑客们能够操作这样的文件，对服务器系统来说，将是致命打击。所以<code>werkzeug</code>提供了<code>secure_filename</code>对上传文件的文件名进行合法校验。</p>
+<p>判断文件后缀是否合法<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">ALLOWED_EXTENSIONS=set([<span class="string">'png'</span>,<span class="string">'jpg'</span>,<span class="string">'jpeg'</span>,<span class="string">'gif'</span>])</div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">allowed_file</span><span class="params">(filename)</span>:</span></div><div class="line">    <span class="keyword">return</span> <span class="string">'.'</span> <span class="keyword">in</span> filename <span class="keyword">and</span> filename.rsplit(<span class="string">'.'</span>,<span class="number">1</span>)[<span class="number">1</span>] <span class="keyword">in</span> ALLOWED_EXTENSIONS</div></pre></td></tr></table></figure></p>
+<p>接收上传文件的函数代码如下：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@app.route('/upload',methods=['POST'])</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">upload_file</span><span class="params">()</span>:</span></div><div class="line">    <span class="keyword">if</span> request.method==<span class="string">'POST'</span>:</div><div class="line">        <span class="keyword">for</span> k <span class="keyword">in</span> request.files:</div><div class="line">            file = request.files[k]</div><div class="line">            image_urls = []</div><div class="line">            <span class="keyword">if</span> file <span class="keyword">and</span> allowed_file(file.filename):</div><div class="line">                filename=secure_filename(file.filename)</div><div class="line">                file.save(os.path.join(app.config[<span class="string">'IMAGE_FOLDER'</span>],filename))</div><div class="line">                image_urls.append(<span class="string">"images/%s"</span>%filename)</div><div class="line">        <span class="keyword">return</span> jsonify(&#123;<span class="string">"code"</span>:<span class="number">1</span>,<span class="string">"image_urls"</span>:image_urls&#125;)</div></pre></td></tr></table></figure></p>
+<p>Flask支持GET,POST,PUT,DELETE等HTTP请求方式，使用装饰器进行修饰，类似于Java中的注解概念，<code>/upload</code>为客户端请求的相对地址，请求方式限制为<code>POST</code>.根据request内置对象，可以访问客户端发来的文件，将文件检查后保存在本地，其中<code>image_urls</code>为上传后的图片的相对地址数组。最后将图片的地址以json格式返回给客户端。</p>
+<p>完整的Server端代码如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> Flask,request,send_from_directory,jsonify</div><div class="line"><span class="keyword">import</span> os</div><div class="line"><span class="keyword">from</span> werkzeug <span class="keyword">import</span> secure_filename</div><div class="line"></div><div class="line">app = Flask(__name__)</div><div class="line">app.config[<span class="string">'IMAGE_FOLDER'</span>] = os.path.abspath(<span class="string">'.'</span>)+<span class="string">'\\images\\'</span></div><div class="line">ALLOWED_EXTENSIONS=set([<span class="string">'png'</span>,<span class="string">'jpg'</span>,<span class="string">'jpeg'</span>,<span class="string">'gif'</span>])</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">allowed_file</span><span class="params">(filename)</span>:</span></div><div class="line">    <span class="keyword">return</span> <span class="string">'.'</span> <span class="keyword">in</span> filename <span class="keyword">and</span> filename.rsplit(<span class="string">'.'</span>,<span class="number">1</span>)[<span class="number">1</span>] <span class="keyword">in</span> ALLOWED_EXTENSIONS</div><div class="line"></div><div class="line"><span class="meta">@app.route('/upload',methods=['POST'])</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">upload_file</span><span class="params">()</span>:</span></div><div class="line">    <span class="keyword">if</span> request.method==<span class="string">'POST'</span>:</div><div class="line">        <span class="keyword">for</span> k <span class="keyword">in</span> request.files:</div><div class="line">            file = request.files[k]</div><div class="line">            print(file)</div><div class="line">            image_urls = []</div><div class="line">            <span class="keyword">if</span> file <span class="keyword">and</span> allowed_file(file.filename):</div><div class="line">                filename=secure_filename(file.filename)</div><div class="line">                file.save(os.path.join(app.config[<span class="string">'IMAGE_FOLDER'</span>],filename))</div><div class="line">                image_urls.append(<span class="string">"images/%s"</span>%filename)</div><div class="line">        <span class="keyword">return</span> jsonify(&#123;<span class="string">"code"</span>:<span class="number">1</span>,<span class="string">"image_urls"</span>:image_urls&#125;)</div><div class="line"></div><div class="line"><span class="comment">#让文件映射访问，否则默认只能访问static文件夹中的文件</span></div><div class="line"><span class="meta">@app.route("/images/&lt;imgname&gt;",methods=['GET'])</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">images</span><span class="params">(imgname)</span>:</span></div><div class="line">    <span class="keyword">return</span> send_from_directory(app.config[<span class="string">'IMAGE_FOLDER'</span>],imgname)</div><div class="line"></div><div class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</div><div class="line">    <span class="comment"># 检测 IMAGE_FOLDER 是否存在</span></div><div class="line">    <span class="keyword">if</span> <span class="keyword">not</span> os.path.exists(app.config[<span class="string">'IMAGE_FOLDER'</span>]):</div><div class="line">        os.mkdir(app.config[<span class="string">'IMAGE_FOLDER'</span>])</div><div class="line">    app.run(<span class="string">"192.168.1.102"</span>,debug=<span class="keyword">True</span>)</div></pre></td></tr></table></figure>
+<p>这里有一个小技巧，写完Server端代码后可以使用Postman进行测试，测试成功后再进行客户端程序开发。<br><img src="https://dn-mhke0kuv.qbox.me/2e7473ae221f7cdb796b.jpg" alt=""></p>
+<h2 id="3-客户端开发"><a href="#3-客户端开发" class="headerlink" title="3. 客户端开发"></a>3. 客户端开发</h2><p>因为涉及文件的上传，笔者这里以图片为例进行上传实验，图片上传除了重头戏Retrofit之外，还需要选择图片，笔者这里推荐一个模仿微信的图片选择库 <a href="https://github.com/jeasonlzy/ImagePicker" target="_blank" rel="external">ImagePicker</a> .</p>
+<h3 id="3-1-添加依赖库"><a href="#3-1-添加依赖库" class="headerlink" title="3.1 添加依赖库"></a>3.1 添加依赖库</h3><p>图片加载库笔者喜欢使用Glide</p>
+<pre><code>compile &apos;com.squareup.retrofit2:retrofit:2.1.0&apos;
+compile &apos;com.squareup.retrofit2:converter-gson:2.1.0&apos;
+compile &apos;com.github.bumptech.glide:glide:3.7.0&apos;
+compile &apos;com.lzy.widget:imagepicker:0.4.1&apos;
+</code></pre><h3 id="3-2-程序实现"><a href="#3-2-程序实现" class="headerlink" title="3.2 程序实现"></a>3.2 程序实现</h3><p>如果没有接触过Retrofit 2，可以来我的博客<a href="http://www.orzangleli.com/categories/Retrofit%E6%95%99%E7%A8%8B/">Retrofit教程</a> 了解。</p>
+<p>Retrofit2 是一个支持RESTful API的请求库，实际上只是对API请求方式的封装，真正的网络请求由OkHttp发出。</p>
+<p>Retrofit2一般会定义一个ServiceGenerator类，用于动态生成Retrofit对象。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ServiceGenerator</span> </span>&#123;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String API_BASE_URL = <span class="string">"http://192.168.1.102:5000/"</span>;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> OkHttpClient.Builder httpClient = <span class="keyword">new</span> OkHttpClient.Builder();</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Retrofit.Builder builder =</div><div class="line">            <span class="keyword">new</span> Retrofit.Builder()</div><div class="line">                    .baseUrl(API_BASE_URL)</div><div class="line">                    .addConverterFactory(GsonConverterFactory.create());</div><div class="line"></div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> &lt;S&gt; <span class="function">S <span class="title">createService</span><span class="params">(Class&lt;S&gt; serviceClass)</span> </span>&#123;</div><div class="line">        Retrofit retrofit = builder.client(httpClient.build()).build();</div><div class="line">        <span class="keyword">return</span> retrofit.create(serviceClass);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>具体的API操作由FlaskClient接口操作，</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">FlaskClient</span> </span>&#123;</div><div class="line">    <span class="comment">//上传图片</span></div><div class="line">    <span class="meta">@Multipart</span></div><div class="line">    <span class="meta">@POST</span>(<span class="string">"/upload"</span>)</div><div class="line">    <span class="function">Call&lt;UploadResult&gt; <span class="title">uploadMultipleFiles</span><span class="params">(</span></span></div><div class="line">            @PartMap Map&lt;String,RequestBody&gt; files);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>上传文件需要使用<code>@Multipart</code>关键字注解，<code>@POST</code>表明HTTP请求方式为POST,<code>/upload</code>为请求服务器的相对地址，<code>uploadMultipleFiles</code>是自定义的方法名，参数为<code>Map&lt;String,RequestBody&gt; files</code>即多个文件组成的Map对象，<code>@PartMap</code>表明这是多文件上传，如果单文件可以使用<code>@Part MultipartBody.Part file</code>,方法的返回类型默认为<code>Response</code>,由于我们已经开发了Server端，所以知道Server端的返回数据格式为Json，因此我们针对返回数据格式新建一个UploadResut类。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UploadResult</span> </span>&#123;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">int</span> code;    <span class="comment">// 1</span></div><div class="line">    <span class="keyword">public</span> List&lt;String&gt; image_urls;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>界面布局如图所示：<br><img src="https://user-gold-cdn.xitu.io/2017/4/3/6896153895ee0f0fed33ab43e5b75bf6" alt=""></p>
+<p>点击Upload按钮后执行上传操作，核心的方法：</p>
+<pre><code>public void uploadFiles() {
+    if(imagesList.size() == 0) {
+        Toast.makeText(MainActivity.this, &quot;不能不选择图片&quot;, Toast.LENGTH_SHORT).show();
+        return;
+    }
+    Map&lt;String, RequestBody&gt; files = new HashMap&lt;&gt;();
+    final FlaskClient service = ServiceGenerator.createService(FlaskClient.class);
+    for (int i = 0; i &lt; imagesList.size(); i++) {
+        File file = new File(imagesList.get(i).path);
+        files.put(&quot;file&quot; + i + &quot;\&quot;; filename=\&quot;&quot; + file.getName(), RequestBody.create(MediaType.parse(imagesList.get(i).mimeType), file));
+    }
+    Call&lt;UploadResult&gt; call = service.uploadMultipleFiles(files);
+    call.enqueue(new Callback&lt;UploadResult&gt;() {
+        @Override
+        public void onResponse(Call&lt;UploadResult&gt; call, Response&lt;UploadResult&gt; response) {
+            if (response.isSuccessful() &amp;&amp; response.body().code == 1) {
+                Toast.makeText(MainActivity.this, &quot;上传成功&quot;, Toast.LENGTH_SHORT).show();
+                Log.i(&quot;orzangleli&quot;, &quot;---------------------上传成功-----------------------&quot;);
+                Log.i(&quot;orzangleli&quot;, &quot;基础地址为：&quot; + ServiceGenerator.API_BASE_URL);
+                Log.i(&quot;orzangleli&quot;, &quot;图片相对地址为：&quot; + listToString(response.body().image_urls,&apos;,&apos;));
+                Log.i(&quot;orzangleli&quot;, &quot;---------------------END-----------------------&quot;);
+            }
+        }
+        @Override
+        public void onFailure(Call&lt;UploadResult&gt; call, Throwable t) {
+            Toast.makeText(MainActivity.this, &quot;上传失败&quot;, Toast.LENGTH_SHORT).show();
+        }
+    });
+}
+</code></pre><p>其中构建上传多文件的方法的参数较为关键，<code>MediaType.parse(imagesList.get(i).mimeType)</code>获取图片的mimeType，如果指定错误，可能会导致上传失败。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">Map&lt;String, RequestBody&gt; files = <span class="keyword">new</span> HashMap&lt;&gt;();</div><div class="line"><span class="keyword">final</span> FlaskClient service = ServiceGenerator.createService(FlaskClient.class);</div><div class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; imagesList.size(); i++) &#123;</div><div class="line">    File file = <span class="keyword">new</span> File(imagesList.get(i).path);</div><div class="line">    files.put(<span class="string">"file"</span> + i + <span class="string">"\"; filename=\""</span> + file.getName(), RequestBody.create(MediaType.parse(imagesList.get(i).mimeType), file));</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>集成<code>Callback</code>借口的匿名回调类的<code>onResponse</code>方法的第二个参数为服务器响应，通过访问<code>body()</code>方法返回<code>UploadResult</code>类型对象，接着就可以通过组合<code>ServiceGenerator.API_BASE_URL</code>和<code>response.body().image_urls</code>中每一项访问上传完成的图片。</p>
+<h2 id="4-项目地址"><a href="#4-项目地址" class="headerlink" title="4. 项目地址"></a>4. 项目地址</h2><p>本项目Client端和Server端均以开源，欢迎各位老总们Star。<br>Client地址: <a href="https://github.com/hust201010701/RetrofitMultiFilesUploadClient/" target="_blank" rel="external">RetrofitMultiFilesUploadClient</a><br>Server地址: <a href="https://github.com/hust201010701/MultiFileUploadServer/" target="_blank" rel="external">MultiFileUploadServer</a></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;前一段时间我翻译了Future Studio的Retrofit2教程，从中也学习到了一些Retrofit2的使用方法，如果你最近也打算入手学习，我博客上Retrofit教程，你也许可以参考下：&lt;a href=&quot;http://www.orzangleli.com/catego
+    
+    </summary>
+    
+      <category term="Android" scheme="http://www.orzangleli.com/categories/Android/"/>
+    
+    
+      <category term="android" scheme="http://www.orzangleli.com/tags/android/"/>
+    
+      <category term="Retrofit" scheme="http://www.orzangleli.com/tags/Retrofit/"/>
+    
+  </entry>
   
   <entry>
     <title>第十四篇 Retrofit2——如何上传多个文件到服务器</title>
@@ -2073,126 +2169,6 @@ collider.transform.position = bornPlace.position;
     
     
       <category term="python" scheme="http://www.orzangleli.com/tags/python/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>自己动手造轮子系列———实现『转转APP』Indicator 效果</title>
-    <link href="http://www.orzangleli.com/2016/11/10/2016-11-19_%E8%BD%AC%E8%BD%ACIndicator/"/>
-    <id>http://www.orzangleli.com/2016/11/10/2016-11-19_转转Indicator/</id>
-    <published>2016-11-09T16:00:00.000Z</published>
-    <updated>2016-11-10T14:06:01.443Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="自己动手造轮子系列———实现『转转APP』Indicator-效果"><a href="#自己动手造轮子系列———实现『转转APP』Indicator-效果" class="headerlink" title="自己动手造轮子系列———实现『转转APP』Indicator 效果"></a>自己动手造轮子系列———实现『转转APP』Indicator 效果</h1><h2 id="一-『转转APP』效果预览"><a href="#一-『转转APP』效果预览" class="headerlink" title="一.『转转APP』效果预览"></a>一.『转转APP』效果预览</h2><p>注意看Indicator指示器</p>
-<p><img src="http://lxctest.qiniudn.com/2016-11-10_15:57:31_zhuanzhuan2.webp" alt=""></p>
-<h2 id="二-动作分析"><a href="#二-动作分析" class="headerlink" title="二.动作分析"></a>二.动作分析</h2><ol>
-<li>左边部分</li>
-</ol>
-<p><img src="http://7xrrni.com1.z0.glb.clouddn.com/2016-11-10_19_59_20.png?imageView2/0/w/800" alt=""></p>
-<p>左边部分是一个白色的圆圈，圆圈中用红色字体显示当前页数，在ViewPager滑动时，白色圆圈绕Y轴旋转，在旋转180度时，即显示背面的时候，圆圈中字变成下一页的页码。</p>
-<ol>
-<li>右边部分</li>
-</ol>
-<p><img src="http://7xrrni.com1.z0.glb.clouddn.com/2016-11-10_20_00_01.png?imageView2/0/w/800" alt=""></p>
-<p>右边部分比较简单，一个带缺口的椭圆，上面显示着总页数。</p>
-<h2 id="三-各个击破难点"><a href="#三-各个击破难点" class="headerlink" title="三.各个击破难点"></a>三.各个击破难点</h2><h3 id="1-用canvas绘制绕Y轴旋转"><a href="#1-用canvas绘制绕Y轴旋转" class="headerlink" title="1. 用canvas绘制绕Y轴旋转"></a>1. 用canvas绘制绕Y轴旋转</h3><p>Canvas 绘制图片时，如果是在绕Z轴旋转是比较简单，使用Matrix矩阵：</p>
-<pre><code>Matrix matrix = new Matrix();
-matrix.setRotate(angle);
-Bimtap newBitmap = Bitmap.createBitmap(oldBitmap,0,0,oldBitmap.getWidth(),
-    oldBitmap.getHeight(),matrix,true);
-</code></pre><p>但是这只能在绘制图片时进行旋转，如果要对一个整体旋转则无法做到，比如，上面转转的指示器坐标的圆圈，圆圈是一个圆，上面还有数字，要实现圆和数字一起旋转，所以无法通过上述方法完成。</p>
-<p>而且这个问题我在谷歌上搜索，也不太好表述，刚开始搜索「android canvas 3D旋转」，结果也不太相符，后来搜索「android canvas绕y轴 旋转」，才找到符合的。</p>
-<p>使用 Android.graphics.Camera 的 rotateY 接口实现绕 Y 轴旋转时矩阵的运算。</p>
-<p>首先声明camera </p>
-<pre><code>camera = new Camera();
-</code></pre><p>在Ondraw方法中，首先对canvas状态进行保存，使用的是<code>canvas.save()</code>,然后将camera状态保存，将camera旋转一个角度rotateAngle，在获取camera的矩阵赋值到matrix中，最后将camera状态恢复至旋转之前的状态。然后将matrix追加到当前canvas的矩阵中，使用的是concat方法，这时候整个画布相当于旋转了rotateAngle角度，画完圆之后再恢复至原来的状态。</p>
-<pre><code>canvas.save();
-Matrix matrix = new Matrix(); 
-camera.save();
-camera.rotateY(rotateAngle);
-camera.getMatrix(matrix);
-camera.restore();
-
-mPaint.setColor(textBackgroundColor);
-int centerX = diameter / 2;
-int centerY = diameter / 2;
-matrix.preTranslate(-centerX, -centerY);
-matrix.postTranslate(centerX, centerY);
-canvas.concat(matrix);
-
-canvas.drawCircle(diameter / 2, diameter / 2, diameter / 2, mPaint);
-
-canvas.restore();
-</code></pre><h3 id="2-canvas-drawText文字垂直居中"><a href="#2-canvas-drawText文字垂直居中" class="headerlink" title="2. canvas drawText文字垂直居中"></a>2. canvas drawText文字垂直居中</h3><p>这个问题，如果没有遇到还真不知道会出现这种问题，一般想象的，我设置画笔的gravity属性为Paint.Align.CENTER，在将文字的中点设置下不就ok了么，如下面的代码：</p>
-<pre><code>textPaint.setTextAlign(Paint.Align.CENTER);
-canvas.drawText(&quot;of &quot; + maxPage, rect.centerX(), rect.centerY(), textPaint);
-</code></pre><p>出现的效果，如图所示，发现文字是偏上：</p>
-<p><img src="http://7xrrni.com1.z0.glb.clouddn.com/2016-11-10_21_15_24.png?imageView2/0/w/800" alt=""></p>
-<p>这是怎么回事呢？其实我们设置的文字爱中心点处绘制，实际上，文字是以基准线为锚点进行绘制的，英文叫做baseline.</p>
-<p><img src="http://7xrrni.com1.z0.glb.clouddn.com/2016-11-10_21_17_07.png?imageView2/0/w/800" alt=""></p>
-<p>在维基百科中可以看到<a href="https://zh.wikipedia.org/wiki/%E5%9F%BA%E7%B7%9A" target="_blank" rel="external">基线</a>的解释：</p>
-<p><img src="http://7xrrni.com1.z0.glb.clouddn.com/2016-11-10_21_24_40.png?imageView2/0/w/800" alt=""></p>
-<p>所以我们如果想让文字居中，则需要将绘制点的Y坐标向下移动。</p>
-<p>基线到字体顶端的距离为top,基线到字体底端距离为bottom,则有以下等式：</p>
-<pre><code>(top + baseline)+ (bottom + baseline) / 2 = centenY() 
-</code></pre><p>那么经过计算就可以算出baseline的值，通过Paint.FontMetrics获取top和bottom值，代码如下：</p>
-<pre><code>//画文字
-Rect rect = new Rect(diameter, 0, (int) (diameter * 3.4f), diameter);//右边的背景图片的Rect
-Paint textPaint = new Paint();
-textPaint.setColor(Color.WHITE);
-textPaint.setTextSize((int) (diameter * 0.6f));
-textPaint.setStyle(Paint.Style.FILL);
-//该方法即为设置基线上那个点究竟是left,center,还是right  这里我设置为center
-textPaint.setTextAlign(Paint.Align.CENTER);
-
-Paint.FontMetrics fontMetrics = textPaint.getFontMetrics();
-float top = fontMetrics.top;//为基线到字体上边框的距离,即上图中的top
-float bottom = fontMetrics.bottom;//为基线到字体下边框的距离,即上图中的bottom
-int baseLineY = (int) (rect.centerY() - top / 2 - bottom / 2);//基线中间点的y轴计算公式
-canvas.drawText(&quot;of &quot; + maxPage, rect.centerX(), baseLineY, textPaint);
-</code></pre><h3 id="3-自动轮播"><a href="#3-自动轮播" class="headerlink" title="3. 自动轮播"></a>3. 自动轮播</h3><p>自动轮播，通过Handler+Timer即可。</p>
-<pre><code>//定时自动播放
-timer = new Timer();
-timer.schedule(new TimerTask() {
-    @Override
-    public void run() {
-        Message message = new Message();
-        message.what = 1;
-        if (mViewPager.getCurrentItem() == Integer.MAX_VALUE - 1) {
-            currentIndex = -1;
-        }
-        currentIndex = mViewPager.getCurrentItem();
-        message.arg1 = currentIndex + 1;
-        mHandler.sendMessage(message);
-    }
-},1000,2000);
-</code></pre><p>然后自定义Handler.</p>
-<pre><code>//定时轮播图片，需要在主线程里面修改 UI
-private Handler mHandler = new Handler() {
-    public void handleMessage(Message msg) {
-        switch (msg.what) {
-            case 1:
-                mViewPager.setCurrentItem(msg.arg1,true);
-        }
-    }
-};
-</code></pre><h2 id="四-代码实现"><a href="#四-代码实现" class="headerlink" title="四.代码实现"></a>四.代码实现</h2><p>代码在Github上，请不要吝啬Star噢。</p>
-<p><a href="https://github.com/hust201010701/RoateIndicatorViewDemo" target="_blank" rel="external">RotateIndicatorView</a></p>
-<h2 id="联系方式和建议"><a href="#联系方式和建议" class="headerlink" title="联系方式和建议"></a>联系方式和建议</h2><p>微博：orzangleli</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;自己动手造轮子系列———实现『转转APP』Indicator-效果&quot;&gt;&lt;a href=&quot;#自己动手造轮子系列———实现『转转APP』Indicator-效果&quot; class=&quot;headerlink&quot; title=&quot;自己动手造轮子系列———实现『转转APP』Indic
-    
-    </summary>
-    
-      <category term="android" scheme="http://www.orzangleli.com/categories/android/"/>
-    
-    
-      <category term="android" scheme="http://www.orzangleli.com/tags/android/"/>
-    
-      <category term="自己动手造轮子系列" scheme="http://www.orzangleli.com/tags/%E8%87%AA%E5%B7%B1%E5%8A%A8%E6%89%8B%E9%80%A0%E8%BD%AE%E5%AD%90%E7%B3%BB%E5%88%97/"/>
     
   </entry>
   
