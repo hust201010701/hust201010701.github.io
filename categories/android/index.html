@@ -279,6 +279,34 @@
 
       <h1 class="post-title">
         
+            <a class="post-title-link" href="/2017/04/14/2017-04-14_一种支持多种弹幕样式的弹幕视图控件/" itemprop="url">
+              
+                <span itemprop="name">一种支持多种弹幕样式的弹幕视图控件</span>
+              
+            </a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <time class="post-time" itemprop="dateCreated"
+              datetime="2017-04-14T00:00:00+08:00"
+              content="2017-04-14" >
+          04-14
+        </time>
+      </div>
+
+    </header>
+  </article>
+
+
+    
+      
+
+  <article class="post post-type-normal" itemscope itemtype="//schema.org/Article">
+    <header class="post-header">
+
+      <h1 class="post-title">
+        
             <a class="post-title-link" href="/2017/04/03/2017-04-03_Android 用 Retrofit 2 实现多文件上传实战/" itemprop="url">
               
                 <span itemprop="name">Android 用 Retrofit 2 实现多文件上传实战</span>
@@ -342,7 +370,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/">
-              <span class="site-state-item-count">64</span>
+              <span class="site-state-item-count">65</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -359,7 +387,7 @@
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-count">17</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -769,23 +797,7 @@
 
 </body>
 </html>
-// only match artiles with not empty titles and contents
-                    if(data_title != '') {
-                        keywords.forEach(function(keyword, i) {
-                            index_title = data_title.indexOf(keyword);
-                            index_content = data_content.indexOf(keyword);
-                            if( index_title >= 0 || index_content >= 0 ){
-                                isMatch = true;
-								if (i == 0) {
-                                    first_occur = index_content;
-                                }
-                            } 
-							
-                        });
-                    }
-                    // show search results
-                    if (isMatch) {
-                        matchcounts += 1;
+                      matchcounts += 1;
                         str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
                         var content = data.content.trim().replace(/<[^>]+>/g,"");
                         if (first_occur >= 0) {

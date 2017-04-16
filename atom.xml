@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://www.orzangleli.com/"/>
-  <updated>2017-04-03T14:24:38.583Z</updated>
+  <updated>2017-04-16T14:08:35.030Z</updated>
   <id>http://www.orzangleli.com/</id>
   
   <author>
@@ -14,6 +14,150 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>一种支持多种弹幕样式的弹幕视图控件</title>
+    <link href="http://www.orzangleli.com/2017/04/14/2017-04-14_%E4%B8%80%E7%A7%8D%E6%94%AF%E6%8C%81%E5%A4%9A%E7%A7%8D%E5%BC%B9%E5%B9%95%E6%A0%B7%E5%BC%8F%E7%9A%84%E5%BC%B9%E5%B9%95%E8%A7%86%E5%9B%BE%E6%8E%A7%E4%BB%B6/"/>
+    <id>http://www.orzangleli.com/2017/04/14/2017-04-14_一种支持多种弹幕样式的弹幕视图控件/</id>
+    <published>2017-04-13T16:00:00.000Z</published>
+    <updated>2017-04-16T14:08:35.030Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="XDanmuku"><a href="#XDanmuku" class="headerlink" title="XDanmuku"></a>XDanmuku</h1><p>一种支持多种弹幕样式的弹幕视图控件</p>
+<p><a href="https://jitpack.io/#hust201010701/XDanmuku" target="_blank" rel="external"><img src="https://jitpack.io/v/hust201010701/XDanmuku.svg" alt=""></a></p>
+<p>本项目是一个开源的弹幕控件库，能够支持多种样式弹幕，弹幕点击监听，弹幕分区域显示，自定义移动速度等功能，项目原理是通过自定义ViewGroup。可能是目前轻量级弹幕库中功能最强大的一款了。</p>
+<h1 id="效果"><a href="#效果" class="headerlink" title="效果"></a>效果</h1><ul>
+<li>常规样式</li>
+</ul>
+<p><img src="http://7bvaky.com2.z0.glb.qiniucdn.com/2017-04-13_10_56_40_QQ图片20170413105220.png?imageView/2/w/500/" alt=""></p>
+<ul>
+<li>点击事件</li>
+</ul>
+<p><img src="http://7bvaky.com2.z0.glb.qiniucdn.com/2017-04-13_10_56_40_QQ图片20170413105247.png?imageView/2/w/500/" alt=""></p>
+<ul>
+<li>多种弹幕样式</li>
+</ul>
+<p><img src="http://7bvaky.com2.z0.glb.qiniucdn.com/2017-04-13_10_57_17_duoyangshi.png?imageView/2/w/500/" alt=""></p>
+<ul>
+<li>分区域显示</li>
+</ul>
+<p><img src="http://7bvaky.com2.z0.glb.qiniucdn.com/2017-04-13_10_57_17_QQ图片20170413105441.png?imageView/2/w/500/" alt=""></p>
+<ul>
+<li>GIF效果图</li>
+</ul>
+<p><img src="http://7bvaky.com2.z0.glb.qiniucdn.com/2017-04-13_10_57_17_anim.gif" alt=""></p>
+<h1 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h1><h2 id="0-添加依赖"><a href="#0-添加依赖" class="headerlink" title="0. 添加依赖"></a>0. 添加依赖</h2><p><strong>1. 导入<code>xdanmuku</code>源码</strong></p>
+<p>你可以直接下载本项目<code>xdanmuku</code>模块，并导入项目目录，并添加依赖<code>compile project(&#39;:xdanmuku&#39;)</code></p>
+<p><strong>2. Gradle</strong></p>
+<p><a href="https://jitpack.io/#hust201010701/XDanmuku" target="_blank" rel="external"><img src="https://jitpack.io/v/hust201010701/XDanmuku.svg" alt=""></a></p>
+<p>先把jitpack仓库添加到项目根 <code>build.gradle（Project）</code>文件中，</p>
+<pre><code>allprojects {
+    repositories {
+        ...
+        maven { url &apos;https://jitpack.io&apos; }
+    }
+}
+</code></pre><p>然后在你的项目中添加依赖</p>
+<pre><code>dependencies {
+        compile &apos;com.github.hust201010701:XDanmuku:33a063b46e&apos;
+}
+</code></pre><p>其他添加依赖的方式，如maven等请自行到<a href="https://jitpack.io/#hust201010701/XDanmuku/33a063b46e" target="_blank" rel="external">点我</a>查看。</p>
+<h2 id="1-添加控件"><a href="#1-添加控件" class="headerlink" title="1. 添加控件"></a>1. 添加控件</h2><p>在布局xml中添加控件</p>
+<pre><code>&lt;com.orzangleli.xdanmuku.DanmuContainerView
+    android:id=&quot;@+id/danmuContainerView&quot;
+    android:layout_width=&quot;match_parent&quot;
+    android:layout_height=&quot;240dp&quot;
+    /&gt;
+</code></pre><h2 id="2-自定义弹幕实体类DanmuEntity"><a href="#2-自定义弹幕实体类DanmuEntity" class="headerlink" title="2. 自定义弹幕实体类DanmuEntity"></a>2. 自定义弹幕实体类DanmuEntity</h2><p>根据需求定制弹幕实体类，包含所有弹幕的属性和类型。</p>
+<pre><code>public class DanmuEntity {
+    public String content;
+    public int textColor;
+    public int backgroundColor;
+    public int type;
+    public String time;
+}
+</code></pre><h2 id="3-添加DanmuConverter（弹幕转换器）"><a href="#3-添加DanmuConverter（弹幕转换器）" class="headerlink" title="3. 添加DanmuConverter（弹幕转换器）"></a>3. 添加DanmuConverter（弹幕转换器）</h2><p><code>DanmuConverter</code>中有两个抽象方法需要实现，<code>getSingleLineHeight</code>是返回所有弹幕样式中高度最大值作为弹幕航道的高度；<code>convert</code>负责将弹幕实体类<code>DanmuEntity</code>绑定到弹幕子视图上（类似于<code>BaseAdapter</code>的<code>getView</code>方法的作用）。</p>
+<pre><code>DanmuConverter danmuConverter = new DanmuConverter&lt;DanmuEntity&gt;() {
+    @Override
+    public int getSingleLineHeight() {
+        //将所有类型弹幕的布局拿出来，找到高度最大值，作为弹道高度
+        View view = LayoutInflater.from(MainActivity.this).inflate(R.layout.item_danmu, null);
+        //指定行高
+        view.measure(0, 0);
+
+        View view2 = LayoutInflater.from(MainActivity.this).inflate(R.layout.item_super_danmu, null);
+        //指定行高
+        view2.measure(0, 0);
+
+        return Math.max(view.getMeasuredHeight(),view2.getMeasuredHeight());
+    }
+
+    @Override
+    public View convert(DanmuEntity model) {
+        View view = null;
+        if(model.getType() == 0) {
+            view = LayoutInflater.from(MainActivity.this).inflate(R.layout.item_danmu, null);
+            TextView content = (TextView) view.findViewById(R.id.content);
+            ImageView image = (ImageView) view.findViewById(R.id.image);
+            image.setImageResource(ICON_RESOURCES[random.nextInt(5)]);
+            content.setText(model.content);
+            content.setTextColor(Color.rgb(random.nextInt(256), random.nextInt(256), random.nextInt(256)));
+        }
+        else if(model.getType() == 1) {
+            view = LayoutInflater.from(MainActivity.this).inflate(R.layout.item_super_danmu, null);
+            TextView content = (TextView) view.findViewById(R.id.content);
+            content.setText(model.content);
+            TextView time = (TextView) view.findViewById(R.id.time);
+            time.setText(model.getTime());
+        }
+        return view;
+    }
+};
+</code></pre><h2 id="4-添加弹幕"><a href="#4-添加弹幕" class="headerlink" title="4. 添加弹幕"></a>4. 添加弹幕</h2><pre><code>DanmuEntity danmuEntity = new DanmuEntity();
+danmuEntity.setContent(doubleSeed.substring(index, index + 2 + random.nextInt(20)));
+danmuEntity.setType(random.nextInt(2));
+danmuEntity.setTime(&quot;23:20:11&quot;);
+try {
+    danmuContainerView.addDanmu(danmuEntity);
+} catch (Exception e) {
+    e.printStackTrace();
+}
+</code></pre><h2 id="5-弹幕点击事件监听"><a href="#5-弹幕点击事件监听" class="headerlink" title="5. 弹幕点击事件监听"></a>5. 弹幕点击事件监听</h2><pre><code>//弹幕点击事件
+danmuContainerView.setOnItemClickListener(new DanmuContainerView.OnItemClickListener&lt;DanmuEntity&gt;() {
+    @Override
+    public void onItemClick(DanmuEntity danmuEntity) {
+        Toast.makeText(MainActivity.this,danmuEntity.content,Toast.LENGTH_SHORT).show();
+    }
+});
+</code></pre><h2 id="6-设置弹幕移动速度"><a href="#6-设置弹幕移动速度" class="headerlink" title="6. 设置弹幕移动速度"></a>6. 设置弹幕移动速度</h2><p><code>DanmuContainerView</code>中预设了三种弹幕移动速度：</p>
+<pre><code>public final static int LOW_SPEED = 1;
+public final static int NORMAL_SPEED = 3;
+public final static int HIGH_SPEED = 5;
+</code></pre><p>设置速度通过<code>setSpeed</code>方法：</p>
+<pre><code>danmuContainerView.setSpeed(DanmuContainerView.HIGH_SPEED);
+</code></pre><p>同时你可以传递具体的整数型速度：</p>
+<pre><code>danmuContainerView.setSpeed(4);
+</code></pre><h2 id="7-弹幕显示区域"><a href="#7-弹幕显示区域" class="headerlink" title="7. 弹幕显示区域"></a>7. 弹幕显示区域</h2><p>本人将弹幕控件按照竖向均分为3份，分别为<code>GRAVITY_TOP</code>,<code>GRAVITY_CENTER</code>,<code>GRAVITY_BOTTOM</code>。用户可以自由组合显示区域，默认情况下全区域（<code>GRAVITY_FULL</code>）显示。设置要显示的区域通过<code>setGravity</code>方法实现，参数可以使用 <strong><code>|</code></strong> 进行连接。</p>
+<pre><code>//只在上方和中间区域显示弹幕
+danmuContainerView.setGravity(DanmuContainerView.GRAVITY_TOP | DanmuContainerView.GRAVITY_CENTER);
+</code></pre><h1 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h1><p>本控件的原理你可能已经知道了使用自定义ViewGroup实现。但是之前我花了很多事件尝试通过自定义LayoutManager让RecyclerView实现弹幕控件，不过最终这种方案失败了，更多细节讨论欢迎发送邮件(orzangleli@163.com)给我。</p>
+<p>欢迎Star,提交Issues。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;XDanmuku&quot;&gt;&lt;a href=&quot;#XDanmuku&quot; class=&quot;headerlink&quot; title=&quot;XDanmuku&quot;&gt;&lt;/a&gt;XDanmuku&lt;/h1&gt;&lt;p&gt;一种支持多种弹幕样式的弹幕视图控件&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://jitp
+    
+    </summary>
+    
+      <category term="Android" scheme="http://www.orzangleli.com/categories/Android/"/>
+    
+    
+      <category term="android" scheme="http://www.orzangleli.com/tags/android/"/>
+    
+      <category term="弹幕" scheme="http://www.orzangleli.com/tags/%E5%BC%B9%E5%B9%95/"/>
+    
+  </entry>
   
   <entry>
     <title>Android 用 Retrofit 2 实现多文件上传实战</title>
@@ -2134,41 +2278,6 @@ collider.transform.position = bornPlace.position;
     
     
       <category term="unity3D" scheme="http://www.orzangleli.com/tags/unity3D/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>pyqt打包失败.md</title>
-    <link href="http://www.orzangleli.com/2016/12/13/2016-12-13_pyqt%E6%89%93%E5%8C%85%E5%A4%B1%E8%B4%A5/"/>
-    <id>http://www.orzangleli.com/2016/12/13/2016-12-13_pyqt打包失败/</id>
-    <published>2016-12-12T16:00:00.000Z</published>
-    <updated>2016-12-29T13:51:57.927Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="pyqt-打包失败-出现pyi-rth-qt4plugins-找不到的问题"><a href="#pyqt-打包失败-出现pyi-rth-qt4plugins-找不到的问题" class="headerlink" title="pyqt 打包失败 出现pyi_rth_qt4plugins 找不到的问题"></a>pyqt 打包失败 出现pyi_rth_qt4plugins 找不到的问题</h1><ol>
-<li><p>pyqt5的位数和系统位数要一致。</p>
-</li>
-<li><p>pyqt版本为：PyQt GPL v5.4.1 for Pythonv3.4(x64)</p>
-</li>
-</ol>
-<p>环境截图：</p>
-<p><img src="http://7bvaky.com2.z0.glb.qiniucdn.com/2016-12-29_09_59_32_python环境截图.png" alt=""></p>
-<p>使用下面的语句进行打包：<br>pyinstaller –hidden-import queue -F -w MainWindow.py</p>
-<p>后来由出现QtCore可以找到，但是QtWidgets找不到，但是不知道怎么回事，重新打包了n次后就自动好了，不知道是不是之前设置的环境变量要过一会才会生效，设置的环境变量就是QtCore,QtGui,QtWidgets三个dll文件。</p>
-<p>在管理员模式下运行命令行，进行PyInstaller安装</p>
-<p>加上这句话：<br>    from PyQt5 import *<br>这句话才是精髓，不加就不能运行，加了就可以。。。额！</p>
-<p>C:\Users\Administrator\AppData\Roaming\pyinstaller\bincache00_py34_64bit\qt5gui.dll 可能是去这个目录找那个dll，然后没找到。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;pyqt-打包失败-出现pyi-rth-qt4plugins-找不到的问题&quot;&gt;&lt;a href=&quot;#pyqt-打包失败-出现pyi-rth-qt4plugins-找不到的问题&quot; class=&quot;headerlink&quot; title=&quot;pyqt 打包失败 出现pyi_rt
-    
-    </summary>
-    
-      <category term="python" scheme="http://www.orzangleli.com/categories/python/"/>
-    
-    
-      <category term="python" scheme="http://www.orzangleli.com/tags/python/"/>
     
   </entry>
   
