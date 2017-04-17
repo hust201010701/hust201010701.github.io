@@ -1,0 +1,1305 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="android,弹幕,性能优化," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="orzangleli" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.2" />
+
+
+
+
+
+
+<meta name="description" content="基于XDanmuku的Android性能优化实战V1.0版本于4天前首发与我的掘金专栏,发布后大家的支持让我喜出望外，截止本文发稿，掘金上原文喜欢数为259，Github上项目的Star数为151。很惭愧，就做了这么一点微小的工作。
+
+不过，好景不长，在发布不久后Github上tz-xiaomage提交了一个题为体验不好，滑动很卡的Issue.当时我并没有很重视，以为是我程序中线程睡眠时间有点长导">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于XDanmuku的Android性能优化实战">
+<meta property="og:url" content="http://www.orzangleli.com/2017/04/17/2017-04-17_基于XDanmuku的Android性能优化实战/index.html">
+<meta property="og:site_name" content="orzangleli">
+<meta property="og:description" content="基于XDanmuku的Android性能优化实战V1.0版本于4天前首发与我的掘金专栏,发布后大家的支持让我喜出望外，截止本文发稿，掘金上原文喜欢数为259，Github上项目的Star数为151。很惭愧，就做了这么一点微小的工作。
+
+不过，好景不长，在发布不久后Github上tz-xiaomage提交了一个题为体验不好，滑动很卡的Issue.当时我并没有很重视，以为是我程序中线程睡眠时间有点长导">
+<meta property="og:image" content="https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRoct3704GHBhXKbM6u_Bf4pYCzHlrlxwMe4f6isY7kg5oBF9Wo2A">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2017/4/13/2d73cbc18d5074845eb5fa1109b5be23">
+<meta property="og:image" content="http://7bvaky.com2.z0.glb.qiniucdn.com/2017-04-17_19_40_10_QQ截图20170417193927.png">
+<meta property="og:image" content="http://7bvaky.com2.z0.glb.qiniucdn.com/2017-04-17_19_45_03_QQ图片20170417194427.png">
+<meta property="og:image" content="http://7bvaky.com2.z0.glb.qiniucdn.com/2017-04-17_21_30_54_QQ截图20170417213036.png">
+<meta property="og:image" content="http://7bvaky.com2.z0.glb.qiniucdn.com/2017-04-17_21_17_07_求Star表情.jpg">
+<meta property="og:updated_time" content="2017-04-17T15:24:11.824Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="基于XDanmuku的Android性能优化实战">
+<meta name="twitter:description" content="基于XDanmuku的Android性能优化实战V1.0版本于4天前首发与我的掘金专栏,发布后大家的支持让我喜出望外，截止本文发稿，掘金上原文喜欢数为259，Github上项目的Star数为151。很惭愧，就做了这么一点微小的工作。
+
+不过，好景不长，在发布不久后Github上tz-xiaomage提交了一个题为体验不好，滑动很卡的Issue.当时我并没有很重视，以为是我程序中线程睡眠时间有点长导">
+<meta name="twitter:image" content="https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRoct3704GHBhXKbM6u_Bf4pYCzHlrlxwMe4f6isY7kg5oBF9Wo2A">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://www.orzangleli.com/2017/04/17/2017-04-17_基于XDanmuku的Android性能优化实战/"/>
+
+
+  <title> 基于XDanmuku的Android性能优化实战 | orzangleli </title>
+</head>
+
+<body itemscope itemtype="//schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+  <div style="display: none;">
+    <script src="//s95.cnzz.com/z_stat.php?id=1260851403&web_id=1260851403" language="JavaScript"></script>
+  </div>
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="//schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">orzangleli</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">活在梦里的程序员和设计师</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="st-search-show-outputs">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <form class="site-search-form">
+  <input type="text" id="st-search-input" class="st-search-input st-default-search-input" />
+</form>
+
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+    (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+    e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install', '_tMVei7ot2NwU_xzmU_1','2.0.0');
+</script>
+
+
+
+    </div>
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="//schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                基于XDanmuku的Android性能优化实战
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-04-17T00:00:00+08:00" content="2017-04-17">
+              2017-04-17
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2017/04/17/2017-04-17_基于XDanmuku的Android性能优化实战/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/04/17/2017-04-17_基于XDanmuku的Android性能优化实战/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2017/04/17/2017-04-17_基于XDanmuku的Android性能优化实战/" class="leancloud_visitors" data-flag-title="基于XDanmuku的Android性能优化实战">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="基于XDanmuku的Android性能优化实战"><a href="#基于XDanmuku的Android性能优化实战" class="headerlink" title="基于XDanmuku的Android性能优化实战"></a>基于XDanmuku的Android性能优化实战</h1><p>V1.0版本于4天前首发与我的<a href="https://juejin.im/user/5796d5a91532bc0060ddbf4d" target="_blank" rel="external">掘金专栏</a>,发布后大家的支持让我喜出望外，截止本文发稿，掘金上<a href="https://juejin.im/post/58eeed368d6d81006465670f" target="_blank" rel="external">原文</a>喜欢数为259，Github上<a href="https://github.com/hust201010701/XDanmuku" target="_blank" rel="external">项目</a>的Star数为151。很惭愧，就做了这么一点微小的工作。</p>
+<p><img src="https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRoct3704GHBhXKbM6u_Bf4pYCzHlrlxwMe4f6isY7kg5oBF9Wo2A" width="100px"></p>
+<p>不过，好景不长，在发布不久后Github上<a href="https://github.com/tz-xiaomage" target="_blank" rel="external">tz-xiaomage</a>提交了一个题为<strong><a href="https://github.com/hust201010701/XDanmuku/issues/1" target="_blank" rel="external">体验不好，滑动很卡</a></strong>的Issue.当时我并没有很重视，以为是我程序中线程睡眠时间有点长导致的。然后amszsthl也在该Issue下评论</p>
+<blockquote>
+<p>弹幕滚动的时候一卡一卡的。</p>
+</blockquote>
+<p>这是我才开始认真思考，这不是偶然事件，应该是程序出问题了。</p>
+<p>现在开始查找卡顿原因，以优化优化性能。</p>
+<p>首先设置测试条件，之前我的测试条件是点击按钮，每点击一次就生成一个弹幕，可能是没有测试时间不够长，没有达到性能瓶颈，所以显示挺正常的，现在将增加更为严格的测试条件：每次点击按钮生成10条弹幕。<br><img src="https://user-gold-cdn.xitu.io/2017/4/13/2d73cbc18d5074845eb5fa1109b5be23" alt=""></p>
+<h2 id="1-未做任何优化之前"><a href="#1-未做任何优化之前" class="headerlink" title="1. 未做任何优化之前"></a>1. 未做任何优化之前</h2><p>在未做任何优化时，每点击按钮一次，就生成10个弹幕，点了生成新的弹幕按钮大概10次左右，界面直接卡死。</p>
+<p><img src="http://7bvaky.com2.z0.glb.qiniucdn.com/2017-04-17_19_40_10_QQ截图20170417193927.png" alt=""></p>
+<p>打开Android  Monitor窗口，切换到Monitors选项卡，查看Memory（AS默认显示的第一个为CPU，Memory在CPU上面，所以要滑动下滚轮才能看到）。内存直接飙升到12.62M,而且还在逐渐增加。</p>
+<p><img src="http://7bvaky.com2.z0.glb.qiniucdn.com/2017-04-17_19_45_03_QQ图片20170417194427.png" alt=""></p>
+<h2 id="2-减少线程数"><a href="#2-减少线程数" class="headerlink" title="2. 减少线程数"></a>2. 减少线程数</h2><p>我之前的思路是这样的，根据弹幕的模型构造不同View，并对每一个View开启一个线程控制它的坐标向左移动。细心的读者可能会发现：</p>
+<blockquote>
+<p> Q: 为什么不直接使用Android 动画来实现View的移动呢？</p>
+<p> A: <strong>Android中的动画本质上移动的不是原来的View，而是对View的影像进行移动，所以View的触摸事件都在原来的位置，这样就无法实现弹幕点击事件了。</strong></p>
+</blockquote>
+<p>每一个View都开启一个单独的线程控制其移动，实在是太占用内存了，想想我连续点击10次按钮，生成100个弹幕，相当于一瞬间有100个线程启动，并且每个线程都在间隔10ms轮询控制各自的坐标。</p>
+<p>优化建议：使用一个线程控制所有的View的移动，由线程每个4ms发出一个Message,Handler接收到Message后对当前ViewGroup的所有chlid进行移动。在Handler中对view进行检测，如果view的右边界已经超出了屏幕范围，则把view从这个ViewGroup中移除。</p>
+<pre><code>Handler handler = new Handler() {
+    @Override
+    public void handleMessage(Message msg) {
+        super.handleMessage(msg);
+        if (msg.what == 1) {
+            for(int i=0;i&lt;DanmuContainerView.this.getChildCount();i++){
+                View view = DanmuContainerView.this.getChildAt(i);
+                if(view.getX()+view.getWidth() &gt;= 0)
+                    view.offsetLeftAndRight((int)(0 - speed));
+                else{
+                    //添加到缓存中
+                    ...
+                    DanmuContainerView.this.removeView(view);
+                }
+            }
+        }
+    }
+};
+</code></pre><h2 id="3-增加缓存功能"><a href="#3-增加缓存功能" class="headerlink" title="3. 增加缓存功能"></a>3. 增加缓存功能</h2><p>在掘金上<a href="https://juejin.im/post/58eeed368d6d81006465670f" target="_blank" rel="external">原文</a>下与<a href="https://juejin.im/post/58eeed368d6d81006465670f" target="_blank" rel="external">kaient</a>的交流讨论中，得知缓存功能十分必要。</p>
+<blockquote>
+<p>kaient :<br>我自己写的弹幕方法是：定义一个 View 或者 surfacview 做容器，弹幕就是 bitmap，这个 Bitmap 做成缓存，当划过屏幕后就放到缓存里，给下一个弹幕用。开三个线程，一个子线程负责从服务器取弹幕信息，一个子线程负责把弹幕信息转换成 Bitmap，一个子线程负责通知绘画 (只要是为了控制卡顿问题，参照了 B 站的开源弹幕)。缺点就是：每个 bitmap 的大小都是一样，高度随便设，宽度根据最长的弹幕长度来定 (产品说最长的弹幕是 1.5 屏，超过就省略号，所有我就设成 1.5 屏)。上面这个方案目前测试全屏 80 条弹幕同时显示基本不卡。</p>
+</blockquote>
+<p>我想问弹幕控件增加缓存功能。我参照<code>ListView</code>的<code>BaseAdapter</code>的缓存复用技术，去掉了V0.1版本的<code>DanmuConverter</code>,增加<code>XAdapter</code>作为弹幕适配器，并且弹幕的Entity必须继承<code>Model</code>。<code>Model</code>中有一个<code>int</code>型<code>type</code>表示弹幕的类型区分，代码如下：</p>
+<pre><code>public class Model {
+    int type ;
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+}
+</code></pre><p>XAdapter代码如下:</p>
+<pre><code>public abstract class XAdapter&lt;M&gt;{
+    private HashMap&lt;Integer,Stack&lt;View&gt;&gt; cacheViews ;
+
+    public XAdapter()
+    {
+        cacheViews = new HashMap&lt;&gt;();
+        int typeArray[] = getViewTypeArray();
+        for(int i=0;i&lt;typeArray.length;i++){
+            Stack&lt;View&gt; stack = new Stack&lt;&gt;();
+            cacheViews.put(typeArray[i],stack);
+        }
+    }
+
+    public abstract View getView(M danmuEntity, View convertView);
+
+    public abstract int[] getViewTypeArray();
+    public abstract int getSingleLineHeight();
+
+    synchronized public void addToCacheViews(int type,View view) {
+        if(cacheViews.containsKey(type)){
+            cacheViews.get(type).push(view);
+        }
+        else{
+            throw new Error(&quot;you are trying to add undefined type view to cacheViews,please define the type in the XAdapter!&quot;);
+        }
+    }
+
+    synchronized public View removeFromCacheViews(int type) {
+        if(cacheViews.get(type).size()&gt;0)
+            return cacheViews.get(type).pop();
+        else
+            return null;
+    }
+
+    //缩小缓存数组的长度,以减少内存占用
+    synchronized public void shrinkCacheSize() {
+        int typeArray[] = getViewTypeArray();
+        for(int i=0;i&lt;typeArray.length;i++){
+            int type = typeArray[i];
+            Stack&lt;View&gt; typeStack = cacheViews.get(type);
+            int length = typeStack.size();
+            while(typeStack.size() &gt; ((int)(length/2.0+0.5))){
+                typeStack.pop();
+            }
+            cacheViews.put(type,typeStack);
+        }
+    }
+
+    public int getCacheSize()
+    {
+        int totalSize = 0;
+        int typeArray[] = getViewTypeArray();
+        Stack typeStack = null;
+        for(int i=0;i&lt;typeArray.length;i++){
+            int type = typeArray[i];
+            typeStack = cacheViews.get(type);
+            totalSize += typeStack.size();
+        }
+        return totalSize;
+    }
+}
+</code></pre><p>好啦，关键就在这里啦：<code>cacheViews</code>是一个按照类型分类的<code>HashMap</code>，键的类型为<code>int</code>型，也就是<code>Model</code>中的<code>type</code>，值的类型为Stack<view>，是一个包含View的栈。</view></p>
+<p>先看构造方法<code>XAdapter()</code>，在这里我初始化了<code>cacheViews</code>,并且根据<code>int typeArray[] = getViewTypeArray();</code>获取所有的弹幕类型的type值组成的数组，<code>getViewTypeArray()</code>是一个抽象方法，需要用户自行返回type值组成的数组。然后把每个弹幕类型对于的栈初始化，防止获取到<code>null</code>.</p>
+<p><code>public abstract View getView(M danmuEntity, View convertView);</code>则是模仿<code>Adapter</code>的<code>getView()</code>方法，它的功能是传入弹幕的Model，将Model上数据绑定到View上，并且返回View,是抽象方法，需要用户实现。</p>
+<p><code>public abstract int getSingleLineHeight();</code>则是一个让用户确定每一行航道的高度的抽象函数，如果用户知道具体的值，可以直接返回具体值，否则建议用户对不同的View进行测量，取测量高度的最大值。</p>
+<p><code>synchronized public void addToCacheViews(int type,View view)</code>的作用是向<code>cacheViews</code>中添加缓存View对象。<code>type</code>代表弹幕的类型，使用<code>HaskMap</code>的<code>get()</code>方法获取该类型的所有弹幕的栈，并使用<code>push()</code>添加.</p>
+<p><code>synchronized public View removeFromCacheViews(int type)</code>的作用是当用户使用了缓存数组中的View时，将此View从<code>cacheViews</code>中移除。</p>
+<p><code>synchronized public void shrinkCacheSize()</code>的作用是减小缓存数组的长度，因为缓存数组的长度不会减少，只有<code>removeFromCacheViews</code>表面会减少缓存数组长度，实际上都这个从<code>removeFromCacheViews</code>中返回的View移动到屏幕外后又会自动添加到缓存数组中，所以需要添加一个策略在不需要大量弹幕时减少缓存数组的长度，这个方法就是将缓存数组的长度减到一半的，什么时候减少缓存数组长度我们在后面谈。</p>
+<p><code>public int getCacheSize()</code>的作用统计<code>cacheViews</code>中缓存的View的总个数。</p>
+<p>用户自定义DanmuAdapter，继承XAdapter，并实现其中的虚函数。</p>
+<pre><code>public class DanmuAdapter extends XAdapter&lt;DanmuEntity&gt; {
+
+    final int ICON_RESOURCES[] = {R.drawable.icon1, R.drawable.icon2, R.drawable.icon3, R.drawable.icon4, R.drawable.icon5};
+    Random random;
+
+    private Context context;
+    DanmuAdapter(Context c){
+        super();
+        context = c;
+        random = new Random();
+    }
+
+    @Override
+    public View getView(DanmuEntity danmuEntity, View convertView) {
+
+        ViewHolder1 holder1 = null;
+        ViewHolder2 holder2 = null;
+
+        if(convertView == null){
+            switch (danmuEntity.getType()) {
+                case 0:
+                    convertView = LayoutInflater.from(context).inflate(R.layout.item_danmu, null);
+                    holder1 = new ViewHolder1();
+                    holder1.content = (TextView) convertView.findViewById(R.id.content);
+                    holder1.image = (ImageView) convertView.findViewById(R.id.image);
+                    convertView.setTag(holder1);
+                    break;
+                case 1:
+                    convertView = LayoutInflater.from(context).inflate(R.layout.item_super_danmu, null);
+                    holder2 = new ViewHolder2();
+                    holder2.content = (TextView) convertView.findViewById(R.id.content);
+                    holder2.time = (TextView) convertView.findViewById(R.id.time);
+                    convertView.setTag(holder2);
+                    break;
+            }
+        }
+        else{
+            switch (danmuEntity.getType()) {
+                case 0:
+                    holder1 = (ViewHolder1)convertView.getTag();
+                    break;
+                case 1:
+                    holder2 = (ViewHolder2)convertView.getTag();
+                    break;
+            }
+        }
+
+        switch (danmuEntity.getType()) {
+            case 0:
+                Glide.with(context).load(ICON_RESOURCES[random.nextInt(5)]).into(holder1.image);
+                holder1.content.setText(danmuEntity.content);
+                holder1.content.setTextColor(Color.rgb(random.nextInt(256), random.nextInt(256), random.nextInt(256)));
+                break;
+            case 1:
+                holder2.content.setText(danmuEntity.content);
+                holder2.time.setText(danmuEntity.getTime());
+                break;
+        }
+
+        return convertView;
+    }
+
+    @Override
+    public int[] getViewTypeArray() {
+        int type[] = {0,1};
+        return type;
+    }
+
+    @Override
+    public int getSingleLineHeight() {
+        //将所有类型弹幕的布局拿出来，找到高度最大值，作为弹道高度
+        View view = LayoutInflater.from(context).inflate(R.layout.item_danmu, null);
+        //指定行高
+        view.measure(0, 0);
+
+        View view2 = LayoutInflater.from(context).inflate(R.layout.item_super_danmu, null);
+        //指定行高
+        view2.measure(0, 0);
+
+        return Math.max(view.getMeasuredHeight(),view2.getMeasuredHeight());
+    }
+
+
+    class ViewHolder1{
+        public TextView content;
+        public ImageView image;
+    }
+
+    class ViewHolder2{
+        public TextView content;
+        public TextView time;
+    }
+
+
+}
+</code></pre><p>可以看到<code>getView()</code>中的具体代码是不是似曾相识？没错，之前常写的<code>BaseAdapter</code>里，几乎一模一样，所以我也不花时间介绍这个方法了。<code>getSingleLineHeight</code>就是测量航道的高度的方法，可以看到我计算了两个布局的高度，并且取其中的较大值作为航道高度。<code>getViewTypeArray()</code>则是很直接的返回你的弹幕的所有类型组成的数组。</p>
+<p>下面到了关键了，如何去在我自定义的这个<code>ViewGroup</code>中使用这个DanmuAdapter呢？</p>
+<pre><code>public void setAdapter(XAdapter danmuAdapter) {
+    xAdapter = danmuAdapter;
+    singleLineHeight = danmuAdapter.getSingleLineHeight();
+    new Thread(new MyRunnable()).start();
+}
+</code></pre><p>首先得设置<code>setAdapter</code>,并获取航道高度，并开启View移动的线程。</p>
+<p>再添加弹幕的方法<code>addDanmu()</code>中：</p>
+<pre><code>public void addDanmu(final Model model){
+    if (xAdapter == null) {
+        throw new Error(&quot;XAdapter(an interface need to be implemented) can&apos;t be null,you should call setAdapter firstly&quot;);
+    }
+
+    View danmuView = null;
+    if(xAdapter.getCacheSize() &gt;= 1){
+        danmuView = xAdapter.getView(model,xAdapter.removeFromCacheViews(model.getType()));
+        if(danmuView == null)
+            addTypeView(model,danmuView,false);
+        else
+            addTypeView(model,danmuView,true);
+    }
+    else {
+        danmuView = xAdapter.getView(model,null);
+        addTypeView(model,danmuView,false);
+    }
+
+    //添加监听
+    danmuView.setOnClickListener(new OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if(onItemClickListener != null)
+                onItemClickListener.onItemClick(model);
+        }
+    });
+}
+</code></pre><p>这里的逻辑就是，如果<code>xAdapter</code>的缓存栈中有<code>View</code>那么就直接从xAdapter中使用<code>xAdapter.removeFromCacheViews(model.getType())</code>获取,当然可能没有这个<code>type</code>类型的弹幕缓存<code>View</code>,如果没有，就返回<code>null</code>.如果缓存数组中没有View了，那么就使用<code>danmuView = xAdapter.getView(model,null);</code>让程序根据layout布局文件再生成一个View。</p>
+<p><code>addTypeView</code>的定义如下：</p>
+<pre><code>public void addTypeView(Model model,View child,boolean isReused) {
+    super.addView(child);
+
+    child.measure(0, 0);
+    //把宽高拿到，宽高都是包含ItemDecorate的尺寸
+    int width = child.getMeasuredWidth();
+    int height = child.getMeasuredHeight();
+    //获取最佳行数
+    int bestLine = getBestLine();
+    child.layout(WIDTH, singleLineHeight * bestLine, WIDTH + width, singleLineHeight * bestLine + height);
+
+    InnerEntity innerEntity = null;
+    innerEntity = (InnerEntity) child.getTag(R.id.tag_inner_entity);
+    if(!isReused || innerEntity==null){
+        innerEntity = new InnerEntity();
+    }
+    innerEntity.model = model;
+    innerEntity.bestLine = bestLine;
+    child.setTag(R.id.tag_inner_entity,innerEntity);
+
+    spanList.set(bestLine, child);
+
+}
+</code></pre><p>首先使用<code>super.addView(child)</code>添加child,然后设置child的位置。然后将InnerEntity类型的变量绑定到View上面，InnerEntity类型：</p>
+<pre><code>class InnerEntity{
+    public int bestLine;
+    public Model model;
+}
+</code></pre><p>包含该<code>View</code>的所处行数和View中绑定的<code>Model</code>数据。考虑到用户可能会在<code>DanmuAdapter</code>中对<code>View</code>的<code>tag</code>进行设置，所以不能直接使用<code>setTag(Object object)</code>方法继续绑定<code>InnerEntity</code>类型的变量了，这里可以使用<code>setTag(int id,Object object)</code>方法，首先在<code>string.xml</code>文件中定义一个id：<code>&lt;item type=&quot;id&quot; name=&quot;tag_inner_entity&quot;&gt;&lt;/item&gt;</code>，然后使用<code>child.setTag(R.id.tag_inner_entity,innerEntity);</code>则避免了和<code>setTag(Object object)</code>的冲突。</p>
+<p>启动的线程会自动的每隔4ms遍历一次，执行以下内容：</p>
+<pre><code>private class MyRunnable implements Runnable {
+    @Override
+    public void run() {
+        int count = 0;
+        Message msg = null;
+        while(true){
+            if(count &lt; 7500){
+                count ++;
+            }
+            else{
+                count = 0;
+                if(DanmuContainerView.this.getChildCount() &lt; xAdapter.getCacheSize() / 2){
+                    xAdapter.shrinkCacheSize();
+                    System.gc();
+                }
+            }
+            if(DanmuContainerView.this.getChildCount() &gt;= 0){
+                msg = new Message();
+                msg.what = 1; //移动view
+                handler.sendMessage(msg);
+            }
+
+            try {
+                Thread.sleep(4);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+}
+</code></pre><p><code>count</code>为计数器，每隔4ms计数一次，7500次后正好为30s，也就是30s检测一次弹幕，如果当前弹幕量小于缓存<code>View</code>数量的一半，就调用<code>shrinkCacheSize()</code>将<code>xAdapter</code>中的缓存数组长度减少一半。</p>
+<h2 id="4-Bitmap的回收"><a href="#4-Bitmap的回收" class="headerlink" title="4. Bitmap的回收"></a>4. Bitmap的回收</h2><p>打开Android Monitors窗口，查看Memory，运行一段时间程序后，点击Initiate GC,手动回收可回收的内存垃圾，剩下的就是不可回收的内存了，点击Dump Java Heap按钮，等待一会会自动打开当前内存使用状态。我只关注Shallow Size,按照从大到小的顺序可以看到，byte[]占用了7,879,324个字节的内存，然后点开byte[]查看Instance，同样按照从到小的顺序，Shallow Size的前几名都是Bitmap，因此可能是Bitmap的内存回收没有做处理，的确，我在写测试案例时没有主要对bitmap的复用和回收，所以产生大量的内存泄露，简单起见，我引入Glide图片加载框架，使用Glide加载图片。</p>
+<h2 id="5-总结"><a href="#5-总结" class="headerlink" title="5.总结"></a>5.总结</h2><p>以上工作做完了，狂点生成弹幕按钮，内存也不见飙升，基本维持在4-5M左右。可见，优化效果明显，由之前的几十M内存优化到4-5M。</p>
+<p><img src="http://7bvaky.com2.z0.glb.qiniucdn.com/2017-04-17_21_30_54_QQ截图20170417213036.png" alt=""></p>
+<p>XDanmuku的第二个版本也就出来了。XDanmuku的V1.1版本，欢迎大家Star和提交Issues。</p>
+<blockquote>
+<p>XDanmuku的V1.1版本 项目地址：<a href="https://github.com/hust201010701/XDanmuku" target="_blank" rel="external">XDanmuku</a></p>
+</blockquote>
+<p>不知不觉，这篇文章写了三个多小时了，要是这篇文章对你有一点启发或帮助，您可以去我的<a href="http://www.orzangleli.com/about/">博客</a>打赏和关注我。</p>
+<p><img src="http://7bvaky.com2.z0.glb.qiniucdn.com/2017-04-17_21_17_07_求Star表情.jpg" alt=""></p>
+<h2 id="致谢"><a href="#致谢" class="headerlink" title="致谢"></a>致谢</h2><p>感谢以下用户的建议和反馈：</p>
+<ul>
+<li><a href="https://github.com/tz-xiaomage" target="_blank" rel="external">tz-xiaomage</a></li>
+<li><a href="https://juejin.im/user/57ed378da22b9d005bae9811" target="_blank" rel="external">kaient</a></li>
+<li><a href="https://github.com/amszsthl" target="_blank" rel="external">amszsthl</a></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>如果你觉得本文帮助了你，你可以选择打赏支持我继续创作。</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/assets/weixin.png" alt="orzangleli WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/assets/zhifubao.png" alt="orzangleli Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/android/" rel="tag">#android</a>
+          
+            <a href="/tags/弹幕/" rel="tag">#弹幕</a>
+          
+            <a href="/tags/性能优化/" rel="tag">#性能优化</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/04/14/2017-04-14_一种支持多种弹幕样式的弹幕视图控件/" rel="next" title="一种支持多种弹幕样式的弹幕视图控件">
+                <i class="fa fa-chevron-left"></i> 一种支持多种弹幕样式的弹幕视图控件
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <div class="ds-share flat" data-thread-key="2017/04/17/2017-04-17_基于XDanmuku的Android性能优化实战/"
+     data-title="基于XDanmuku的Android性能优化实战"
+     data-content=""
+     data-url="http://www.orzangleli.com/2017/04/17/2017-04-17_基于XDanmuku的Android性能优化实战/">
+  <div class="ds-share-inline">
+    <ul  class="ds-share-icons-16">
+
+      <li data-toggle="ds-share-icons-more"><a class="ds-more" href="javascript:void(0);">分享到：</a></li>
+      <li><a class="ds-weibo" href="javascript:void(0);" data-service="weibo">微博</a></li>
+      <li><a class="ds-qzone" href="javascript:void(0);" data-service="qzone">QQ空间</a></li>
+      <li><a class="ds-qqt" href="javascript:void(0);" data-service="qqt">腾讯微博</a></li>
+      <li><a class="ds-wechat" href="javascript:void(0);" data-service="wechat">微信</a></li>
+
+    </ul>
+    <div class="ds-share-icons-more">
+    </div>
+  </div>
+</div>
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/04/17/2017-04-17_基于XDanmuku的Android性能优化实战/"
+           data-title="基于XDanmuku的Android性能优化实战" data-url="http://www.orzangleli.com/2017/04/17/2017-04-17_基于XDanmuku的Android性能优化实战/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="//schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="orzangleli" />
+          <p class="site-author-name" itemprop="name">orzangleli</p>
+          <p class="site-description motion-element" itemprop="description">华中科技大学 本科10级 硕士14级 一个热爱技术的宅~</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/">
+              <span class="site-state-item-count">66</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">13</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">18</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#基于XDanmuku的Android性能优化实战"><span class="nav-number">1.</span> <span class="nav-text">基于XDanmuku的Android性能优化实战</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-未做任何优化之前"><span class="nav-number">1.1.</span> <span class="nav-text">1. 未做任何优化之前</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-减少线程数"><span class="nav-number">1.2.</span> <span class="nav-text">2. 减少线程数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-增加缓存功能"><span class="nav-number">1.3.</span> <span class="nav-text">3. 增加缓存功能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-Bitmap的回收"><span class="nav-number">1.4.</span> <span class="nav-text">4. Bitmap的回收</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-总结"><span class="nav-number">1.5.</span> <span class="nav-text">5.总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#致谢"><span class="nav-number">1.6.</span> <span class="nav-text">致谢</span></a></li></ol></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">orzangleli</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.2"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"orzangleli"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+  
+  
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+       search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+    'use strict';
+    $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+            // get the contents from search data
+            isfetched = true;
+            $('.popup').detach().appendTo('.header-inner');
+            var datas = $( "entry", xmlResponse ).map(function() {
+                return {
+                    title: $( "title", this ).text(),
+                    content: $("content",this).text(),
+                    url: $( "url" , this).text()
+                };
+            }).get();
+            var $input = document.getElementById(search_id);
+            var $resultContent = document.getElementById(content_id);
+            $input.addEventListener('input', function(){
+                var matchcounts = 0;
+                var str='<ul class=\"search-result-list\">';
+                var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                $resultContent.innerHTML = "";
+                if (this.value.trim().length > 1) {
+                // perform local searching
+                datas.forEach(function(data) {
+                    var isMatch = false;
+                    var content_index = [];
+                    var data_title = data.title.trim().toLowerCase();
+                    var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                    var data_url = decodeURIComponent(data.url);
+                    var index_title = -1;
+                    var index_content = -1;
+                    var first_occur = -1;
+                    // only match artiles with not empty titles and contents
+                    if(data_title != '') {
+                        keywords.forEach(function(keyword, i) {
+                            index_title = data_title.indexOf(keyword);
+                            index_content = data_content.indexOf(keyword);
+                            if( index_title >= 0 || index_content >= 0 ){
+                                isMatch = true;
+								if (i == 0) {
+                                    first_occur = index_content;
+                                }
+                            } 
+							
+                        });
+                    }
+                    // show search results
+                    if (isMatch) {
+                        matchcounts += 1;
+                        str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                        var content = data.content.trim().replace(/<[^>]+>/g,"");
+                        if (first_occur >= 0) {
+                            // cut out 100 characters
+                            var start = first_occur - 20;
+                            var end = first_occur + 80;
+                            if(start < 0){
+                                start = 0;
+                            }
+                            if(start == 0){
+                                end = 50;
+                            }
+                            if(end > content.length){
+                                end = content.length;
+                            }
+                            var match_content = content.substring(start, end);
+                            // highlight all keywords
+                            keywords.forEach(function(keyword){
+                                var regS = new RegExp(keyword, "gi");
+                                match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                            });
+
+                            str += "<p class=\"search-result\">" + match_content +"...</p>"
+                        }
+                        str += "</li>";
+                    }
+                })};
+                str += "</ul>";
+                if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+                if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+                $resultContent.innerHTML = str;
+            });
+            proceedsearch();
+        }
+    });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("OFpzcYRP2UGNTzmwtFryQx9z-gzGzoHsz", "qEsNfoXB9uWjx6T6WnpIm78U");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+
+</body>
+</html>
